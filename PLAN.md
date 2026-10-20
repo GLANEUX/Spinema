@@ -1,6 +1,6 @@
 # Spinema — Plan du projet
 
-Application Android pour choisir quoi regarder, seul ou à plusieurs : des listes de films **à voir** (perso et communes), des **collections**, des **catégories auto**, une **machine à sous** pour tirer au sort — **en direct sur tous les téléphones du salon, avec vote et veto** —, un mode **découverte**, et le suivi **vu / pas vu**.
+Application Android pour choisir quoi regarder, seul ou à plusieurs : des listes de films **à voir** (perso et communes), des **collections**, des **catégories auto**, une **machine à sous** pour tirer au sort — **en direct sur tous les téléphones du salon, avec un système de vetos** —, un mode **découverte**, et le suivi **vu / pas vu**.
 
 ---
 
@@ -17,9 +17,14 @@ Un sélecteur en haut de l'app permet de passer d'un espace à l'autre.
 |---|---|---|
 | **Mon « À voir »** | Espace perso | Tous les films que **j'ai** envie de voir. |
 | **« À voir » commun** | Chaque salon | Les films ajoutés directement au salon par ses membres. |
-| **Films partagés** | Chaque salon | Les films de mon « À voir » perso que **j'ai choisi de partager** avec ce salon. Partage film par film (et par salon), révocable. Le film reste à moi : si je le retire de mon perso, il disparaît du salon. |
+| **Films partagés** | Chaque salon | Les films de mon « À voir » perso que **j'ai choisi de partager** avec ce salon. Le film reste à moi : si je le retire de mon perso ou si je quitte le salon, il disparaît du salon. |
 
-Dans un salon, la bibliothèque affiche donc : « À voir » commun + films partagés par chaque membre (avec l'avatar de qui l'a partagé). Le même film présent deux fois (commun + partagé) n'apparaît qu'une fois.
+**Partage**
+- Par salon, une option **« Partager automatiquement mes nouveaux ajouts »**.
+- Sinon, à l'ajout d'un film, des cases à cocher pour choisir les salons avec lesquels le partager (pré-cochées selon l'option auto). Modifiable ensuite depuis la fiche film.
+- Si j'ajoute à l'« À voir » commun un film **déjà dans mon perso**, l'app propose de le **partager** plutôt que de créer un doublon.
+
+**Badges « qui l'a ajouté »** — dans un salon, chaque film n'apparaît qu'une fois, avec **un badge par personne** qui l'a ajouté ou partagé. Si Lou et Léa ajoutent toutes les deux *Coraline*, le film porte deux badges : Lou et Léa. Quand quelqu'un quitte le salon, ses films partagés disparaissent et son badge est retiré des autres films.
 
 ### Collections
 - **Collections personnalisées** dans chaque espace : ex. « DVD » (films qu'on possède), « Soirée horreur », « Films doudous ». Un film peut être dans plusieurs collections.
@@ -46,24 +51,35 @@ Calculées à la volée à partir des données TMDB. Seules les catégories non 
 | **Note** | Très bien noté (≥ 7,5 TMDB) |
 | **Classification** | Tous publics, -10, -12, -16, -18 (visa CNC via TMDB) |
 
-### Rôles et restrictions d'âge
-- Le **créateur** du salon est propriétaire. Il peut donner des **droits** aux membres, à la carte :
+### Rôles et droits
+Le **créateur** du salon est propriétaire. Il peut donner des **droits** aux membres, à la carte :
 
-  | Droit | Permet de |
-  |---|---|
-  | `invite` | Inviter des personnes |
-  | `kick` | Exclure un membre |
-  | `manage_library` | Retirer un film ajouté par quelqu'un d'autre de l'« À voir » commun |
-  | `manage_collections` | Modifier / supprimer les collections des autres |
-  | `manage_settings` | Renommer le salon, changer la restriction d'âge |
+| Droit | Permet de |
+|---|---|
+| `invite` | Inviter des personnes |
+| `kick` | Exclure un membre |
+| `manage_library` | Retirer de l'« À voir » commun un film ajouté par quelqu'un d'autre |
+| `manage_collections` | Modifier / supprimer les collections des autres |
+| `manage_settings` | Renommer le salon, régler les options du salon |
 
-  Sans droit particulier, un membre peut : ajouter des films, partager les siens, créer ses collections, lancer la roulette, voter.
-- **Restriction d'âge** : basée sur la **classification française** du film (TMDB `release_dates`, pays FR ; repli sur US converti ; sinon « inconnue »). Proposition en §11.
+Sans droit particulier, un membre peut : ajouter des films, partager les siens, créer ses collections, lancer la machine, utiliser ses vetos.
 
-### Roulette (machine à sous)
+### Âge et classification
+- La **date de naissance** est demandée à l'inscription (seul l'âge calculé est affiché, la date reste privée).
+- Chaque film a une **classification française** (TMDB `release_dates`, pays FR ; repli sur la classification US convertie ; sinon **« non classé »**).
+- Dans les filtres de la machine, la classification se choisit par cases : `Tous publics · -10 · -12 · -16 · -18`. **On ne peut pas cocher une classification au-dessus de son âge** : à 17 ans, la case -18 est grisée.
+- **Dans un salon**, la limite est celle du **plus jeune des membres présents** (connectés à la session de tirage) : si Lou a 15 ans et participe, -16 et -18 sont grisés pour tout le monde.
+- **Films « non classés »** : recommandation → **exclus dès qu'un mineur est présent**, inclus sinon. C'est le choix prudent, et il concerne surtout de vieux films ou des films étrangers peu distribués. Un badge « non classé » sur la fiche l'indique.
+- La même limite s'applique à la **découverte** et à la **recherche** pour un compte mineur (à confirmer, §11).
+
+### Machine à sous
+**Deux modes**
+- **Tirage normal** (v1) : chaque film a la même chance.
+- **Tirage pondéré** (plus tard) : un mode séparé, choisi avant de lancer, où certains films ont plus de chances (🔥 « j'ai très envie », ancienneté dans la liste…).
+
 **Réglages**
 1. **Source** (combinables) : « À voir » (commun + partagés dans un salon), collections, catégories auto.
-2. **Filtres** : genre(s), type, durée max, période, pays / langue, note minimale.
+2. **Filtres** : genre(s), type, durée max, période, pays / langue, note minimale, classification (limitée par l'âge, voir ci-dessus).
 3. **Déjà vus** — tout décoché par défaut (= personne ne l'a vu) :
    ```
    [ ] Inclure les films déjà vus      ← global, coche / décoche tout
@@ -74,25 +90,27 @@ Calculées à la volée à partir des données TMDB. Seules les catégories non 
 4. « **23 films** dans la machine ». La machine ne se lance qu'à partir de **2 films**.
 
 **Tirage**
-- Le serveur tire le **film gagnant**, puis un **échantillon aléatoire** du tirage (ex. ~30 films dont le gagnant), dans un **ordre mélangé à chaque lancer**. Le rouleau ne montre que l'échantillon, mais comme il défile vite et change à chaque fois, l'échantillonnage ne se voit pas.
+- Le serveur tire le **film gagnant**, puis un **échantillon aléatoire** du pool (ex. ~30 films dont le gagnant), dans un **ordre mélangé à chaque lancer**. Comme le rouleau défile vite et change à chaque fois, l'échantillonnage ne se voit pas.
 - L'animation est calculée pour s'arrêter sur le gagnant.
 - **Pas de limite** de relances.
 
 **Résultat**
-- Affichage plein écran de l'**affiche** du film. Un appui ouvre la **fiche complète** : date de sortie, genres, durée, classification, synopsis, réalisateur, casting principal, note, **bande-annonce** (vidéo YouTube via TMDB, lue dans l'app), où le trouver dans vos collections (ex. « DVD »).
-- Le film passe en **« Prévu ce soir »**. On peut toujours **rejeter et relancer**.
-- Après le film : « On l'a vu » → chaque membre confirme pour lui-même (voir §11).
+- Affichage plein écran de l'**affiche**. Un appui ouvre la **fiche complète** : date de sortie, genres, durée, classification, synopsis, réalisateur, casting principal, note, **bande-annonce** (YouTube via TMDB, lue dans l'app), collections où il se trouve (ex. « DVD »).
+- Une fois accepté, le film passe **« À l'affiche »** (plutôt que « Prévu ce soir », qui ne marche pas si on regarde le lendemain ou l'après-midi). **Un seul film à l'affiche par salon** : en accepter un nouveau remplace l'ancien (avec confirmation).
+- Après la séance : **« Je l'ai vu »** → chaque membre confirme pour lui-même. Le film quitte l'affiche dès qu'un membre l'a confirmé, ou quand quelqu'un le retire. Si personne ne fait rien, rappel au bout de 24 h : « Vous avez vu *Coraline* ? ».
+- On peut toujours **rejeter et relancer**.
 
-**Dans un salon : tirage en direct + vote**
-- Quand quelqu'un lance, **tous les membres connectés** voient la machine tourner en même temps (le serveur envoie l'échantillon, l'ordre, le gagnant et l'heure de départ ; chaque téléphone joue la même animation).
-- Les membres hors de l'app reçoivent une **notification** « Alex lance la machine ! ».
-- Une fois le film affiché, chacun vote **👍 OK** ou **✋ Veto**.
-- Un veto peut être **contesté** : les autres votent pour lever le veto. **Si tout le monde n'est pas d'accord pour le lever, le veto tient** (règle exacte à confirmer en §11).
-- Sans veto (ou veto levé) → « Prévu ce soir ». Veto maintenu → film écarté, on relance.
+**Dans un salon : tirage en direct + vetos**
+- Celui qui lance ouvre une **séance** et choisit le **nombre de vetos par personne** pour cette séance (ex. 2).
+- Les **membres présents** = connectés à la séance. Ils voient tous la machine tourner en même temps (le serveur envoie l'échantillon, l'ordre, le gagnant et l'heure de départ ; chaque téléphone joue la même animation). Les autres reçoivent une **notification** « Alex lance la machine ! » et peuvent rejoindre en cours de séance.
+- Quand le film s'affiche, chaque présent choisit **👍 OK** ou **✋ Veto**.
+  - **Un seul veto suffit** : le film est écarté, sans contestation possible.
+  - **Si tous les présents mettent un veto** sur le même film, le film est écarté et **tout le monde récupère son veto**.
+  - Quelqu'un qui n'a plus de veto ne peut que voter OK.
+- Un film écarté **ne revient plus de la séance**. Un vote reste ouvert jusqu'au lancer suivant.
+- Tout le monde a voté OK → le film passe **à l'affiche** et la séance se termine.
 
-**Dans l'espace perso** : tirage **local** (pas de serveur, pas de vote), boutons *Accepter* / *Rejeter et relancer*.
-
-**Tirage pondéré (option)** — voir §11. Techniquement simple (un tirage aléatoire pondéré tient en quelques lignes), le vrai sujet est l'UX : il faut que ça reste compréhensible et juste.
+**Dans l'espace perso** : tirage **local** (pas de serveur, pas de veto), boutons *Accepter* / *Rejeter et relancer*.
 
 ---
 
@@ -101,19 +119,20 @@ Calculées à la volée à partir des données TMDB. Seules les catégories non 
 ### MVP (v1)
 | # | Fonctionnalité | Détail |
 |---|---|---|
-| 1 | **Comptes** | Inscription / connexion email + mot de passe, **pseudo unique**, vérification email, mot de passe oublié. Espace perso créé automatiquement. |
-| 2 | **Salons** | Création, invitation par lien (App Links) ou par pseudo, rejoindre, quitter, rôles et droits, restriction d'âge. |
-| 3 | **À voir + partage** | Recherche TMDB → ajout à mon « À voir » ou à l'« À voir » commun d'un salon. Partage de mes films avec un ou plusieurs salons. |
+| 1 | **Comptes** | Inscription / connexion : email + **pseudo unique** + mot de passe + **date de naissance**. Espace perso créé automatiquement. Vérification email et mot de passe oublié dès que le SMTP est en place (§11). |
+| 2 | **Salons** | Création, invitation par lien (App Links) ou par pseudo, rejoindre, quitter, rôles et droits. |
+| 3 | **À voir + partage** | Recherche TMDB → ajout à mon « À voir » ou à l'« À voir » commun d'un salon. Partage auto ou manuel (cases à cocher), badges « ajouté par » par personne. |
 | 4 | **Collections** | Créer / renommer / supprimer, un film dans plusieurs collections. |
 | 5 | **Vu / Pas vu** | Booléen par personne, « Déjà vus », badges par membre. |
 | 6 | **Catégories auto** | Genre, type, durée, époque, pays, réalisateur, note, classification. |
-| 7 | **Machine à sous** | Source + filtres + cases « déjà vus », échantillon aléatoire, ordre mélangé, min. 2 films, tirage local (perso) ou en direct (salon), vote / veto / contestation, « Prévu ce soir », fiche film avec bande-annonce. |
+| 7 | **Machine à sous** | Tirage normal. Source + filtres + classification limitée par l'âge + cases « déjà vus », échantillon aléatoire, ordre mélangé, min. 2 films, tirage local (perso) ou séance en direct (salon) avec vetos, « À l'affiche », fiche film avec bande-annonce. |
 | 8 | **Découverte** | Tendances, populaires, par genre / année, recherche. Ajout ou « Déjà vu » depuis la fiche. |
-| 9 | **Notifications push** | Machine lancée, invitation reçue, vote en attente. |
+| 9 | **Notifications push** | Séance lancée, invitation reçue, rappel « Vous l'avez vu ? ». |
 
 ### Plus tard (à garder en tête)
 - **Synchro Letterboxd** par pseudo (§3).
 - **Partage depuis TikTok / Instagram** : *Partager → Spinema* sur une vidéo, identification du film (légende + recherche TMDB, IA si besoin), confirmation, ajout à « À voir ». Android : intent filter `ACTION_SEND`.
+- **Tirage pondéré** : mode séparé (🔥 « j'ai très envie », ancienneté, pénalité des films récemment écartés).
 - **Roulettes à thème** : réglages enregistrés sous un nom (« Dimanche doudou » = Animation + déjà vus inclus) et thèmes prêts à l'emploi.
 - **Mode Swipe** : chacun swipe, match → ajout à l'« À voir » commun.
 - **Journal de visionnage** (dates, revisionnages) à la place du booléen.
@@ -175,7 +194,7 @@ Supabase auto-hébergé est possible mais lourd (une dizaine de conteneurs) pour
 | Temps réel | **WebSocket** (Socket.IO) — une room par salon pour la machine à sous et les votes |
 | Jobs | pg-boss (file de tâches dans Postgres) : rafraîchissement du cache TMDB, expiration des invitations, plus tard synchro Letterboxd |
 | Données films | **TMDB API** via l'API (clé cachée côté serveur, cache en base) |
-| Emails | SMTP (fournisseur à choisir, §11) |
+| Emails | SMTP — pas encore de fournisseur ; v1 sans vérification email ni reset automatique (§11) |
 | Push | Expo Push → FCM |
 | Reverse proxy | **Caddy** (HTTPS automatique) — ou ton proxy existant (§11) |
 | Observabilité | Logs structurés (pino), healthcheck, Sentry (app + API) optionnel |
@@ -198,63 +217,75 @@ infra/
 ## 5. Modèle de données (PostgreSQL)
 
 ```
-users              id, username (citext, unique), email (unique), email_verified, created_at
+users              id, username (citext, unique), email (unique), email_verified,
+                   birth_date, created_at
                    (+ tables de session/compte gérées par la lib d'auth)
 push_tokens        user_id, token, platform, updated_at
 
-spaces             id, name, kind ('personal'|'shared'), owner_id,
-                   age_limit (null | 'U'|'10'|'12'|'16'|'18'), created_at
+spaces             id, name, kind ('personal'|'shared'), owner_id, created_at
 space_members      space_id, user_id, role ('owner'|'member'),
-                   permissions (text[]), joined_at                    PK(space_id, user_id)
+                   permissions (text[]), auto_share (bool), joined_at   PK(space_id, user_id)
 invitations        id, space_id, code (unique), created_by,
                    invited_user_id (null = lien), expires_at, max_uses, uses,
                    status ('pending'|'accepted'|'declined'|'revoked'), created_at
 
 movies             tmdb_id (PK), title, original_title, release_date, year, poster_path,
                    backdrop_path, runtime, genres (int[]), overview, vote_average,
-                   original_language, countries (text[]), directors (jsonb),
-                   certification_fr, trailer_youtube_key, refreshed_at   ← cache TMDB
+                   original_language, countries (text[]), directors (jsonb), cast (jsonb),
+                   certification_fr ('U'|'10'|'12'|'16'|'18'|null = non classé),
+                   trailer_youtube_key, refreshed_at                      ← cache TMDB
 
-library_items      id, space_id, tmdb_id, added_by, added_at, note     UNIQUE(space_id, tmdb_id)
+library_items      id, space_id, tmdb_id, created_at                   UNIQUE(space_id, tmdb_id)
                    → perso : mon « À voir » ; salon : l'« À voir » commun
+library_adders     library_item_id, user_id, added_at                 PK(library_item_id, user_id)
+                   → badges « ajouté par » (Lou + Léa sur Coraline)
 library_shares     library_item_id (item de mon perso), space_id (salon), shared_at
                                                                         PK(library_item_id, space_id)
 collections        id, space_id, name, emoji, position, created_by, created_at
-collection_items   collection_id, library_item_id, added_at          PK(collection_id, library_item_id)
-                   → dans un salon, une collection peut contenir des items communs ou partagés
+collection_items   collection_id, tmdb_id, added_at                    PK(collection_id, tmdb_id)
 
 watched            user_id, tmdb_id, watched_at, source ('app')       PK(user_id, tmdb_id)
 
-spins              id, space_id, started_by, config (jsonb : source, filtres, cases vus),
-                   pool_size, sample (int[]), winner_tmdb_id, seed, starts_at,
-                   status ('spinning'|'voting'|'planned'|'vetoed'|'rejected'|'watched'),
+spin_sessions      id, space_id, opened_by, vetos_per_member, config (jsonb),
+                   status ('open'|'closed'), opened_at, closed_at
+session_members    session_id, user_id, vetos_left, joined_at          PK(session_id, user_id)
+spins              id, session_id, started_by, pool_size, sample (int[]), winner_tmdb_id,
+                   seed, starts_at, status ('spinning'|'voting'|'accepted'|'vetoed'|'superseded'),
                    created_at
-spin_votes         spin_id, user_id, vote ('ok'|'veto'), voted_at       PK(spin_id, user_id)
-veto_challenges    spin_id, user_id, lift (bool), voted_at               PK(spin_id, user_id)
+spin_votes         spin_id, user_id, vote ('ok'|'veto'), voted_at      PK(spin_id, user_id)
+now_showing        space_id (PK), tmdb_id, spin_id (null en perso), accepted_at, remind_at
+                   → « À l'affiche » : un seul film par espace
 ```
 
-- **Pool du tirage d'un salon** = `library_items` du salon ∪ items perso présents dans `library_shares` pour ce salon, dédoublonnés par `tmdb_id`, puis filtres, restriction d'âge et cases « vus par ».
-- La logique (pool → filtres → échantillon → ordre) vit dans `packages/shared` sous forme de **fonctions pures** testées à 100 %, la requête SQL ne fait que le pré-filtrage.
+- **Pool d'un salon** = `library_items` du salon ∪ items perso partagés via `library_shares`, dédoublonnés par `tmdb_id`, badges = union des `library_adders` et des propriétaires des partages ; puis filtres, limite d'âge des présents, cases « vus par », et films écartés pendant la séance.
+- **Vetos** : quand tous les présents ont voté et que **tous** ont mis un veto, `vetos_left` est rendu à chacun.
+- La logique (pool → filtres → âge → échantillon → ordre → règles de veto) vit dans `packages/shared` sous forme de **fonctions pures** testées à 100 % ; la requête SQL ne fait que le pré-filtrage.
 - Le hasard côté serveur utilise `crypto.randomInt` ; le `seed` est stocké pour rejouer / débugger un tirage.
-- Autorisations : vérifiées dans l'API par un middleware (`requireMember`, `requirePermission('kick')`…), couvertes par des tests d'intégration.
+- Autorisations : middleware API (`requireMember`, `requirePermission('kick')`…), couvertes par des tests d'intégration.
 
 ---
 
 ## 6. Protocole temps réel (salon)
 
 ```
-client → server   spin:start   { spaceId, config }
-server → room     spin:started { spinId, sample[], winnerIndex, startsAt, durationMs }
+client → server   session:open   { spaceId, vetosPerMember, config }
+server → room     session:opened { sessionId, openedBy, vetosPerMember }
+client → server   session:join   { sessionId }                  (présence)
+server → room     session:presence { members: [{ userId, age, vetosLeft }], ageLimit }
+client → server   spin:start     { sessionId }
+server → room     spin:started   { spinId, sample[], winnerIndex, startsAt, durationMs }
                   (startsAt = maintenant + ~800 ms pour que tous les téléphones démarrent ensemble)
-server → room     spin:voting  { spinId }
-client → server   spin:vote    { spinId, vote: 'ok' | 'veto' }
-server → room     spin:votes   { spinId, votes: { userId: vote } }
-client → server   veto:challenge { spinId, lift: true | false }
-server → room     spin:result  { spinId, status: 'planned' | 'vetoed' }
+client → server   spin:vote      { spinId, vote: 'ok' | 'veto' }
+server → room     spin:votes     { spinId, votes: { userId: 'ok' | 'veto' | null } }
+server → room     spin:result    { spinId, status: 'accepted' | 'vetoed', vetosRefunded: bool,
+                                   vetosLeft: { userId: n } }
+server → room     now_showing:updated { tmdbId }
 ```
-- Les votes attendus = **membres connectés à la room** au moment du tirage (présence Socket.IO). Un membre qui arrive en cours de route peut voter tant que le vote est ouvert.
-- État de la machine stocké en base : si un téléphone se reconnecte, il récupère l'état du tirage en cours.
-- Décalage d'horloge : chaque client mesure son écart avec le serveur à la connexion (ping) pour caler `startsAt`.
+- Votes attendus = **membres présents** dans la séance au moment du tirage.
+- Un nouveau `spin:start` pendant un vote clôt le vote en cours (`superseded`).
+- La limite d'âge est recalculée à chaque arrivée / départ dans la séance ; si un mineur rejoint, le pool est recalculé au lancer suivant.
+- État stocké en base : un téléphone qui se reconnecte récupère la séance et le tirage en cours.
+- Décalage d'horloge : chaque client mesure son écart avec le serveur à la connexion pour caler `startsAt`.
 
 ---
 
@@ -266,17 +297,18 @@ Auth ─ Connexion · Inscription (email, pseudo, mot de passe) · Mot de passe 
 └─ [Sélecteur d'espace : Perso ▾ | Nous deux | Ciné entre potes | + Créer / rejoindre]
    │
    └─ Onglets
-      ├─ 🎰 Machine      réglages (source, filtres, déjà vus global + par membre) · « 23 films »
-      │                  → machine à sous (en direct en salon) → affiche → vote / veto / contestation
-      │                  → « Prévu ce soir » · historique des tirages
+      ├─ 🎰 Machine      « À l'affiche » en haut · mode (normal) · réglages (source, filtres,
+      │                  classification, déjà vus global + par membre) · « 23 films »
+      │                  → salon : ouvrir une séance (nb de vetos) · présents · vetos restants
+      │                  → machine à sous → affiche → 👍 / ✋ → « À l'affiche » · historique
       ├─ 📚 Bibliothèque  À voir (commun + partagés) · collections · catégories auto · Déjà vus
       ├─ 🔍 Découvrir     tendances, genres, années, recherche
       └─ 👤 Profil        mes salons, invitations reçues, notifications, déconnexion
 
-Salon › Réglages : membres, droits, inviter (lien / pseudo), restriction d'âge, quitter / supprimer
+Salon › Réglages : membres, droits, inviter (lien / pseudo), partage auto, quitter / supprimer
 Fiche film : affiche, backdrop, date, genres, durée, classification, synopsis, réalisateur,
-             casting, note, bande-annonce, qui l'a vu, dans quelles collections,
-             [Ajouter à… (mon À voir / À voir commun / collections)] [Partager avec…] [Je l'ai vu]
+             casting, note, bande-annonce, qui l'a vu, ajouté par (badges), collections,
+             [Ajouter à… (mon À voir / À voir commun / collections)] [Partager avec… ☑] [Je l'ai vu]
 ```
 
 ---
@@ -297,7 +329,8 @@ Seuils de couverture bloquants en CI (proposition : 100 % `shared`, ≥ 90 % `ap
 ### Pipeline GitHub Actions
 - **Pull request** : lint (ESLint) · format (Prettier) · typecheck · tests unitaires + intégration + composants · couverture · build Docker de l'API · `expo-doctor`.
 - **main** : tout ce qui précède + e2e Maestro · image Docker publiée sur **GHCR** · déploiement **staging** (SSH → `docker compose pull && up -d`, migrations au démarrage) · publication EAS Update sur le canal `staging`.
-- **Tag `v*`** : déploiement **prod** · build APK de production (EAS Build ou Gradle dans Actions) · release GitHub avec l'APK · EAS Update canal `production`.
+- **Tag `v*`** : déploiement **prod** · build de l'APK signé **dans GitHub Actions** (`eas build --local`, keystore dans les secrets) · release GitHub + page de téléchargement sur ton domaine · EAS Update canal `production`.
+- Plus tard : publication sur Google Play (piste de test interne puis production) quand l'app te satisfait.
 - Renovate / Dependabot, scan de secrets, sauvegarde quotidienne Postgres (`pg_dump` → stockage externe) avec test de restauration.
 
 ### Gestion des erreurs
@@ -315,9 +348,9 @@ Seuils de couverture bloquants en CI (proposition : 100 % `shared`, ≥ 90 % `ap
 | **2. Comptes** | Inscription / connexion / pseudo / email, espace perso auto. | Comptes fonctionnels. |
 | **3. Films + À voir** | Proxy TMDB + cache, recherche, fiche film complète (bande-annonce), mon « À voir ». | Bibliothèque perso. |
 | **4. Collections + vu** | Collections, vu / pas vu, Déjà vus, catégories auto, filtres. | Bibliothèque organisée. |
-| **5. Machine (perso)** | Logique de tirage partagée, échantillon, animation, « Prévu ce soir ». | Tirage solo. 🎰 |
-| **6. Salons** | Création, invitations (lien + pseudo), App Links, rôles / droits, « À voir » commun, partage de films, restriction d'âge. | Salons complets. |
-| **7. Machine (salon)** | Temps réel, tirage synchronisé, votes, veto, contestation, notifications push. | Tirage à plusieurs. 🎉 |
+| **5. Machine (perso)** | Logique de tirage partagée, échantillon, animation, classification limitée par l'âge, « À l'affiche ». | Tirage solo. 🎰 |
+| **6. Salons** | Création, invitations (lien + pseudo), App Links, rôles / droits, « À voir » commun, partage auto / manuel, badges. | Salons complets. |
+| **7. Machine (salon)** | Séances, présence, tirage synchronisé, vetos (budget, remboursement), limite d'âge des présents, notifications push, rappel 24 h. | Tirage à plusieurs. 🎉 |
 | **8. Découverte** | Tendances, genres, années, pagination infinie. | Explorer les films. |
 | **9. Finitions + prod** | Design final, états vides, accessibilité, perf, release APK v1.0. | v1 en prod. |
 
@@ -327,60 +360,53 @@ Seuils de couverture bloquants en CI (proposition : 100 % `shared`, ≥ 90 % `ap
 
 | Sujet | Décision |
 |---|---|
-| Plateforme | Android uniquement (v1). |
+| Plateforme | Android uniquement (v1). APK d'abord, Google Play plus tard. |
 | Contenu | Films uniquement. |
-| Listes | « À voir » perso + « À voir » commun par salon + partage de films perso vers un salon. |
-| Salons | N membres, propriétaire = créateur, droits délégables, restriction d'âge. |
-| Qui regarde ce soir | Non. |
-| Vu | Booléen par personne. |
+| Listes | « À voir » perso + « À voir » commun par salon + partage de films perso (auto ou manuel). |
+| Doublons | Ajouter au commun un film déjà dans son perso → proposition de partage. |
+| Badges | Un badge par personne qui a ajouté / partagé le film. |
+| Départ d'un membre | Ses films partagés disparaissent, son badge est retiré. |
+| Salons | N membres, propriétaire = créateur, droits délégables. |
+| Âge | Date de naissance à l'inscription ; classification max = âge du plus jeune présent ; non classés exclus si un mineur est présent. |
+| Vu | Booléen par personne, chacun confirme pour soi. |
+| Modes de tirage | Normal (v1) ; pondéré = mode séparé, plus tard. |
 | Machine à sous | Ordre mélangé, échantillon aléatoire invisible, min. 2 films, relances illimitées. |
-| Résultat | Affiche → fiche complète avec bande-annonce, statut « Prévu ce soir », rejet + relance possible. |
-| Salon | Tirage en direct sur tous les téléphones, vote OK / veto, veto contestable. |
-| Perso | Tirage local, sans vote. |
-| Backend | Serveur perso sous Docker. |
+| Séance (salon) | Tirage en direct ; présents = connectés ; nombre de vetos par personne fixé par qui lance ; un veto = film écarté ; veto unanime = vetos rendus ; film écarté exclu de la séance. |
+| Résultat | Affiche → fiche complète avec bande-annonce ; « À l'affiche » (un seul par salon) ; rejet + relance possible. |
+| Perso | Tirage local, sans veto. |
+| Backend | API TypeScript sur serveur perso sous Docker. |
 | Offline | Cache simple + gestion d'erreurs soignée. |
-| Auth | Email + mot de passe + pseudo unique, pas de Google pour l'instant. |
+| Auth | Email + pseudo unique + mot de passe + date de naissance. Pas de Google pour l'instant. |
 | Invitations | Lien (domaine dispo) ou recherche par pseudo. |
+| Build | APK buildé dans GitHub Actions ; mises à jour OTA via EAS Update. |
 | Qualité | Couverture maximale, CI/CD complète, envs dev / staging / prod. |
-| Maquette | Artifact (HTML cliquable). |
-| Plus tard | Letterboxd, TikTok / Insta, thèmes, swipe, journal, iOS, séries. |
+| Maquette | Artifact (HTML cliquable), après choix de la direction visuelle. |
+| Plus tard | Tirage pondéré, Letterboxd, TikTok / Insta, thèmes, swipe, journal, iOS, séries, Google Play. |
 
 ---
 
 ## 11. Questions ouvertes
 
-### Vote et veto
-1. **Règle exacte de la contestation.** Scénario : Alex, Sam, Lou. Lou met un veto. Proposition :
-   - Alex et Sam votent « lever le veto ». Si **tous les autres** votent pour le lever, le veto est levé (même si Lou ne change pas d'avis) ? Ou faut-il aussi l'accord de Lou (dans ce cas c'est juste Lou qui retire son veto) ?
-   - Avec **deux vetos** (Lou et Sam), Alex seul ne peut rien faire, OK ?
-   - Combien de temps reste ouvert le vote ? (proposition : pas de limite, mais un nouveau lancer annule le vote en cours)
-2. **Qui doit voter** : seulement les membres **connectés** au moment du tirage (proposition), ou tous les membres, ce qui bloque si quelqu'un est absent ?
-3. **Contester un veto donne-t-il une seconde chance au film**, ou le film vetoé est-il écarté pour la soirée même si on relance ?
+### Séances et vetos
+1. **Vetos et séance** : le budget de vetos vaut pour **toute la séance** (pas par film) et la séance se termine quand un film passe à l'affiche ou quand celui qui l'a ouverte la ferme ? Que se passe-t-il quand **plus personne n'a de veto** : le prochain film tiré est imposé (« la machine a parlé ») ?
+2. **Délai de vote** : on attend que tous les présents aient voté, ou on met un compte à rebours (ex. 20 s, sans réponse = OK) pour qu'un téléphone posé sur la table ne bloque pas la séance ?
+3. Quelqu'un qui **rejoint une séance en cours** reçoit le même nombre de vetos que les autres au départ ?
+4. Quand **tous les présents** mettent un veto et récupèrent leurs vetos : ça marche aussi à 2 personnes (les deux vetos → rendus) ?
 
-### Prévu ce soir / vu
-4. Quand on passe un film « Prévu ce soir » en **« On l'a vu »** dans un salon : chaque membre le confirme pour lui-même (proposition), ou ça marque vu pour tous les votants ?
-5. Un seul film « Prévu ce soir » à la fois par salon, ou plusieurs (double programme) ? Il expire tout seul le lendemain ?
+### Âge
+5. **Découverte / recherche** pour un compte mineur : on masque aussi les films au-dessus de son âge, ou seulement dans la machine ?
+6. **Âge minimum** pour créer un compte ? (En France, la majorité numérique est à 15 ans pour le consentement au traitement de données. Pour une app privée entre proches, le plus simple est de ne rien collecter de plus que la date de naissance et de ne pas mettre d'âge minimum, mais à garder en tête avant Google Play.)
 
-### Partage et listes
-6. J'ajoute à l'« À voir » commun un film **déjà dans mon perso** : l'app propose plutôt de le **partager** (pas de doublon), ou on accepte les deux ?
-7. Partage par défaut : quand j'ajoute un film à mon perso, une option « partager automatiquement avec Nous deux » par salon, ou toujours manuel ?
-8. Quand un membre **quitte** un salon : ses films partagés disparaissent (proposition), ses ajouts dans l'« À voir » commun restent ?
+### À l'affiche
+7. Un film **à l'affiche en perso** et le même en salon : indépendants (proposition) ?
+8. Le rappel « Vous l'avez vu ? » : uniquement aux membres présents lors de la séance, ou à tout le salon ?
 
-### Restriction d'âge
-9. Quel modèle ?
-   - (a) **Par salon** : le propriétaire fixe une classification max (ex. -12) ; tous les films au-dessus sont exclus de la machine de ce salon. Simple.
-   - (b) **Par membre** : le propriétaire marque un membre comme « mineur -12 » ; dès que ce membre est dans le salon, la machine exclut les films -16 et -18.
-   - (c) Les deux.
-   - Et les films **sans classification connue** : exclus ou inclus quand une restriction est active ?
-
-### Tirage pondéré
-10. Proposition simple : sur chaque film, chaque membre peut mettre **🔥 « j'ai très envie »**. Poids = 1 + nombre de 🔥. Bonus : un film refusé dans les 7 derniers jours a un poids ×0,5. Option « Tirage pondéré » activable dans les réglages de la machine. On le met en v1 (étape 5) ou juste après ?
-
-### Infra
-11. Ton serveur : il a déjà un **reverse proxy** (Traefik, Nginx, Caddy) et d'autres services ? Quelle machine (CPU / RAM) ? On ajoute un **staging** sur le même serveur ?
-12. **Emails** (vérification, mot de passe oublié) : tu as un SMTP (OVH, Brevo, Resend, Postmark…) sur ton domaine ?
-13. **Distribution** : APK téléchargeable depuis ton domaine + mises à jour OTA (gratuit), ou piste de test interne Google Play (25 $ une fois, mises à jour automatiques via le Store) ?
-14. OK pour dépendre d'**Expo EAS** (builds cloud, OTA) dans la CI, ou tu préfères tout builder dans GitHub Actions (Gradle) sans service tiers ?
+### Infra (à voir plus tard)
+9. Ton serveur : reverse proxy existant (Traefik, Nginx, Caddy) ? Machine (CPU / RAM) ? Staging sur le même serveur ?
+10. **Emails** : sans SMTP, la v1 n'a ni vérification d'email ni « mot de passe oublié ». En attendant, un **reset par le propriétaire du salon** (il génère un lien de réinitialisation à usage unique) ou par toi en admin ? Quand tu voudras un SMTP : Brevo (300 mails/jour gratuits) ou Resend (3 000/mois gratuits) suffisent largement.
 
 ### Design
-15. Pour la maquette en Artifact, une direction visuelle de départ ? (néon de casino rétro, ticket de cinéma / art déco, sombre minimaliste façon Letterboxd…) Je peux aussi proposer 2–3 variantes de l'écran machine à sous pour choisir.
+11. Choix de la direction visuelle pour la maquette :
+    - **A. Néon de casino rétro** — fond noir violacé, néons rose / cyan, machine à sous avec levier et ampoules qui clignotent, typo display rétro.
+    - **B. Grand écran art déco** — bordeaux, or et crème, rideau rouge qui s'ouvre sur l'affiche gagnante, rouleau en pellicule 35 mm perforée, typo serif art déco. Colle bien à « À l'affiche ».
+    - **C. Sombre minimaliste** — anthracite + une couleur d'accent, les affiches font tout le travail, rouleau d'affiches avec flou de mouvement, typo sans serif moderne.
