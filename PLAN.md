@@ -405,6 +405,24 @@ Seuils de couverture bloquants en CI (proposition : 100 % `shared`, ≥ 90 % `ap
 9. Ton serveur : reverse proxy existant (Traefik, Nginx, Caddy) ? Machine (CPU / RAM) ? Staging sur le même serveur ?
 10. **Emails** : sans SMTP, la v1 n'a ni vérification d'email ni « mot de passe oublié ». En attendant, un **reset par le propriétaire du salon** (il génère un lien de réinitialisation à usage unique) ou par toi en admin ? Quand tu voudras un SMTP : Brevo (300 mails/jour gratuits) ou Resend (3 000/mois gratuits) suffisent largement.
 
+### Cycle de vie
+12. **Le propriétaire quitte le salon** : transfert obligatoire à un autre membre (choisi par lui, ou le plus ancien par défaut) ?
+13. **Suppression d'un salon** : réservée au propriétaire, avec confirmation ; l'« À voir » commun et l'historique sont supprimés, les films partagés restent dans les perso ?
+14. **Suppression de compte** (obligatoire pour Google Play) : on supprime tout, ou on anonymise ses ajouts dans les salons (« ancien membre ») ?
+
+### Invitations et vie privée
+15. **Liens d'invitation** : expiration (ex. 7 jours) et nombre d'utilisations max ? Rejoindre par lien est direct, ou le propriétaire doit valider ?
+16. **Recherche par pseudo** : tout le monde peut trouver tout le monde, ou un réglage « me rendre trouvable » ? Possibilité de bloquer quelqu'un ?
+
+### Produit
+17. **Note personnelle** (★ sur 5 ou j'aime / j'aime pas) quand on marque un film vu, ou vraiment rien pour l'instant ?
+18. **Langue** : interface uniquement en français, mais textes externalisés dès le départ (i18n) pour pouvoir traduire plus tard ? Titres des films en français avec le titre original en dessous ?
+19. **Son** : effets sonores pour la machine (défilement, arrêt, fanfare), activables / désactivables ?
+20. **Limites** : nombre max de membres par salon et de salons par personne (protection contre les abus), ex. 20 et 10 ?
+
+### Repo
+21. Le repo est **public ou privé** ? Il contient une licence MIT : tu veux garder le code open source ?
+
 ### Design
 11. Choix de la direction visuelle pour la maquette :
     - **A. Néon de casino rétro** — fond noir violacé, néons rose / cyan, machine à sous avec levier et ampoules qui clignotent, typo display rétro.
