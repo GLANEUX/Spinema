@@ -17,18 +17,36 @@ Un sélecteur d'espace en haut de l'app permet de passer de « Perso » à « No
 Dans chaque espace :
 - **À voir** (collection par défaut, toujours là) : tous les films enregistrés « à voir plus tard ». Chaque film ajouté y est automatiquement.
 - **Collections personnalisées** : ex. « Soirée horreur », « Films doudous », « À voir avec maman ». Un film peut être dans plusieurs collections.
-- **Déjà vus** (collection automatique, toujours là) : les films vus, alimentée par l'app et par la synchro Letterboxd. **Jamais incluse dans la roulette.**
+- **Déjà vus** (collection automatique, toujours là) : les films vus, alimentée par l'app et par la synchro Letterboxd. **Exclue de la roulette par défaut**, mais on peut l'y ajouter (voir Roulette).
+- **Catégories auto** : générées automatiquement à partir des infos du film, sans rien faire. Elles apparaissent dans la bibliothèque et servent de source ou de filtre pour la roulette (voir ci-dessous).
 
-Quand un film de « À voir » est marqué vu, il passe dans « Déjà vus » et sort de la roulette, mais il reste dans ses collections personnalisées (affiché grisé avec un badge « Vu »).
+Quand un film de « À voir » est marqué vu, il passe dans « Déjà vus » et sort de la roulette par défaut, mais il reste dans ses collections personnalisées (affiché grisé avec un badge « Vu »).
 
 Dans un salon partagé, « vu » se gère **par personne** : l'app affiche « Vu par toi, pas par lui », et la roulette propose un filtre « personne ne l'a vu » ou « au moins un ne l'a pas vu ».
 
-### Roulette
-On choisit **la source** :
-- **Tout « À voir »**, ou
-- **une ou plusieurs collections** au choix,
+### Catégories auto
+Calculées à partir des données TMDB de chaque film de la bibliothèque. Seules les catégories qui contiennent au moins un film sont affichées, avec leur nombre de films.
 
-puis des **filtres** optionnels (genre, durée max, année), on lance la roue, et on choisit *Accepter* (le film est marqué vu ce soir) ou *Relancer*. Les films déjà vus sont toujours exclus.
+| Critère | Exemples de catégories |
+|---|---|
+| **Genre** | Horreur, Comédie, Science-fiction, Romance, Thriller… |
+| **Type** | Film live, Animation, Documentaire, Court métrage (< 40 min) |
+| **Durée** | Moins de 1h30 · 1h30 – 2h · 2h – 2h30 · Plus de 2h30 |
+| **Époque** | Années 70, 80, 90, 2000, 2010, 2020 · Avant 1970 · Sorti cette année |
+| **Pays / langue** | Français, Coréen, Japonais, Anglais… |
+| **Réalisateur** | Une catégorie par réalisateur dès qu'il a au moins 2 films dans la bibliothèque |
+| **Note** | Très bien noté (≥ 7,5 sur TMDB) |
+
+### Roulette
+1. **Source** — on choisit une ou plusieurs sources, combinées entre elles :
+   - **Tout « À voir »** (par défaut),
+   - des **collections** perso,
+   - des **catégories auto** (ex. « Horreur » + « Moins de 1h30 »).
+2. **Filtres** — pour affiner : genre(s), type, durée max, période (année min / max), pays / langue, note minimale.
+3. **Inclure les films déjà vus** — interrupteur, **désactivé par défaut**. Une fois activé, les films vus de la source sont ajoutés au tirage (ex. revoir un film doudou). Dans un salon : réglage « personne ne l'a vu » / « au moins un ne l'a pas vu » / « tous, même vus ».
+4. Lancer la roue → *Accepter* (le film est marqué vu ce soir) ou *Relancer*.
+
+La roulette affiche le nombre de films dans le tirage avant de lancer (« 23 films dans la roue »). Les derniers réglages sont mémorisés.
 
 ---
 
@@ -41,13 +59,14 @@ puis des **filtres** optionnels (genre, durée max, année), on lance la roue, e
 | 2 | **Salons partagés** | Créer un salon, inviter par code / lien, rejoindre, quitter. |
 | 3 | **Bibliothèque + collections** | Recherche d'un film (via TMDB) → ajout à « À voir » + choix de collections. Créer / renommer / supprimer des collections. Mise à jour en temps réel dans les salons partagés. |
 | 4 | **Vu / Pas vu** | Marquer vu (+ note optionnelle), collection automatique « Déjà vus », badges par membre dans les salons. |
-| 5 | **Roulette** | Source = tout « À voir » ou des collections choisies. Filtres, roue animée avec haptique, Accepter / Relancer, historique des tirages. |
-| 6 | **Découverte** | Parcourir tous les films (tendances, populaires, par genre, par année) via TMDB. Depuis une fiche : *Ajouter à…* / *Déjà vu*. |
-| 7 | **Synchro Letterboxd** | On saisit seulement son **pseudo Letterboxd**. Import complet des films vus au premier lien, puis synchro automatique. Uniquement dans le sens **Letterboxd → Spinema**, et uniquement les **films vus** (voir §3). |
+| 5 | **Catégories auto** | Regroupement automatique de la bibliothèque par genre, type, durée, époque, pays / langue, réalisateur, note. |
+| 6 | **Roulette** | Source = tout « À voir », des collections et/ou des catégories auto. Filtres (genre, type, durée, année, pays, note), option « inclure les déjà vus » (désactivée par défaut), roue animée avec haptique, Accepter / Relancer, historique des tirages. |
+| 7 | **Découverte** | Parcourir tous les films (tendances, populaires, par genre, par année) via TMDB. Depuis une fiche : *Ajouter à…* / *Déjà vu*. |
+| 8 | **Synchro Letterboxd** | On saisit seulement son **pseudo Letterboxd**. Import complet des films vus au premier lien, puis synchro automatique. Uniquement dans le sens **Letterboxd → Spinema**, et uniquement les **films vus** (voir §3). |
 
 ### Plus tard (à garder en tête, pas maintenant)
 - **Partage depuis TikTok / Instagram** : depuis l'appli TikTok ou Insta, *Partager → Spinema* sur une vidéo qui parle d'un film. Spinema lit la légende / le titre de la vidéo, identifie le film (recherche TMDB, avec une IA si nécessaire pour comprendre la légende), affiche une confirmation (« C'est bien *Past Lives* (2023) ? ») et l'ajoute directement à « À voir ». Techniquement : *share extension* iOS + *intent filter* Android, possible avec Expo via un module de partage.
-- **Roulettes à thème** : thèmes prédéfinis (« Soirée horreur », « Années 90 », « Moins de 1h40 », « Ghibli », « Oscarisés »…) + filtres sauvegardés.
+- **Roulettes à thème** : réglages de roulette enregistrés sous un nom (« Dimanche soir doudou » = Animation + déjà vus inclus), et thèmes prêts à l'emploi (« Ghibli », « Oscarisés »…).
 - **Mode "Swipe"** à deux : chacun swipe des films, un *match* quand les deux aiment → ajouté à « À voir » du salon.
 - Où regarder (Netflix, Prime, Disney+… via TMDB, région FR).
 - Historique des soirées ciné, stats.
@@ -68,7 +87,7 @@ Letterboxd n'a pas d'API publique, mais les pages des profils publics sont lisib
 
 - Le travail est fait par une **fonction serveur planifiée** (Supabase Edge Function + cron), pas par le téléphone, donc ça tourne même app fermée.
 - Correspondance avec TMDB : par l'ID TMDB quand il est disponible (RSS), sinon par le slug Letterboxd / titre + année, avec mise en cache.
-- Un film vu sur Letterboxd est ajouté à « Déjà vus » et sort automatiquement de la roulette.
+- Un film vu sur Letterboxd est ajouté à « Déjà vus » et sort automatiquement de la roulette (sauf si « inclure les déjà vus » est activé).
 - On ne supprime jamais un « vu » marqué dans l'app à cause de Letterboxd.
 
 **Points d'attention** :
@@ -102,9 +121,13 @@ spaces             id, name, kind ('personal'|'shared'), owner_id,
                    → 1 espace 'personal' par utilisateur, créé par trigger à l'inscription
 space_members      space_id, user_id, role ('owner'|'member'), joined_at   PK(space_id, user_id)
 
-movies             tmdb_id (PK), title, original_title, year, poster_path,
+movies             tmdb_id (PK), title, original_title, year, release_date, poster_path,
                    runtime, genres (int[]), overview, vote_average,
+                   original_language, countries (text[]), directors (jsonb),
                    letterboxd_slug, updated_at                             ← cache TMDB
+                   → toutes les infos utilisées par les catégories auto et les filtres.
+                     Le type est déduit : genre 16 = Animation, 99 = Documentaire,
+                     runtime < 40 = Court métrage, sinon Film live.
 
 library_items      id, space_id, tmdb_id, added_by, added_at, note      UNIQUE(space_id, tmdb_id)
                    → = la collection « À voir » de l'espace
@@ -116,25 +139,37 @@ watched            user_id, tmdb_id, watched_at, rating,
                    PK(user_id, tmdb_id)
                    → « Déjà vus » est calculée à partir de cette table (pas stockée comme collection)
 
-spins              id, space_id, tmdb_id, spun_by, source (jsonb: collections + filtres),
+spins              id, space_id, tmdb_id, spun_by, source (jsonb: collections, catégories auto, filtres, include_watched),
                    accepted (bool), created_at                           ← historique
 ```
 
 **Sécurité (RLS)** : on ne voit que les espaces dont on est membre (et donc son espace perso) ; personne ne peut rejoindre un espace `personal` ; `watched` est lisible par les membres des espaces communs, modifiable seulement par son propriétaire.
 
-Requête de la roulette — films de la source choisie, non vus par les membres de l'espace :
+Les **catégories auto ne sont pas stockées** : ce sont des filtres sur `movies` (ex. « Années 90 » = `year between 1990 and 1999`), calculés à la volée. Une vue `space_auto_categories` renvoie la liste des catégories non vides avec leur nombre de films.
+
+Requête de la roulette (fonction Postgres `roulette_pool`) — films de la source choisie, filtrés, non vus par défaut :
 ```sql
-select li.* from library_items li
+select li.*, m.* from library_items li
+join movies m on m.tmdb_id = li.tmdb_id
 where li.space_id = :space
+  -- source : collections perso (null = tout « À voir »)
   and (:collections is null or exists (
         select 1 from collection_items ci
         where ci.library_item_id = li.id and ci.collection_id = any(:collections)))
-  and not exists (
+  -- catégories auto + filtres
+  and (:genres     is null or m.genres && :genres)
+  and (:max_runtime is null or m.runtime <= :max_runtime)
+  and (:year_min   is null or m.year >= :year_min)
+  and (:year_max   is null or m.year <= :year_max)
+  and (:languages  is null or m.original_language = any(:languages))
+  and (:min_rating is null or m.vote_average >= :min_rating)
+  -- déjà vus exclus sauf si include_watched = true
+  and (:include_watched or not exists (
         select 1 from watched v
-        join space_members m on m.user_id = v.user_id and m.space_id = li.space_id
-        where v.tmdb_id = li.tmdb_id);
+        join space_members m2 on m2.user_id = v.user_id and m2.space_id = li.space_id
+        where v.tmdb_id = li.tmdb_id));
 ```
-(Dans l'espace perso, il n'y a qu'un membre, donc c'est « films que je n'ai pas vus ».)
+(Dans l'espace perso, il n'y a qu'un membre, donc c'est « films que je n'ai pas vus ». Si on inclut les déjà vus, les films vus hors « À voir » — ceux venant de Letterboxd — sont aussi ajoutés quand la source est « Déjà vus ».)
 
 ---
 
@@ -146,8 +181,10 @@ Auth ─ Connexion / Inscription
 └─ [Sélecteur d'espace : Perso ▾ | Nous deux | + Créer / rejoindre]
    │
    └─ Onglets
-      ├─ 🎡 Roulette      source (Tout « À voir » / collections), filtres, roue, Accepter / Relancer
-      ├─ 📚 Bibliothèque  À voir · collections · Déjà vus ; créer une collection ; recherche + ajout
+      ├─ 🎡 Roulette      source (À voir / collections / catégories auto), filtres,
+      │                   [ ] inclure les déjà vus, « 23 films dans la roue », roue, Accepter / Relancer
+      ├─ 📚 Bibliothèque  À voir · mes collections · catégories auto · Déjà vus ;
+      │                   créer une collection ; recherche + ajout
       ├─ 🔍 Découvrir     tendances, genres, recherche TMDB → fiche film
       └─ 👤 Profil        pseudo Letterboxd + état de la synchro, mes salons, inviter / rejoindre, déconnexion
 
@@ -166,11 +203,12 @@ Fiche film (modale) : affiche, synopsis, durée, genres, qui l'a vu,
 | **2. Films + bibliothèque** | Client TMDB (Edge Function), recherche, fiche film, ajout à « À voir ». | Bibliothèque perso fonctionnelle. |
 | **3. Collections** | Créer / gérer des collections, ajouter un film à plusieurs collections. | Bibliothèque organisée. |
 | **4. Vu / Pas vu** | Marquer vu + note, collection « Déjà vus », grisage dans les collections. | Suivi vu/pas vu. |
-| **5. Roulette** | Choix de la source, filtres, roue animée + haptique, accepter / relancer, historique. | Le cœur de l'app. 🎉 |
-| **6. Salons partagés** | Création, invitation par code / lien, sélecteur d'espace, temps réel, badges « vu par… ». | Toi et ton copain dans le même salon. |
-| **7. Synchro Letterboxd** | Import initial par les pages publiques, cron RSS, resynchro hebdo, matching TMDB, écran d'état, secours CSV. | Films vus Letterboxd synchronisés automatiquement. |
-| **8. Découverte** | Tendances, populaires, par genre, pagination infinie. | Explorer tous les films. |
-| **9. Polish + build** | Thème sombre « cinéma », icône, splash, états vides, erreurs, build EAS. | App installée sur vos téléphones. |
+| **5. Catégories auto + filtres** | Enrichissement TMDB (type, pays, réalisateurs…), vue des catégories auto, écran de filtres. | Bibliothèque triée automatiquement. |
+| **6. Roulette** | Choix de la source (À voir / collections / catégories auto), filtres, option « inclure les déjà vus », roue animée + haptique, accepter / relancer, historique. | Le cœur de l'app. 🎉 |
+| **7. Salons partagés** | Création, invitation par code / lien, sélecteur d'espace, temps réel, badges « vu par… ». | Toi et ton copain dans le même salon. |
+| **8. Synchro Letterboxd** | Import initial par les pages publiques, cron RSS, resynchro hebdo, matching TMDB, écran d'état, secours CSV. | Films vus Letterboxd synchronisés automatiquement. |
+| **9. Découverte** | Tendances, populaires, par genre, pagination infinie. | Explorer tous les films. |
+| **10. Polish + build** | Thème sombre « cinéma », icône, splash, états vides, erreurs, build EAS. | App installée sur vos téléphones. |
 | **Plus tard** | Partage TikTok / Insta, roulettes à thème, swipe/match, plateformes de streaming, stats, séries. | |
 
 ---
