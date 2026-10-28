@@ -1,0 +1,246 @@
+<title>Spinema Variantes</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Mono:wght@500;600&family=Permanent+Marker&family=Silkscreen:wght@400;700&family=Unbounded:wght@400;600;800&display=swap">
+<style>
+/* Layout: one full-width band per direction, each in its own world (worn VHS shelf, night holo disc); phone mock left, identity kit right. Each band is single-theme by choice. */
+:root {
+  color-scheme: light;
+  --paper: #f1eff4;
+  --ink: #17141c;
+  --muted: #5f5a66;
+  --f-ui: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  /* 1. Vieilles VHS */
+  --o-shelf: #1b1714; --o-plastic: #242120; --o-label: #efe3c4; --o-marker: #1d1b2e;
+  --o-rouge: #c4574a; --o-moutarde: #d9a441; --o-teal: #6fa3a0; --o-bleu: #4f6d9a; --o-orange: #f08a3c;
+  --o-hand: "Permanent Marker", "Comic Sans MS", cursive;
+  --o-mono: "IBM Plex Mono", "Courier New", monospace;
+  /* 2. Holo nuit */
+  --d-nuit: #0f1220; --d-ardoise: #1b2033; --d-argent: #d9dce6; --d-blanc: #ffffff;
+  --d-elec: #6c5cff; --d-cyan: #5ee6ff; --d-veto: #ff5c7a;
+  --d-holo: conic-gradient(from 20deg, #ff9ad5, #9bf6ff, #c7b8ff, #fdffb6, #a0ffcf, #ffb3e1, #9bf6ff, #ff9ad5);
+  --d-display: "Unbounded", "Arial Black", sans-serif;
+  --d-pixel: "Silkscreen", "Courier New", monospace;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 16px/1.5 var(--f-ui); }
+:focus-visible { outline: 3px solid currentColor; outline-offset: 3px; }
+.inner { max-width: 1100px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+
+header.intro { padding-block: 48px 36px; }
+header.intro .inner { display: grid; gap: 14px; }
+.kicker { margin: 0; font-size: 12px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+h1 { margin: 0; font: 800 clamp(30px, 5vw, 46px)/1.05 var(--f-ui); font-stretch: 112%; letter-spacing: -.02em; max-width: 24ch; text-wrap: balance; }
+.intro p { margin: 0; max-width: 66ch; color: var(--muted); }
+.changes { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; max-width: 900px; }
+.changes div { border: 1.5px solid var(--ink); background: #fff; padding: 12px 14px; display: grid; gap: 4px; font-size: 14px; }
+.changes b { font-size: 15px; }
+
+.band { padding-block: 56px; overflow: hidden; position: relative; }
+.band .inner { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 56px; align-items: start; position: relative; }
+@media (max-width: 820px) { .band .inner { grid-template-columns: minmax(0, 1fr); justify-items: center; } .kit { width: 100%; } }
+.phone { width: 300px; max-width: 100%; border-radius: 40px; padding: 9px; background: #0b0b0b; box-shadow: 0 24px 60px rgba(0,0,0,.35); }
+.scr { height: 620px; border-radius: 32px; overflow: hidden; display: flex; flex-direction: column; position: relative; }
+.kit { display: grid; gap: 26px; align-content: start; min-width: 0; }
+.kit .num { margin: 0; font: 700 12px/1 var(--f-ui); letter-spacing: .2em; text-transform: uppercase; }
+.kit h2 { margin: 0; line-height: 1; }
+.kit .pitch { margin: 0; max-width: 56ch; font-size: 17px; }
+.row { display: flex; flex-wrap: wrap; gap: 22px; align-items: center; }
+.swatches { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; max-width: 540px; }
+.swatches div { aspect-ratio: 1; display: flex; align-items: flex-end; padding: 6px; font: 600 10.5px/1.2 var(--f-ui); font-variant-numeric: tabular-nums; }
+.traits { margin: 0; padding-left: 20px; display: grid; gap: 6px; max-width: 60ch; }
+.lab { font: 700 11px/1 var(--f-ui); letter-spacing: .18em; text-transform: uppercase; margin: 0 0 8px; }
+.pick { display: inline-flex; align-items: center; gap: 10px; font-weight: 700; cursor: pointer; padding: 12px 16px; justify-self: start; }
+.pick input { width: 18px; height: 18px; margin: 0; }
+.icons { display: flex; align-items: flex-end; gap: 16px; }
+.icons > * { flex: none; }
+.ic-64 { width: 72px; height: 72px; } .ic-40 { width: 44px; height: 44px; } .ic-24 { width: 28px; height: 28px; }
+
+/* ================= 1. VIEILLES VHS ================= */
+.o { background: var(--o-shelf); color: var(--o-label); background-image: repeating-linear-gradient(0deg, rgba(255,255,255,.025) 0 1px, transparent 1px 9px), radial-gradient(ellipse at 30% 0, rgba(217,164,65,.12), transparent 60%); }
+.o-logo { display: inline-flex; align-items: center; gap: .3em; }
+.o-logo .stripes { width: 1.1em; height: .8em; background: linear-gradient(var(--o-rouge) 0 25%, var(--o-orange) 0 50%, var(--o-moutarde) 0 75%, var(--o-teal) 0); transform: skewX(-14deg); }
+.o-logo .word { font: 900 1em/1 var(--f-ui); font-stretch: 125%; text-transform: uppercase; letter-spacing: -.01em; transform: skewX(-10deg); display: inline-block; color: var(--o-label); }
+.o-logo .spec { font: 600 .22em/1.2 var(--o-mono); letter-spacing: .08em; color: var(--o-moutarde); display: grid; }
+.o h2.o-logo { font-size: clamp(46px, 8vw, 84px); }
+.o .scr { background: var(--o-shelf); color: var(--o-label); font-family: var(--f-ui); }
+.o .s-top { display: flex; justify-content: space-between; align-items: center; padding: 18px 14px 10px; }
+.o .s-top .o-logo { font-size: 24px; }
+.o .card { font: 600 10px/1.2 var(--o-mono); color: var(--o-shelf); background: var(--o-label); padding: 5px 7px; transform: rotate(1.5deg); box-shadow: 2px 2px 0 rgba(0,0,0,.4); }
+.o .s-body { padding: 4px 14px 14px; display: grid; gap: 14px; flex: 1; align-content: start; }
+.vcr { background: linear-gradient(#2b2826, #1f1c1b); border-radius: 6px; padding: 10px 12px; display: grid; grid-template-columns: 1fr auto; gap: 8px 10px; align-items: center; box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 3px 0 #0e0c0b; }
+.vcr .slot { grid-column: 1 / -1; height: 10px; background: #0b0a09; border-radius: 2px; box-shadow: inset 0 2px 3px #000; }
+.vcr .lbl { font: 600 9px/1 var(--o-mono); letter-spacing: .12em; color: #9b928a; text-transform: uppercase; }
+.vcr .title { font: 400 21px/1 var(--o-hand); color: var(--o-label); }
+.vcr .led { font: 600 15px/1 var(--o-mono); color: #8dff9a; text-shadow: 0 0 6px rgba(141,255,154,.7); background: #071108; padding: 5px 7px; border-radius: 3px; font-variant-numeric: tabular-nums; grid-row: 2 / 4; grid-column: 2; }
+.o .shelf { position: relative; height: 262px; background: #2a211c; border-block: 6px solid #3c2f27; padding: 8px 12px; display: grid; gap: 5px; align-content: center; overflow: hidden;
+  -webkit-mask: linear-gradient(transparent, #000 16%, #000 84%, transparent); mask: linear-gradient(transparent, #000 16%, #000 84%, transparent); }
+.tape { height: 30px; background: var(--o-plastic); border-radius: 2px; display: flex; align-items: center; gap: 8px; padding: 0 8px 0 10px; box-shadow: inset 0 -2px 0 rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.06); }
+.tape .label { flex: 1; height: 21px; background: var(--lb, var(--o-label)); color: var(--o-marker); display: flex; align-items: center; padding: 0 8px; font: 400 15px/1 var(--o-hand); transform: rotate(var(--r, 0deg)); white-space: nowrap; overflow: hidden; position: relative;
+  background-image: linear-gradient(90deg, rgba(120,80,30,.12), transparent 30%, rgba(120,80,30,.08) 80%); }
+.tape .label.tapeup::before { content: ""; position: absolute; left: 34%; top: -3px; width: 24px; height: 26px; background: rgba(240,226,180,.75); transform: rotate(8deg); }
+.tape small { font: 600 9px/1 var(--o-mono); color: #a59b90; }
+.tape.out { transform: translateX(-16px) scale(1.05); outline: 2px solid var(--o-moutarde); outline-offset: 2px; position: relative; z-index: 1; height: 38px; }
+.tape.out .label { height: 27px; font-size: 19px; }
+.tape.out::after { content: "◀"; position: absolute; right: -22px; color: var(--o-moutarde); }
+.o .go { background: var(--o-moutarde); color: var(--o-shelf); text-align: center; padding: 13px; font: 900 18px/1 var(--f-ui); font-stretch: 112%; text-transform: uppercase; transform: skewX(-6deg); box-shadow: 0 4px 0 #8c6a28; }
+.o .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.o .two span { position: relative; padding: 10px 10px 10px 22px; text-align: center; font: 900 15px/1 var(--f-ui); font-stretch: 100%; text-transform: uppercase; border-radius: 3px 10px 10px 3px; }
+.o .two span::before { content: ""; position: absolute; left: 8px; top: 50%; width: 7px; height: 7px; margin-top: -3.5px; border-radius: 50%; background: var(--o-shelf); }
+.o .two .ok { background: var(--o-teal); color: var(--o-shelf); } .o .two .no { background: var(--o-rouge); color: var(--o-label); }
+.o .tabs { margin-top: auto; display: flex; justify-content: space-around; padding: 12px; background: #110e0c; font: 600 10px/1 var(--o-mono); text-transform: uppercase; letter-spacing: .06em; color: #a59b90; }
+.o .tabs span:first-child { color: var(--o-moutarde); }
+.o-icon { background: var(--o-plastic); border-radius: 22%; display: grid; place-items: center; box-shadow: inset 0 0 0 2px #3a3532; padding: 14%; }
+.o-icon .face { width: 100%; height: 100%; display: grid; grid-template-rows: 46% 1fr; gap: 10%; }
+.o-icon .face b { background: linear-gradient(var(--o-label) 0 60%, var(--o-rouge) 0 72%, var(--o-moutarde) 0 84%, var(--o-teal) 0); border-radius: 2px; }
+.o-icon .face span { background: #0d0b0a; border-radius: 3px; display: flex; justify-content: space-around; align-items: center; }
+.o-icon .face i { width: 26%; aspect-ratio: 1; border-radius: 50%; background: var(--o-label); box-shadow: inset 0 0 0 2px #5a524c; }
+.o .pick { background: var(--o-label); color: var(--o-shelf); font: 400 18px/1 var(--o-hand); transform: rotate(-1deg); }
+.o .swatches div { box-shadow: inset 0 0 0 1px rgba(239,227,196,.25); }
+
+/* ================= 2. HOLO NUIT ================= */
+.d { background: radial-gradient(circle at 85% 20%, #232a48, var(--d-nuit) 55%); color: var(--d-blanc); }
+.d::before { content: ""; position: absolute; right: -180px; top: -180px; width: 560px; height: 560px; border-radius: 50%; opacity: .16; pointer-events: none;
+  background: repeating-radial-gradient(circle, rgba(255,255,255,.6) 0 1px, transparent 1px 7px); }
+.d-logo { display: inline-flex; align-items: center; gap: .28em; font: 800 1em/1 var(--d-display); letter-spacing: -.03em; color: var(--d-blanc); }
+.d-logo i { width: .78em; height: .78em; border-radius: 50%; flex: none; background: radial-gradient(circle, var(--d-nuit) 0 14%, var(--d-blanc) 14.5% 19%, transparent 19.5%), var(--d-holo); box-shadow: 0 0 0 .04em var(--d-blanc); }
+.d h2.d-logo { font-size: clamp(46px, 8vw, 84px); }
+.d .scr { background: var(--d-nuit); color: var(--d-blanc); font-family: var(--f-ui); }
+.d .scr::before { content: ""; position: absolute; left: 50%; top: 150px; width: 520px; height: 520px; transform: translateX(-50%); border-radius: 50%; opacity: .1; pointer-events: none;
+  background: repeating-radial-gradient(circle, rgba(255,255,255,.7) 0 1px, transparent 1px 8px); }
+.d .s-top { display: flex; justify-content: space-between; align-items: center; padding: 18px 14px 8px; position: relative; }
+.d .s-top .d-logo { font-size: 23px; }
+.d .pill { font: 700 9px/1 var(--d-pixel); background: var(--d-argent); color: var(--d-nuit); border-radius: 999px; padding: 6px 9px; }
+.d .s-body { padding: 8px 14px 14px; display: grid; gap: 12px; flex: 1; align-content: start; position: relative; justify-items: center; }
+.holo-edge { position: relative; background: var(--d-ardoise); border-radius: 14px; }
+.holo-edge::before { content: ""; position: absolute; inset: -2px; border-radius: 16px; background: var(--d-holo); z-index: -1; }
+.d .now { justify-self: stretch; padding: 11px 14px; display: flex; justify-content: space-between; align-items: center; gap: 8px; isolation: isolate; }
+.d .now small { font: 700 9px/1 var(--d-pixel); color: var(--d-argent); }
+.d .now b { font: 600 16px/1 var(--d-display); }
+.disc { width: 190px; aspect-ratio: 1; border-radius: 50%; position: relative; margin-top: 6px;
+  background: radial-gradient(circle, var(--d-nuit) 0 9%, rgba(255,255,255,.85) 9.5% 11%, transparent 11.5% 30%, rgba(255,255,255,.25) 30.5% 31%, transparent 31.5%),
+              repeating-radial-gradient(circle, rgba(255,255,255,.1) 0 1px, transparent 1px 4px), var(--d-holo);
+  box-shadow: 0 0 0 2px var(--d-argent), 0 14px 34px rgba(108,92,255,.45); animation: spin 9s linear infinite; }
+.disc::after { content: ""; position: absolute; inset: 31%; border-radius: 50%; background: radial-gradient(circle, var(--d-nuit) 0 29%, transparent 30%), linear-gradient(135deg, #2e8a6a, #fff4c9); }
+@keyframes spin { to { transform: rotate(360deg); } }
+.d .film { text-align: center; display: grid; gap: 5px; }
+.d .film b { font: 800 24px/1 var(--d-display); letter-spacing: -.02em; }
+.d .film small { font: 400 10px/1.2 var(--d-pixel); color: var(--d-argent); }
+.d .go { justify-self: stretch; background: var(--d-elec); color: var(--d-blanc); border-radius: 999px; padding: 13px; text-align: center; font: 600 15px/1 var(--d-display); box-shadow: 0 0 0 2px var(--d-nuit), 0 0 0 4px rgba(255,255,255,.18); }
+.d .pad { justify-self: stretch; display: flex; justify-content: center; gap: 30px; align-items: flex-end; }
+.d .pad span { display: grid; justify-items: center; gap: 5px; font: 400 9px/1 var(--d-pixel); color: var(--d-argent); }
+.d .pad i { width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; font: 800 20px/1 var(--d-display); font-style: normal; box-shadow: inset 0 -4px 0 rgba(0,0,0,.25), 0 3px 0 rgba(0,0,0,.5); }
+.d .pad .b i { background: var(--d-veto); color: var(--d-nuit); } .d .pad .a { transform: translateY(-12px); } .d .pad .a i { background: var(--d-cyan); color: var(--d-nuit); }
+.d .tabs { margin-top: auto; display: flex; justify-content: space-around; padding: 12px; font: 400 9px/1 var(--d-pixel); background: #0a0c16; color: #8a90a6; }
+.d .tabs span:first-child { color: var(--d-blanc); }
+.d-icon { border-radius: 26%; background: var(--d-nuit); display: grid; place-items: center; box-shadow: inset 0 0 0 1.5px #343b58; }
+.d-icon i { width: 70%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, var(--d-nuit) 0 13%, var(--d-blanc) 13.5% 17%, transparent 17.5%), var(--d-holo); box-shadow: 0 0 0 1.5px var(--d-argent); }
+.d .pick { background: var(--d-blanc); color: var(--d-nuit); border-radius: 999px; }
+
+.legible { display: flex; gap: 10px; flex-wrap: wrap; }
+.legible div { padding: 10px 14px; border-radius: 10px; font: 600 14px/1 var(--d-display); }
+
+footer.choose { padding-block: 48px 64px; }
+footer.choose .inner { display: grid; gap: 12px; max-width: 760px; }
+footer h2 { margin: 0; font: 800 28px/1.1 var(--f-ui); font-stretch: 112%; }
+footer p { margin: 0; color: var(--muted); }
+footer output { font: 700 20px/1.3 var(--f-ui); }
+
+@media (prefers-reduced-motion: reduce) { .disc { animation: none; } }
+</style>
+
+<header class="intro">
+  <div class="inner">
+    <p class="kicker">Spinema · direction artistique, 4ᵉ tour</p>
+    <h1>Les deux pistes retenues, retravaillées</h1>
+    <p>J'ai retiré Rembobine et appliqué tes remarques aux deux autres.</p>
+    <div class="changes">
+      <div><b>Vieilles VHS</b><span>Plus d'horreur. On garde le choix dans un mur de cassettes, mais ce sont de vieilles VHS enregistrées à la maison : étiquettes jaunies écrites au feutre, scotch, plastique noir usé, magnétoscope à LED vertes.</span></div>
+      <div><b>Holo nuit</b><span>Moins girly : bleu nuit, argent et violet électrique, presque plus de rose. Le dégradé irisé reste sur le disque, l'icône et les contours, jamais derrière du texte.</span></div>
+    </div>
+  </div>
+</header>
+
+<section class="band o" aria-labelledby="o-title">
+  <div class="inner">
+    <div class="phone"><div class="scr">
+      <div class="s-top"><span class="o-logo"><span class="stripes"></span><span class="word">Spinema</span></span><span class="card">CINÉ ENTRE POTES ▾</span></div>
+      <div class="s-body">
+        <div class="vcr"><span class="slot"></span><span class="lbl">Dans le magnéto · à l'affiche</span><span class="title">Coraline</span><span class="led">▶ 0:42</span></div>
+        <div class="shelf">
+          <div class="tape"><span class="label" style="--r:-1deg">Shining</span><small>SP</small></div>
+          <div class="tape"><span class="label tapeup" style="--lb:#e9d9a8;--r:.8deg">Paddington 2</span><small>LP</small></div>
+          <div class="tape"><span class="label" style="--lb:#cfe0d6;--r:-.5deg">Le Château ambulant</span><small>SP</small></div>
+          <div class="tape out"><span class="label" style="--r:-1.5deg">Parasite</span><small>SP</small></div>
+          <div class="tape"><span class="label" style="--lb:#f1c9b8;--r:1deg">La La Land</span><small>LP</small></div>
+          <div class="tape"><span class="label tapeup" style="--r:-.6deg">Alien</span><small>SP</small></div>
+          <div class="tape"><span class="label" style="--lb:#d6dcef;--r:.4deg">À couteaux tirés</span><small>SP</small></div>
+        </div>
+        <div class="go">Piocher une cassette</div>
+        <div class="two"><span class="no">Veto · 2</span><span class="ok">OK</span></div>
+      </div>
+      <div class="tabs"><span>Machine</span><span>Étagère</span><span>Découvrir</span><span>Profil</span></div>
+    </div></div>
+    <div class="kit">
+      <p class="num">Direction A</p>
+      <h2 class="o-logo" id="o-title"><span class="stripes"></span><span class="word">Vieilles VHS</span></h2>
+      <p class="pitch">L'étagère de cassettes chez tes parents. Chaque film est une VHS enregistrée à la maison, avec une étiquette jaunie écrite au feutre et parfois un bout de scotch. La machine fait défiler l'étagère et en tire une. Le film à l'affiche est celui qui est dans le magnéto.</p>
+      <div><p class="lab">Logo et icône</p>
+        <div class="row"><span class="o-logo" style="font-size:46px"><span class="stripes"></span><span class="word">Spinema</span><span class="spec"><span>E-180</span><span>HI-FI</span></span></span>
+          <div class="icons"><span class="o-icon ic-64"><span class="face"><b></b><span><i></i><i></i></span></span></span><span class="o-icon ic-40"><span class="face"><b></b><span><i></i><i></i></span></span></span><span class="o-icon ic-24" style="padding:12%"><span class="face"><b></b><span><i></i><i></i></span></span></span></div></div></div>
+      <div><p class="lab">Palette</p><div class="swatches">
+        <div style="background:var(--o-plastic);color:var(--o-label)">Plastique #242120</div><div style="background:var(--o-label);color:var(--o-marker)">Étiquette #EFE3C4</div><div style="background:var(--o-moutarde);color:var(--o-shelf)">Moutarde #D9A441</div><div style="background:var(--o-teal);color:var(--o-shelf)">Bleu-vert #6FA3A0</div><div style="background:var(--o-rouge);color:var(--o-label)">Rouge passé #C4574A</div></div></div>
+      <div><p class="lab">Polices</p><p style="margin:0">Permanent Marker pour les titres écrits au feutre sur les étiquettes. Archivo, élargie et penchée, pour le logo et les boutons, à la façon des marques de cassettes des années 80. IBM Plex Mono pour les compteurs et les petites mentions (SP, LP, E-180).</p></div>
+      <div><p class="lab">Signes distinctifs</p><ul class="traits"><li>Rayures rouge, orange, moutarde et bleu-vert délavées, comme sur les jaquettes de cassettes vierges.</li><li>Étiquettes un peu de travers, de couleurs différentes, avec du scotch.</li><li>Le magnéto et son afficheur à LED vertes pour le film à l'affiche.</li></ul></div>
+      <label class="pick"><input type="radio" name="da" value="Vieilles VHS" id="da-o"> Je prends Vieilles VHS</label>
+    </div>
+  </div>
+</section>
+
+<section class="band d" aria-labelledby="d-title">
+  <div class="inner">
+    <div class="phone"><div class="scr">
+      <div class="s-top"><span class="d-logo"><i></i>spinema</span><span class="pill">CINÉ ENTRE POTES ▾</span></div>
+      <div class="s-body">
+        <div class="now holo-edge"><small>À L'AFFICHE</small><b>Coraline</b></div>
+        <div class="disc" aria-hidden="true"></div>
+        <div class="film"><b>Parasite</b><small>2019 · 2H12 · -12</small></div>
+        <div class="go">Faire tourner le disque</div>
+        <div class="pad"><span class="b"><i>B</i>VETO ×2</span><span class="a"><i>A</i>OK</span></div>
+      </div>
+      <div class="tabs"><span>MACHINE</span><span>BIBLIO</span><span>DÉCOUVRIR</span><span>PROFIL</span></div>
+    </div></div>
+    <div class="kit">
+      <p class="num">Direction B</p>
+      <h2 class="d-logo" id="d-title"><i></i>holo nuit</h2>
+      <p class="pitch">Le côté Y2K de ton tableau, version nuit : DVD irisés et boutons A / B de console, sur un fond bleu nuit avec des sillons de disque. Le reflet arc-en-ciel est réservé au disque, à l'icône et à quelques contours. Le texte reste toujours sur un aplat uni.</p>
+      <div><p class="lab">Logo et icône</p>
+        <div class="row"><span class="d-logo" style="font-size:44px"><i></i>spinema</span>
+          <div class="icons"><span class="d-icon ic-64"><i></i></span><span class="d-icon ic-40"><i></i></span><span class="d-icon ic-24"><i></i></span></div></div></div>
+      <div><p class="lab">Palette</p><div class="swatches">
+        <div style="background:var(--d-nuit);box-shadow:inset 0 0 0 1px rgba(255,255,255,.3)">Nuit #0F1220</div><div style="background:var(--d-argent);color:var(--d-nuit)">Argent #D9DCE6</div><div style="background:var(--d-elec)">Électrique #6C5CFF</div><div style="background:var(--d-cyan);color:var(--d-nuit)">Cyan #5EE6FF</div><div style="background:var(--d-holo);color:var(--d-nuit)">Holo, sans texte</div></div></div>
+      <div><p class="lab">Lisibilité</p><div class="legible">
+        <div style="background:var(--d-ardoise);color:#fff;box-shadow:0 0 0 2px #6c5cff">Texte sur aplat ✓</div>
+        <div style="background:var(--d-elec);color:#fff">Bouton plein ✓</div>
+        <div style="background:var(--d-holo);color:#fff;opacity:.55;text-decoration:line-through">Texte sur holo ✗</div></div></div>
+      <div><p class="lab">Polices</p><p style="margin:0">Unbounded, large et arrondie, pour les titres : un côté Y2K techno plutôt que bonbon. Silkscreen, en pixels, pour les petites étiquettes. Archivo pour le texte courant.</p></div>
+      <div><p class="lab">Signes distinctifs</p><ul class="traits"><li>Le disque qui tourne pendant le tirage, et les sillons en fond.</li><li>Boutons de console : A pour OK, B pour veto.</li><li>Logo blanc tout simple, précédé d'un petit disque irisé.</li></ul></div>
+      <label class="pick"><input type="radio" name="da" value="Holo nuit" id="da-d"> Je prends Holo nuit</label>
+    </div>
+  </div>
+</section>
+
+<footer class="choose">
+  <div class="inner">
+    <h2>Ton choix</h2>
+    <output id="choice" for="da-o da-d">Aucune direction choisie pour l'instant.</output>
+    <p>On peut aussi les marier, par exemple l'étagère de VHS pour la bibliothèque et le disque qui tourne pour la machine. Dis-moi ce que tu gardes.</p>
+  </div>
+</footer>
+
+<script>
+document.addEventListener('change', e => {
+  if (e.target.name === 'da') document.getElementById('choice').value = `Direction choisie : ${e.target.value}`;
+});
+</script>
