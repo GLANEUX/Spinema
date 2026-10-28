@@ -1,0 +1,707 @@
+<title>Spinema</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,400..900;1,62..125,400..900&family=IBM+Plex+Mono:wght@500;600&family=Permanent+Marker&display=swap">
+<style>
+/* Layout: a phone on the living-room shelf; the VHS shelf is the centrepiece, notes sit beside it. Tokens from design/charte-graphique.html. Single dark theme by choice. */
+:root {
+  color-scheme: dark;
+  --etagere: #1b1714; --etagere-haute: #2a211c; --bois: #3c2f27; --plastique: #242120; --plastique-clair: #34302d;
+  --etiquette: #efe3c4; --poussiere: #a59b90; --feutre: #1d1b2e;
+  --moutarde: #d9a441; --moutarde-ombre: #8c6a28; --bleu-vert: #6fa3a0; --rouge: #a8453a; --orange: #f08a3c;
+  --led: #8dff9a; --led-fond: #071108;
+  --t-paille: #e9d9a8; --t-menthe: #cfe0d6; --t-saumon: #f1c9b8; --t-lavande: #d6dcef;
+  --f-ui: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --f-feutre: "Permanent Marker", "Comic Sans MS", cursive;
+  --f-mono: "IBM Plex Mono", "Courier New", monospace;
+}
+* { box-sizing: border-box; }
+html, body { min-height: 100%; }
+body {
+  margin: 0; background: var(--etagere); color: var(--etiquette); font: 15px/1.45 var(--f-ui);
+  background-image: repeating-linear-gradient(0deg, rgba(255,255,255,.02) 0 1px, transparent 1px 11px), radial-gradient(ellipse at 50% -10%, rgba(217,164,65,.12), transparent 55%);
+  padding-block: 28px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+button, input, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--moutarde); outline-offset: 2px; }
+.stage { display: flex; flex-wrap: wrap; gap: 40px; justify-content: center; align-items: flex-start; max-width: 1040px; margin: 0 auto; }
+
+/* ---------- Logo + cassette icon ---------- */
+.logo { display: inline-flex; align-items: center; gap: .26em; font-size: var(--s, 22px); line-height: 1; }
+.logo .stripes { width: 1.02em; height: .7em; flex: none; transform: skewX(-14deg); background: linear-gradient(var(--rouge) 0 25%, var(--orange) 0 50%, var(--moutarde) 0 75%, var(--bleu-vert) 0); }
+.logo .word { font: italic 900 1em/1 var(--f-ui); font-stretch: 125%; text-transform: uppercase; letter-spacing: -.015em; color: var(--etiquette); }
+.logo .spec { font: 600 .2em/1.25 var(--f-mono); letter-spacing: .1em; color: var(--moutarde); display: grid; }
+
+/* ---------- Notes ---------- */
+.notes { flex: 1 1 280px; max-width: 360px; display: grid; gap: 18px; padding-top: 12px; }
+.notes .logo { --s: 44px; }
+.notes .sub { margin: 0; font-size: 17px; line-height: 1.45; }
+.notes h2 { margin: 0; font: 600 11px/1 var(--f-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--moutarde); }
+.notes ol { margin: 0; padding-left: 20px; display: grid; gap: 10px; color: var(--poussiere); }
+.notes ol b { color: var(--etiquette); font-weight: 600; }
+.notes .fine { font-size: 13px; color: var(--poussiere); margin: 0; }
+
+/* ---------- Phone ---------- */
+.phone { position: relative; width: min(400px, 100%); height: min(820px, calc(100dvh - 56px)); min-height: 640px; background: var(--etagere); border-radius: 34px; overflow: hidden; display: flex; flex-direction: column;
+  box-shadow: 0 0 0 8px #0b0908, 0 0 0 9px var(--bois), 0 30px 80px rgba(0,0,0,.6); }
+@media (max-width: 520px) {
+  body { padding-block: 0; }
+  .stage { gap: 28px; }
+  .phone { border-radius: 0; box-shadow: none; height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)); min-height: 560px; width: calc(100% + 32px); margin-inline: -16px; }
+  .notes { padding-bottom: 32px; }
+}
+.topbar { display: flex; align-items: center; gap: 10px; padding: 18px 14px 12px; background: var(--etagere-haute); border-bottom: 6px solid var(--bois); }
+.space-btn { margin-left: auto; max-width: 52%; display: flex; align-items: center; gap: 6px; border: 0; background: var(--etiquette); color: var(--feutre); padding: 7px 10px 6px; font: 400 14px/1 var(--f-feutre); transform: rotate(1.2deg); box-shadow: 0 2px 0 rgba(0,0,0,.4); }
+.space-btn span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.space-btn::after { content: "▾"; font-family: var(--f-ui); }
+.icon-btn { width: 36px; height: 36px; border: 0; background: var(--plastique); display: grid; place-items: center; color: var(--etiquette); border-radius: 3px; }
+.icon-btn[aria-pressed="false"] { color: var(--poussiere); }
+.icon-btn[aria-pressed="false"] svg .wave { display: none; }
+svg.ic { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.space-menu { position: absolute; top: 66px; right: 14px; z-index: 30; min-width: 240px; background: var(--etagere-haute); border: 1px solid var(--bois); box-shadow: 0 16px 40px rgba(0,0,0,.6); display: grid; padding: 6px; gap: 4px; }
+.space-menu button { background: none; border: 0; text-align: left; padding: 10px 12px; display: grid; gap: 2px; }
+.space-menu button b { font: 400 17px/1.1 var(--f-feutre); }
+.space-menu button small { color: var(--poussiere); font: 500 11px var(--f-mono); }
+.space-menu button[aria-current="true"] { background: var(--etiquette); color: var(--feutre); }
+.space-menu button[aria-current="true"] small { color: #6b6253; }
+.space-menu .create { color: var(--moutarde); font-weight: 700; border-top: 1px solid var(--bois); }
+
+.screens { flex: 1; overflow-y: auto; position: relative; }
+.screen { padding: 16px 14px 28px; display: grid; gap: 18px; align-content: start; }
+.tabs { display: grid; grid-template-columns: repeat(4, 1fr); background: #110e0c; border-top: 3px solid var(--bois); padding-bottom: env(safe-area-inset-bottom, 0px); }
+.tabs button { background: none; border: 0; display: grid; justify-items: center; gap: 5px; padding: 10px 4px 12px; font: 600 10px/1 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--poussiere); }
+.tabs button[aria-selected="true"] { color: var(--moutarde); }
+
+/* ---------- Shared ---------- */
+.lab { font: 600 11px/1 var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--moutarde); }
+.muted { color: var(--poussiere); }
+.h { margin: 0; font: italic 900 22px/1.1 var(--f-ui); font-stretch: 118%; }
+.btn { border: 0; font: italic 900 14px/1 var(--f-ui); font-stretch: 112%; text-transform: uppercase; padding: 12px 14px; }
+.btn.primary { background: var(--moutarde); color: var(--feutre); box-shadow: 0 4px 0 var(--moutarde-ombre); }
+.btn.primary:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--moutarde-ombre); }
+.btn.secondary { background: transparent; color: var(--etiquette); box-shadow: inset 0 0 0 2px var(--etiquette); }
+.btn.small { font-size: 12px; padding: 8px 10px; }
+.btn:disabled { opacity: .38; cursor: not-allowed; box-shadow: none; transform: none; }
+.linkish { background: none; border: 0; padding: 0; color: var(--etiquette); font-size: 13px; font-weight: 600; text-decoration: underline; text-decoration-color: var(--moutarde); text-underline-offset: 3px; }
+.panel { background: var(--etagere-haute); border: 1px solid var(--bois); padding: 14px; display: grid; gap: 12px; }
+.panel .head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.mono { font-family: var(--f-mono); }
+.av { width: 30px; height: 30px; border-radius: 50%; display: inline-grid; place-items: center; font: 400 15px/1 var(--f-feutre); color: var(--feutre); flex: none; box-shadow: 0 2px 0 rgba(0,0,0,.4); }
+.av.sm { width: 18px; height: 18px; font: 700 9px/1 var(--f-ui); box-shadow: 0 0 0 2px var(--plastique); margin-left: -5px; }
+
+/* ---------- Magnéto ---------- */
+.vcr { background: linear-gradient(#2b2826, #1f1c1b); border-radius: 6px; padding: 12px 14px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 12px; align-items: center; box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 3px 0 #0e0c0b; }
+.vcr .slot { grid-column: 1 / -1; height: 11px; background: #0b0a09; border-radius: 2px; box-shadow: inset 0 2px 3px #000; }
+.vcr .l { font: 600 9.5px/1 var(--f-mono); letter-spacing: .12em; color: #9b928a; text-transform: uppercase; }
+.vcr .t { font: 400 23px/1.05 var(--f-feutre); color: var(--etiquette); overflow-wrap: anywhere; }
+.vcr .t.empty { color: #6b6460; font-size: 18px; }
+.ledbox { font: 600 15px/1 var(--f-mono); color: var(--led); text-shadow: 0 0 6px rgba(141,255,154,.7); background: var(--led-fond); padding: 6px 8px; border-radius: 3px; grid-row: 2 / 4; grid-column: 2; font-variant-numeric: tabular-nums; min-width: 84px; text-align: center; }
+.vcr .acts { grid-column: 1 / -1; display: flex; gap: 8px; flex-wrap: wrap; }
+.vcr .acts .btn { font-size: 11px; padding: 8px 10px; }
+
+/* ---------- Séance ---------- */
+.setup { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.setup label { display: grid; gap: 6px; }
+select { background: var(--plastique); border: 0; padding: 9px 8px; font: 600 13px var(--f-mono); color: var(--etiquette); }
+.members { display: flex; gap: 8px; flex-wrap: wrap; }
+.member { background: var(--plastique); border: 0; padding: 7px 10px 7px 7px; display: flex; align-items: center; gap: 8px; text-align: left; border-radius: 3px; }
+.member.away { opacity: .4; }
+.member .who { display: grid; line-height: 1.15; font-size: 13px; font-weight: 600; }
+.member .who small { color: var(--poussiere); font: 500 10.5px var(--f-mono); }
+.dots { display: flex; gap: 4px; margin-top: 4px; }
+.dots i { width: 8px; height: 8px; border: 1.5px solid #e07a6c; border-radius: 1px; transform: rotate(45deg); }
+.dots i.on { background: #e07a6c; }
+
+details.filters { background: var(--etagere-haute); border: 1px solid var(--bois); }
+details.filters summary { padding: 12px 14px; cursor: pointer; display: flex; justify-content: space-between; list-style: none; }
+details.filters summary::-webkit-details-marker { display: none; }
+details.filters summary::after { content: "+"; color: var(--moutarde); font-weight: 900; }
+details.filters[open] summary::after { content: "−"; }
+.filters .body { padding: 0 14px 14px; display: grid; gap: 14px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.chipx { display: inline-flex; align-items: center; gap: 6px; font: 600 12px/1 var(--f-mono); padding: 8px 10px; box-shadow: inset 0 0 0 1.5px var(--poussiere); cursor: pointer; }
+.chipx input { position: absolute; opacity: 0; pointer-events: none; }
+.chipx:has(input:checked) { background: var(--moutarde); color: var(--feutre); box-shadow: none; }
+.chipx:has(input:focus-visible) { outline: 2px solid var(--moutarde); outline-offset: 2px; }
+.chipx.off { color: var(--poussiere); background: repeating-linear-gradient(135deg, transparent 0 4px, rgba(165,155,144,.18) 4px 6px); text-decoration: line-through; cursor: not-allowed; }
+.check { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+.check input { accent-color: var(--moutarde); width: 16px; height: 16px; margin: 0; }
+.check.sub { margin-left: 24px; }
+.note { font-size: 12px; color: var(--poussiere); margin: 6px 0 0; }
+
+.count { margin: 0; text-align: center; font: 600 12px/1 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--poussiere); }
+.count b { color: var(--etiquette); font-size: 15px; }
+
+/* ---------- Shelf + tapes ---------- */
+.shelf { position: relative; height: 236px; overflow: hidden; background: var(--etagere-haute); border-block: 6px solid var(--bois); margin-inline: -14px;
+  -webkit-mask: linear-gradient(transparent, #000 15%, #000 85%, transparent); mask: linear-gradient(transparent, #000 15%, #000 85%, transparent); }
+.strip { display: grid; gap: 6px; padding: 0 34px 0 22px; will-change: transform; }
+.tape { height: 34px; background: var(--plastique); border-radius: 2px; display: flex; align-items: center; gap: 8px; padding: 0 8px 0 10px; box-shadow: inset 0 -2px 0 rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.06); position: relative; transition: transform .35s cubic-bezier(.2,.9,.3,1.3); }
+.tape .label { flex: 1; min-width: 0; height: 24px; background: var(--lb, var(--etiquette)); color: var(--feutre); display: flex; align-items: center; padding: 0 8px; font: 400 16px/1 var(--f-feutre); transform: rotate(var(--r, 0deg)); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; position: relative;
+  background-image: linear-gradient(90deg, rgba(120,80,30,.12), transparent 30%, rgba(120,80,30,.08) 80%); }
+.tape .label.scotch::before { content: ""; position: absolute; left: 40%; top: -3px; width: 24px; height: 30px; background: rgba(240,226,180,.75); transform: rotate(8deg); }
+.tape small { font: 600 9px/1 var(--f-mono); color: var(--poussiere); flex: none; }
+.tape .who { display: flex; flex: none; padding-left: 5px; }
+.tape.out { transform: translateX(-16px) scale(1.04); outline: 2px solid var(--moutarde); outline-offset: 2px; z-index: 1; }
+.tape.out::after { content: "◀"; position: absolute; right: -22px; color: var(--moutarde); }
+.tape.seen .label { filter: saturate(.3) brightness(.8); }
+.tape.seen .label::after { content: "VU"; position: absolute; right: 8px; font: italic 900 12px/1 var(--f-ui); color: var(--rouge); border: 2px solid var(--rouge); padding: 1px 4px 0; transform: rotate(-8deg); }
+.shelf-list { display: grid; gap: 6px; background: var(--etagere-haute); border-block: 6px solid var(--bois); padding: 10px 12px; margin-inline: -14px; }
+button.tape { width: 100%; border: 0; text-align: left; color: inherit; }
+
+.lever { width: 100%; }
+.lever-note { margin: -8px 0 0; text-align: center; font-size: 12px; color: var(--poussiere); }
+.gone { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.gone span { font: 400 14px/1 var(--f-feutre); background: var(--etiquette); color: var(--feutre); padding: 5px 8px 4px; text-decoration: line-through 2px var(--rouge); opacity: .7; }
+
+/* ---------- Jaquette ---------- */
+.jaq { display: grid; grid-template-columns: 14px 1fr; background: var(--plastique); padding: 6px 6px 6px 0; border-radius: 4px; box-shadow: 0 8px 18px rgba(0,0,0,.45); position: relative; border: 0; color: inherit; text-align: left; width: 100%; }
+.jaq::after { content: ""; position: absolute; inset: 0; border-radius: 4px; background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,.12) 45%, transparent 55%); pointer-events: none; }
+.jaq .spine { writing-mode: vertical-rl; transform: rotate(180deg); font: 400 10px/1 var(--f-feutre); color: var(--etiquette); text-align: center; padding: 6px 0; overflow: hidden; white-space: nowrap; }
+.jaq .art { aspect-ratio: 2 / 3; container-type: inline-size; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; padding: 9cqi;
+  background: radial-gradient(circle at 70% 28%, color-mix(in srgb, var(--c2) 85%, transparent) 0 22%, transparent 23%), linear-gradient(165deg, var(--c1) 40%, color-mix(in srgb, var(--c1) 60%, var(--c2))); }
+.jaq .art b { font: italic 900 15cqi/.95 var(--f-ui); font-stretch: 112%; text-transform: uppercase; color: #fff; text-shadow: 0 2px 8px rgba(0,0,0,.45); text-wrap: balance; overflow-wrap: anywhere; }
+.jaq .art small { font: 600 7cqi/1 var(--f-mono); color: rgba(255,255,255,.8); margin-top: 3cqi; letter-spacing: .08em; text-transform: uppercase; }
+.jaq.seen .art { filter: saturate(.35) brightness(.8); }
+.jaq .sticker { position: absolute; top: -8px; right: -8px; width: 38px; height: 38px; border-radius: 50%; background: var(--orange); color: var(--feutre); display: grid; place-items: center; font: italic 900 9px/1 var(--f-ui); transform: rotate(12deg); z-index: 1; text-align: center; }
+
+/* ---------- Reveal ---------- */
+.reveal { position: absolute; inset: 0; z-index: 40; background: var(--etagere); background-image: repeating-linear-gradient(0deg, rgba(255,255,255,.02) 0 1px, transparent 1px 11px); overflow-y: auto; }
+.reveal-body { padding: 22px 16px 24px; display: grid; gap: 14px; justify-items: center; text-align: center; }
+.reveal-body .vcr { width: 100%; text-align: left; }
+.reveal .big { width: 190px; position: relative; animation: rise .55s cubic-bezier(.2,.9,.3,1.2) both .15s; }
+.reveal .big::before { content: ""; position: absolute; inset: 6px 6px 6px 14px; z-index: 2; pointer-events: none; animation: track .5s steps(5) both .15s;
+  background: repeating-linear-gradient(transparent 0 4px, rgba(255,255,255,.35) 4px 5px), repeating-linear-gradient(90deg, rgba(255,255,255,.8) 0 7px, transparent 7px 18px) 0 40% / 100% 14px no-repeat; }
+@keyframes rise { from { transform: translateY(24px); opacity: 0; } }
+@keyframes track { 0% { opacity: 1; background-position: 0 0, 0 20%; } 99% { opacity: 1; background-position: 0 0, 0 80%; } 100% { opacity: 0; } }
+.reveal .meta { margin: 0; font: 600 11px/1.4 var(--f-mono); letter-spacing: .06em; color: var(--poussiere); text-transform: uppercase; }
+.vote { width: 100%; display: grid; gap: 12px; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; }
+.tag { position: relative; padding: 12px 10px 12px 26px; font: italic 900 17px/1 var(--f-ui); font-stretch: 112%; text-transform: uppercase; border-radius: 3px 12px 12px 3px; border: 0; }
+.tag::before { content: ""; position: absolute; left: 9px; top: 50%; width: 8px; height: 8px; margin-top: -4px; border-radius: 50%; background: var(--etagere); }
+.tag small { display: block; font: 600 10px/1.2 var(--f-mono); font-style: normal; margin-top: 4px; letter-spacing: .04em; text-transform: none; }
+.tag.ok { background: var(--bleu-vert); color: var(--etagere); } .tag.no { background: var(--rouge); color: var(--etiquette); }
+.tag:disabled { opacity: .4; cursor: not-allowed; }
+.votes { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; }
+.votes span { display: inline-flex; align-items: center; gap: 6px; background: var(--plastique); padding: 4px 9px 4px 4px; font-size: 12px; border-radius: 999px; }
+.votes b { font: 600 10px var(--f-mono); }
+.votes .ok b { color: var(--bleu-vert); } .votes .vt b { color: #e07a6c; }
+.wait { margin: 0; font-size: 12px; color: var(--poussiere); }
+.postit { position: relative; background: var(--t-paille); color: var(--feutre); padding: 14px 14px 12px; font-weight: 600; font-size: 14px; transform: rotate(-1deg); box-shadow: 0 6px 16px rgba(0,0,0,.4); width: 100%; text-align: left; text-wrap: pretty; }
+.postit.bad { background: var(--t-saumon); }
+.postit::before { content: ""; position: absolute; left: 50%; top: -9px; width: 70px; height: 20px; margin-left: -35px; background: rgba(240,226,180,.7); transform: rotate(3deg); }
+
+/* ---------- Étagère / Découvrir / Profil ---------- */
+.seg { display: grid; grid-template-columns: repeat(4, 1fr); background: var(--plastique); padding: 3px; gap: 3px; }
+.seg button { background: none; border: 0; padding: 8px 2px; font: 600 10.5px/1 var(--f-mono); text-transform: uppercase; letter-spacing: .04em; color: var(--poussiere); }
+.seg button[aria-pressed="true"] { background: var(--etiquette); color: var(--feutre); }
+.box h3 { margin: 0 0 8px; display: flex; justify-content: space-between; align-items: baseline; font: 400 20px/1.1 var(--f-feutre); }
+.box h3 small { font: 600 11px var(--f-mono); color: var(--poussiere); }
+.rack { display: flex; gap: 10px; overflow-x: auto; padding: 4px 2px 10px; }
+.rack .jaq { width: 96px; flex: none; }
+.cat { display: grid; gap: 4px; }
+.cat .chips span { font: 600 12px/1 var(--f-mono); padding: 7px 9px; background: var(--plastique); }
+.cat .chips span b { color: var(--moutarde); }
+.search { width: 100%; border: 0; padding: 12px 14px; font: 400 16px var(--f-ui); color: var(--feutre); background: var(--etiquette) repeating-linear-gradient(transparent 0 22px, rgba(79,109,154,.28) 22px 23px); background-position: 0 6px; }
+.search::placeholder { color: #6b6253; }
+.grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px 10px; }
+.grid3 .card { display: grid; gap: 8px; }
+.grid3 .btn { font-size: 10px; padding: 7px 4px; }
+.card-membre { background: var(--etiquette); color: var(--feutre); padding: 14px 16px; display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; align-items: center; transform: rotate(-.6deg); box-shadow: 0 6px 16px rgba(0,0,0,.4); position: relative; }
+.card-membre .top { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--feutre); padding-bottom: 8px; margin-bottom: 6px; }
+.card-membre .top .logo .word { color: var(--feutre); }
+.card-membre .top span { font: 600 10px var(--f-mono); }
+.card-membre .av { width: 54px; height: 54px; font-size: 26px; grid-row: span 2; }
+.card-membre b { font: 400 26px/1 var(--f-feutre); }
+.card-membre small { font: 600 11px var(--f-mono); }
+.list { display: grid; background: var(--etagere-haute); border: 1px solid var(--bois); }
+.list > * { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 12px 14px; border: 0; border-bottom: 1px solid var(--bois); background: none; text-align: left; font-size: 14px; }
+.list > *:last-child { border-bottom: 0; }
+.list .danger { color: #e07a6c; }
+.list .sub { color: var(--poussiere); font: 500 11px var(--f-mono); }
+.switch { appearance: none; width: 50px; height: 24px; background: #0d0b0a; border-radius: 3px; position: relative; cursor: pointer; margin: 0; flex: none; box-shadow: inset 0 2px 3px #000; }
+.switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 20px; height: 18px; background: var(--poussiere); border-radius: 2px; transition: transform .18s, background .18s; }
+.switch:checked::after { transform: translateX(24px); background: var(--moutarde); }
+
+/* ---------- Fiche ---------- */
+.sheet { position: absolute; inset: 0; z-index: 50; background: var(--etagere); overflow-y: auto; transform: translateY(100%); transition: transform .35s cubic-bezier(.2,.8,.2,1); }
+.sheet.open { transform: none; }
+.sheet .backdrop { height: 130px; background: linear-gradient(165deg, var(--c1), color-mix(in srgb, var(--c1) 50%, var(--c2))); position: relative; }
+.sheet .backdrop::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(transparent 0 3px, rgba(0,0,0,.18) 3px 4px), linear-gradient(transparent 40%, var(--etagere)); }
+.sheet .close { position: absolute; top: 12px; right: 12px; z-index: 2; width: 38px; height: 38px; border: 0; background: var(--plastique); color: var(--etiquette); display: grid; place-items: center; border-radius: 3px; }
+.sheet .inner { padding: 0 16px 28px; display: grid; gap: 16px; margin-top: -84px; position: relative; }
+.sheet .top { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 14px; align-items: end; }
+.sheet .title-label { background: var(--etiquette); color: var(--feutre); font: 400 22px/1.1 var(--f-feutre); padding: 6px 10px 5px; transform: rotate(-1deg); justify-self: start; box-shadow: 0 2px 0 rgba(0,0,0,.4); }
+.sheet .ot { font-size: 12px; color: var(--poussiere); font-style: italic; }
+.sheet .meta { font: 600 11px/1.5 var(--f-mono); color: var(--poussiere); letter-spacing: .04em; }
+.sheet p { margin: 0; }
+.trailer { aspect-ratio: 16 / 9; background: #0a0908; border: 10px solid var(--plastique); border-radius: 14px / 18px; display: grid; place-items: center; position: relative; overflow: hidden; }
+.trailer::before { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(transparent 0 2px, rgba(255,255,255,.04) 2px 3px), radial-gradient(ellipse, rgba(79,109,154,.35), transparent 70%); }
+.trailer span { position: relative; display: grid; justify-items: center; gap: 8px; font: 600 11px var(--f-mono); letter-spacing: .12em; color: var(--led); text-transform: uppercase; }
+.trailer span::before { content: ""; border-left: 22px solid var(--etiquette); border-block: 14px solid transparent; margin-left: 6px; }
+.facts { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; margin: 0; font-size: 14px; }
+.facts dt { font: 600 10.5px/1.6 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--moutarde); }
+.facts dd { margin: 0; }
+.actions { display: grid; gap: 10px; }
+
+.toast { position: absolute; left: 20px; right: 20px; bottom: 84px; z-index: 60; }
+
+@media (prefers-reduced-motion: reduce) {
+  .tape, .sheet, .switch::after { transition-duration: .01s; }
+  .reveal .big, .reveal .big::before { animation: none; }
+  .reveal .big::before { display: none; }
+}
+</style>
+
+<div class="stage">
+  <div class="phone" id="phone">
+    <header class="topbar">
+      <span class="logo"><span class="stripes"></span><span class="word">Spinema</span></span>
+      <button class="space-btn" id="space-btn" aria-haspopup="true" aria-expanded="false"><span id="space-name"></span></button>
+      <button class="icon-btn" id="sound-btn" aria-pressed="true" aria-label="Effets sonores"><svg class="ic" viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4z"/><path class="wave" d="M16.5 9a4 4 0 0 1 0 6M19 6.5a7.5 7.5 0 0 1 0 11"/></svg></button>
+    </header>
+    <div class="space-menu" id="space-menu" hidden></div>
+
+    <div class="screens" id="screens">
+      <main class="screen" id="screen-machine"></main>
+      <main class="screen" id="screen-library" hidden></main>
+      <main class="screen" id="screen-discover" hidden></main>
+      <main class="screen" id="screen-profile" hidden></main>
+    </div>
+
+    <nav class="tabs" role="tablist" id="tabs"></nav>
+
+    <div class="reveal" id="reveal" hidden><div class="reveal-body" id="reveal-body"></div></div>
+    <div class="sheet" id="sheet" hidden></div>
+    <div class="toast" id="toast" role="status" hidden></div>
+  </div>
+
+  <aside class="notes">
+    <span class="logo"><span class="stripes"></span><span class="word">Spinema</span><span class="spec"><span>E-180</span><span>HI-FI</span></span></span>
+    <p class="sub">Maquette cliquable, direction Vieilles VHS. Elle suit la charte graphique : couleurs, polices, composants, mouvement et sons.</p>
+    <h2>À essayer</h2>
+    <ol>
+      <li><b>Ouvre une séance</b> dans « Ciné entre potes », pioche une cassette, puis vote OK ou Veto. Lou et Sam votent tout seuls.</li>
+      <li><b>Touche Lou</b> dans la séance pour simuler son départ : la limite d'âge saute et les cases -16 et -18 se débloquent.</li>
+      <li><b>Dépense tes vetos.</b> Quand plus personne n'en a, la cassette reste dans le magnéto.</li>
+      <li><b>Passe en Perso</b> avec l'étiquette en haut : tirage local, sans vote.</li>
+      <li><b>Touche une cassette ou une jaquette</b> pour ouvrir la fiche du film.</li>
+      <li><b>Monte le son</b> : clacs de l'étagère, insertion dans le magnéto, rembobinage.</li>
+    </ol>
+    <h2>À savoir</h2>
+    <p class="fine">Films, membres et votes sont des données d'exemple, et certaines classifications sont approximatives. Les jaquettes sont dessinées en CSS ; l'app affichera les vraies affiches TMDB et lira la bande-annonce.</p>
+  </aside>
+</div>
+
+<script>
+const M = { oce: { name: 'Océane', age: 27, tint: '#efe3c4' }, lou: { name: 'Lou', age: 15, tint: '#f1c9b8' }, sam: { name: 'Sam', age: 31, tint: '#cfe0d6' }, alex: { name: 'Alex', age: 29, tint: '#d6dcef' } };
+const ME = 'oce';
+const TINTS = ['var(--etiquette)', 'var(--t-paille)', 'var(--t-menthe)', 'var(--t-saumon)', 'var(--t-lavande)'];
+
+const FILMS = [
+  { id: 'coraline', t: 'Coraline', ot: 'Coraline', y: 2009, min: 100, g: ['Fantastique'], type: 'Animation', cert: 'TP', dir: 'Henry Selick', cast: ['Dakota Fanning', 'Teri Hatcher'], note: 7.8, syn: "En emménageant dans une vieille maison, Coraline découvre une porte secrète vers un monde parallèle où tout semble meilleur. Trop beau pour être vrai.", c1: '#23305e', c2: '#e8a83e', seen: [], add: ['lou', 'oce'], col: ['DVD', 'Soirée doudou'] },
+  { id: 'parasite', t: 'Parasite', ot: 'Gisaengchung', y: 2019, min: 132, g: ['Thriller', 'Comédie'], type: 'Film live', cert: '12', dir: 'Bong Joon-ho', cast: ['Song Kang-ho', 'Choi Woo-shik'], note: 8.5, syn: "Toute la famille de Ki-taek est au chômage. Quand le fils décroche un poste de professeur particulier chez les riches Park, une mécanique s'enclenche.", c1: '#1f3b2e', c2: '#d9c27a', seen: [], add: ['sam'], col: [] },
+  { id: 'chihiro', t: 'Le Voyage de Chihiro', ot: 'Sen to Chihiro no kamikakushi', y: 2001, min: 125, g: ['Fantastique'], type: 'Animation', cert: 'TP', dir: 'Hayao Miyazaki', cast: ['Rumi Hiiragi', 'Miyu Irino'], note: 8.5, syn: "Pendant un déménagement, Chihiro et ses parents s'égarent dans une ville peuplée d'esprits. Pour sauver ses parents, elle doit travailler dans un établissement de bains.", c1: '#6b1f3a', c2: '#f0b25a', seen: ['oce', 'sam'], add: ['oce'], col: ['DVD', 'Soirée doudou'] },
+  { id: 'getout', t: 'Get Out', ot: 'Get Out', y: 2017, min: 104, g: ['Thriller'], type: 'Film live', cert: '12', dir: 'Jordan Peele', cast: ['Daniel Kaluuya', 'Allison Williams'], note: 7.6, syn: "Chris part rencontrer la famille de sa petite amie le temps d'un week-end. L'accueil est trop chaleureux pour être honnête.", c1: '#2b2b33', c2: '#d8d2c0', seen: [], add: ['sam', 'lou'], col: [] },
+  { id: 'alien', t: 'Alien', ot: 'Alien', y: 1979, min: 117, g: ['Science-fiction'], type: 'Film live', cert: '12', dir: 'Ridley Scott', cast: ['Sigourney Weaver', 'Tom Skerritt'], note: 8.1, syn: "L'équipage du cargo spatial Nostromo répond à un signal de détresse et ramène à bord une créature mortelle.", c1: '#0f2a2a', c2: '#9fd3c7', seen: ['sam'], add: ['sam'], col: ['DVD'] },
+  { id: 'madmax', t: 'Mad Max : Fury Road', ot: 'Mad Max: Fury Road', y: 2015, min: 120, g: ['Action', 'Science-fiction'], type: 'Film live', cert: '12', dir: 'George Miller', cast: ['Tom Hardy', 'Charlize Theron'], note: 7.6, syn: "Dans un désert post-apocalyptique, Max et l'imperator Furiosa fuient le tyran Immortan Joe à bord d'un camion de guerre.", c1: '#7a3410', c2: '#f1b04c', seen: [], add: ['oce'], col: [] },
+  { id: 'knives', t: 'À couteaux tirés', ot: 'Knives Out', y: 2019, min: 130, g: ['Policier', 'Comédie'], type: 'Film live', cert: 'TP', dir: 'Rian Johnson', cast: ['Daniel Craig', 'Ana de Armas'], note: 7.8, syn: "Le romancier Harlan Thrombey est retrouvé mort au lendemain de ses 85 ans. Le détective Benoit Blanc interroge une famille qui a tout à perdre.", c1: '#3b2416', c2: '#e4c58a', seen: [], add: ['lou', 'sam', 'oce'], col: [] },
+  { id: 'oldboy', t: 'Old Boy', ot: 'Oldeuboi', y: 2003, min: 120, g: ['Thriller'], type: 'Film live', cert: '16', dir: 'Park Chan-wook', cast: ['Choi Min-sik', 'Yoo Ji-tae'], note: 8.2, syn: "Enlevé et séquestré quinze ans sans explication, Oh Dae-su est soudain relâché. Il a cinq jours pour comprendre pourquoi.", c1: '#4a0f17', c2: '#9ca7a8', seen: [], add: ['sam'], col: [] },
+  { id: 'midsommar', t: 'Midsommar', ot: 'Midsommar', y: 2019, min: 147, g: ['Drame'], type: 'Film live', cert: '16', dir: 'Ari Aster', cast: ['Florence Pugh', 'Jack Reynor'], note: 7.1, syn: "Un groupe d'étudiants américains assiste à une fête du solstice dans un village suédois isolé.", c1: '#5c6b2a', c2: '#f4e3a1', seen: [], add: ['oce'], col: [] },
+  { id: 'shining', t: 'Shining', ot: 'The Shining', y: 1980, min: 146, g: ['Thriller'], type: 'Film live', cert: '12', dir: 'Stanley Kubrick', cast: ['Jack Nicholson', 'Shelley Duvall'], note: 8.2, syn: "Jack Torrance devient gardien d'un hôtel isolé dans les montagnes pour l'hiver, avec sa femme et son fils.", c1: '#5a1414', c2: '#e6b84a', seen: [], add: ['sam'], col: ['DVD'] },
+  { id: 'paddington', t: 'Paddington 2', ot: 'Paddington 2', y: 2017, min: 104, g: ['Comédie', 'Familial'], type: 'Film live', cert: 'TP', dir: 'Paul King', cast: ['Ben Whishaw', 'Hugh Grant'], note: 7.5, syn: "Paddington cherche le cadeau parfait pour les cent ans de sa tante Lucy. Le livre qu'il convoite est volé, et c'est lui qu'on accuse.", c1: '#1d3f6e', c2: '#e9853a', seen: ['lou'], add: ['lou'], col: ['Soirée doudou'] },
+  { id: 'chateau', t: 'Le Château ambulant', ot: 'Hauru no ugoku shiro', y: 2004, min: 119, g: ['Fantastique', 'Romance'], type: 'Animation', cert: 'TP', dir: 'Hayao Miyazaki', cast: ['Chieko Baishō', 'Takuya Kimura'], note: 8.4, syn: "Transformée en vieille femme par une sorcière, Sophie trouve refuge dans le château mouvant du magicien Hauru.", c1: '#2e4a5c', c2: '#eacb7a', seen: [], add: ['lou', 'oce'], col: ['Soirée doudou'] },
+  { id: 'lalaland', t: 'La La Land', ot: 'La La Land', y: 2016, min: 128, g: ['Comédie musicale', 'Romance'], type: 'Film live', cert: 'TP', dir: 'Damien Chazelle', cast: ['Emma Stone', 'Ryan Gosling'], note: 7.9, syn: "À Los Angeles, une aspirante actrice et un pianiste de jazz tombent amoureux en poursuivant chacun leur rêve.", c1: '#2d1e5c', c2: '#f2c14e', seen: [], add: ['alex', 'oce'], col: ['DVD'] },
+  { id: 'amelie', t: "Le Fabuleux Destin d'Amélie Poulain", ot: '', y: 2001, min: 122, g: ['Comédie', 'Romance'], type: 'Film live', cert: 'TP', dir: 'Jean-Pierre Jeunet', cast: ['Audrey Tautou', 'Mathieu Kassovitz'], note: 7.9, syn: "À Montmartre, une jeune serveuse décide de changer en secret la vie des gens qui l'entourent.", c1: '#2f4d1f', c2: '#d94f3a', seen: ['oce', 'alex'], add: ['alex'], col: ['DVD', 'Soirée doudou'] },
+  { id: 'portrait', t: 'Portrait de la jeune fille en feu', ot: '', y: 2019, min: 122, g: ['Drame', 'Romance'], type: 'Film live', cert: 'TP', dir: 'Céline Sciamma', cast: ['Noémie Merlant', 'Adèle Haenel'], note: 8.1, syn: "1770. Marianne, peintre, doit réaliser le portrait de mariage d'Héloïse, sans que celle-ci le sache.", c1: '#3a2a1c', c2: '#e07a3a', seen: [], add: ['oce'], col: [] },
+  { id: 'perfect', t: 'Perfect Days', ot: 'Perfect Days', y: 2023, min: 124, g: ['Drame'], type: 'Film live', cert: 'TP', dir: 'Wim Wenders', cast: ['Kōji Yakusho'], note: 7.8, syn: "Hirayama nettoie les toilettes publiques de Tokyo et savoure chaque jour la routine qu'il s'est choisie.", c1: '#1d3b45', c2: '#c9d7c4', seen: [], add: ['oce'], col: [] },
+];
+const EXTRA = [
+  { id: 'dune2', t: 'Dune : Deuxième partie', ot: 'Dune: Part Two', y: 2024, min: 166, g: ['Science-fiction', 'Aventure'], type: 'Film live', cert: 'TP', dir: 'Denis Villeneuve', cast: ['Timothée Chalamet', 'Zendaya'], note: 8.1, syn: "Paul Atréides s'allie aux Fremen pour venger sa famille et affronter l'empereur.", c1: '#5c3a12', c2: '#f0c27a', seen: [], add: [], col: [], hot: true },
+  { id: 'anatomie', t: "Anatomie d'une chute", ot: '', y: 2023, min: 151, g: ['Drame', 'Policier'], type: 'Film live', cert: 'TP', dir: 'Justine Triet', cast: ['Sandra Hüller', 'Swann Arlaud'], note: 7.7, syn: "Un homme est retrouvé mort au pied de son chalet. Sa femme, écrivaine, est soupçonnée.", c1: '#2a3240', c2: '#d8dde3', seen: [], add: [], col: [] },
+  { id: 'pastlives', t: 'Past Lives', ot: 'Past Lives', y: 2023, min: 106, g: ['Romance', 'Drame'], type: 'Film live', cert: 'TP', dir: 'Celine Song', cast: ['Greta Lee', 'Teo Yoo'], note: 7.7, syn: "Nora et Hae Sung, amis d'enfance séparés par l'émigration, se retrouvent vingt ans plus tard à New York.", c1: '#2c3b5a', c2: '#e6a07a', seen: [], add: [], col: [] },
+  { id: 'heron', t: 'Le Garçon et le Héron', ot: 'Kimitachi wa dō ikiru ka', y: 2023, min: 124, g: ['Fantastique'], type: 'Animation', cert: 'TP', dir: 'Hayao Miyazaki', cast: ['Soma Santoki'], note: 7.4, syn: "Après la mort de sa mère, Mahito suit un héron mystérieux dans un monde où vivants et morts se croisent.", c1: '#24452e', c2: '#d9c48a', seen: [], add: [], col: [], hot: true },
+  { id: 'substance', t: 'The Substance', ot: 'The Substance', y: 2024, min: 141, g: ['Drame'], type: 'Film live', cert: '16', dir: 'Coralie Fargeat', cast: ['Demi Moore', 'Margaret Qualley'], note: 7.2, syn: "Une star déchue teste un produit qui crée une version plus jeune et plus parfaite d'elle-même.", c1: '#1a1a2e', c2: '#f0d24a', seen: [], add: [], col: [] },
+  { id: 'oppen', t: 'Oppenheimer', ot: 'Oppenheimer', y: 2023, min: 180, g: ['Drame', 'Histoire'], type: 'Film live', cert: 'TP', dir: 'Christopher Nolan', cast: ['Cillian Murphy', 'Emily Blunt'], note: 8.1, syn: "Le physicien Robert Oppenheimer dirige le projet Manhattan, qui aboutit à la première bombe atomique.", c1: '#3d1a0e', c2: '#f08a3a', seen: [], add: [], col: [] },
+];
+const ALL = [...FILMS, ...EXTRA];
+const F = id => ALL.find(f => f.id === id);
+const SPACES = [
+  { id: 'perso', name: 'Perso', kind: 'personal', members: ['oce'], films: ['coraline', 'parasite', 'chihiro', 'lalaland', 'amelie', 'portrait', 'paddington', 'chateau', 'perfect', 'knives'] },
+  { id: 'potes', name: 'Ciné entre potes', kind: 'shared', members: ['oce', 'lou', 'sam'], films: ['coraline', 'parasite', 'chihiro', 'getout', 'alien', 'madmax', 'knives', 'oldboy', 'midsommar', 'shining', 'paddington', 'chateau'] },
+  { id: 'deux', name: 'Nous deux', kind: 'shared', members: ['oce', 'alex'], films: ['lalaland', 'amelie', 'portrait', 'perfect', 'parasite'] },
+];
+const CERTS = [['TP', 'Tous publics', 0], ['10', '-10', 10], ['12', '-12', 12], ['16', '-16', 16], ['18', '-18', 18]];
+
+const state = { space: 'potes', tab: 'machine', libSeg: 'avoir', sound: true, filtersOpen: false, query: '', certs: new Set(CERTS.map(c => c[0])), seenIncl: {}, maxDur: 0, nowShowing: { perso: null, potes: 'knives', deux: null }, invites: [{ from: 'sam', salon: 'Soirée doudou' }] };
+const sessions = {};
+SPACES.filter(s => s.kind === 'shared').forEach(s => { sessions[s.id] = { open: false, vetosPer: 2, timeout: 20, vetos: {}, discarded: new Set(), present: new Set(s.members) }; });
+let spinning = false, vote = null;
+
+const $ = s => document.querySelector(s);
+const space = () => SPACES.find(s => s.id === state.space);
+const sess = () => sessions[state.space] || null;
+const shared = () => space().kind === 'shared';
+const presentList = () => shared() ? [...sess().present] : [ME];
+const certLabel = c => CERTS.find(x => x[0] === c)[1];
+const dur = m => `${Math.floor(m / 60)}h${String(m % 60).padStart(2, '0')}`;
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const names = ids => ids.map(i => M[i].name).join(', ').replace(/, ([^,]*)$/, ' et $1');
+const hash = s => [...s].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7);
+const tintOf = id => TINTS[hash(id) % TINTS.length];
+const tiltOf = id => ((hash(id) % 7) - 3) * .4;
+
+function limitInfo() { let age = Infinity, who = null; presentList().forEach(m => { if (M[m].age < age) { age = M[m].age; who = m; } }); return { age, who }; }
+const certAllowed = (c, age) => age >= CERTS.find(x => x[0] === c)[2];
+function computePool() {
+  const { age } = limitInfo(), s = sess(), present = presentList();
+  return space().films.map(F).filter(f => certAllowed(f.cert, age) && state.certs.has(f.cert) && !(state.maxDur && f.min > state.maxDur) && !present.some(m => f.seen.includes(m) && !state.seenIncl[m]) && !(s && s.discarded.has(f.id)));
+}
+const totalVetos = () => presentList().reduce((n, m) => n + (sess().vetos[m] || 0), 0);
+
+/* ---------- Pieces ---------- */
+const ICON = {
+  machine: '<rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="11" r="2"/><circle cx="15.5" cy="11" r="2"/><path d="M7 19l1.5-3h7l1.5 3"/>',
+  shelf: '<path d="M3 3v18M21 3v18M3 12h18M3 21h18M7 6v6M10 7v5M14 14v7M17 15v6"/>',
+  search: '<circle cx="11" cy="11" r="6"/><path d="M15.5 15.5L20 20"/>',
+  card: '<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M6.5 15.5c1-1.5 4-1.5 5 0M14 10h4M14 13h3"/>',
+  close: '<path d="M6 6l12 12M18 6L6 18"/>',
+};
+const svg = k => `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">${ICON[k]}</svg>`;
+const av = (m, sm) => `<span class="av${sm ? ' sm' : ''}" style="background:${M[m].tint}" title="${M[m].name}">${M[m].name[0]}</span>`;
+function tapeHTML(f, opts = {}) {
+  const sp = space(), adders = shared() ? f.add.filter(m => sp.members.includes(m)) : [];
+  const tag = opts.button ? 'button' : 'div';
+  return `<${tag} class="tape${f.seen.includes(ME) && opts.showSeen ? ' seen' : ''}" ${opts.button ? `data-action="sheet" data-id="${f.id}"` : ''} ${opts.i != null ? `data-i="${opts.i}"` : ''}>
+    <span class="label${hash(f.id) % 3 === 1 ? ' scotch' : ''}" style="--lb:${tintOf(f.id)};--r:${tiltOf(f.id)}deg">${f.t}</span>
+    ${opts.who && adders.length ? `<span class="who">${adders.map(m => av(m, true)).join('')}</span>` : ''}<small>${hash(f.id) % 4 ? 'SP' : 'LP'}</small></${tag}>`;
+}
+function jaqHTML(f, cls = '') {
+  return `<span class="spine">${f.t}</span><span class="art" style="--c1:${f.c1};--c2:${f.c2}"><b>${f.t}</b><small>${f.dir}</small></span>${f.hot && cls.includes('hot') ? '<span class="sticker">Ten-<br>dance</span>' : ''}`;
+}
+
+/* ---------- Sound ---------- */
+let actx = null;
+function ac() { if (!state.sound) return null; try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); actx.resume && actx.resume(); return actx; } catch (e) { return null; } }
+function noise(c, t, len, freq, vol) {
+  const buf = c.createBuffer(1, Math.ceil(c.sampleRate * len), c.sampleRate), d = buf.getChannelData(0);
+  for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / d.length);
+  const s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain();
+  s.buffer = buf; f.type = 'bandpass'; f.frequency.value = freq; g.gain.value = vol; s.connect(f); f.connect(g); g.connect(c.destination); s.start(t);
+}
+function osc(c, t, type, f0, f1, len, vol) {
+  const o = c.createOscillator(), g = c.createGain();
+  o.type = type; o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(f1, t + len);
+  g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(.0001, t + len); o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + len + .02);
+}
+const SND = {
+  roll: (D, n) => { const c = ac(); if (!c) return; for (let k = 1; k <= n; k++) noise(c, c.currentTime + D / 1000 * (1 - Math.cbrt(1 - k / n)), .03, 2400, .35); },
+  chunk: () => { const c = ac(); if (!c) return; const t = c.currentTime + .01; osc(c, t, 'sine', 140, 50, .12, .6); noise(c, t, .05, 900, .5); osc(c, t + .14, 'sine', 110, 45, .14, .6); noise(c, t + .14, .06, 700, .5); },
+  rewind: () => { const c = ac(); if (!c) return; const t = c.currentTime + .01; osc(c, t, 'sawtooth', 220, 1100, .7, .05); noise(c, t, .7, 3000, .08); },
+  bip: () => { const c = ac(); if (!c) return; osc(c, c.currentTime + .01, 'sine', 1400, 1400, .14, .2); },
+};
+
+let toastT;
+function toast(msg) { const t = $('#toast'); t.innerHTML = `<div class="postit">${msg}</div>`; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 2600); }
+
+/* ---------- Machine ---------- */
+function renderMachine() {
+  const sp = space(), s = sess(), pool = computePool(), lim = limitInfo();
+  const now = state.nowShowing[sp.id] && F(state.nowShowing[sp.id]);
+  let h = `<section class="vcr" aria-label="Dans le magnéto"><span class="slot"></span><span class="l">Dans le magnéto</span>
+    <span class="t${now ? '' : ' empty'}">${now ? now.t : 'Aucune cassette'}</span><span class="ledbox">${now ? '▶ PLAY' : '■ STOP'}</span>
+    ${now ? `<div class="acts"><button class="btn secondary" data-action="sheet" data-id="${now.id}">Fiche</button><button class="btn primary" data-action="seen-now">Je l'ai vu</button><button class="btn secondary" data-action="clear-now">Éjecter</button></div>` : ''}</section>`;
+
+  if (s && !s.open) {
+    h += `<section class="panel"><div class="head"><h2 class="h">Nouvelle séance</h2><span class="lab">${sp.members.length} membres</span></div>
+      <p class="muted" style="margin:0;font-size:13px">Tout le monde voit l'étagère défiler en direct et vote. Les membres reçoivent une notification.</p>
+      <div class="setup">
+        <label><span class="lab">Vetos par personne</span><select id="set-vetos">${[1, 2, 3].map(n => `<option value="${n}" ${n === s.vetosPer ? 'selected' : ''}>${n}</option>`).join('')}</select></label>
+        <label><span class="lab">Délai de vote</span><select id="set-timeout">${[[0, 'Aucun'], [10, '10 s'], [20, '20 s'], [60, '60 s']].map(([v, l]) => `<option value="${v}" ${v === s.timeout ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
+      </div><button class="btn primary" data-action="open-session">Ouvrir la séance</button></section>`;
+  } else if (s) {
+    h += `<section class="panel"><div class="head"><h2 class="h">Séance en cours</h2><button class="linkish" data-action="close-session">Fermer la séance</button></div>
+      <div class="members">${sp.members.map(m => {
+        const here = s.present.has(m), v = s.vetos[m] ?? s.vetosPer;
+        return `<button class="member ${here ? '' : 'away'}" data-action="presence" data-m="${m}" ${m === ME ? 'disabled' : ''} aria-pressed="${here}">${av(m)}
+          <span class="who">${M[m].name}${m === ME ? ' (toi)' : ''}<small>${M[m].age} ANS · ${here ? 'PRÉSENT' : 'ABSENT'}</small>
+          <span class="dots" aria-label="${v} veto(s) restant(s)">${Array.from({ length: s.vetosPer }, (_, i) => `<i class="${i < v ? 'on' : ''}"></i>`).join('')}</span></span></button>`;
+      }).join('')}</div>
+      <p class="muted" style="margin:0;font-size:12px">${s.vetosPer} veto${s.vetosPer > 1 ? 's' : ''} par personne pour la séance · vote ${s.timeout ? `en ${s.timeout} s, sans réponse = OK` : 'sans délai'}</p></section>`;
+  }
+
+  h += `<details class="filters" id="filters" ${state.filtersOpen ? 'open' : ''}><summary><span class="lab">Réglages de la machine</span></summary><div class="body">
+    <div><span class="lab">Classification</span><div class="chips">${CERTS.map(([c, l]) => certAllowed(c, lim.age)
+      ? `<label class="chipx"><input type="checkbox" id="cert-${c}" data-cert="${c}" ${state.certs.has(c) ? 'checked' : ''}>${l}</label>`
+      : `<span class="chipx off">${l}</span>`).join('')}</div>
+      ${lim.age < 18 ? `<p class="note">Limite : ${M[lim.who].name}, ${lim.age} ans. Les films non classés sont exclus tant qu'un mineur est présent.</p>` : ''}</div>
+    <div style="display:grid;gap:8px"><span class="lab">Déjà vus</span>
+      <label class="check"><input type="checkbox" id="seen-all" ${presentList().every(m => state.seenIncl[m]) ? 'checked' : ''}>Inclure les films déjà vus</label>
+      ${shared() ? presentList().map(m => `<label class="check sub"><input type="checkbox" id="seen-${m}" data-seen="${m}" ${state.seenIncl[m] ? 'checked' : ''}>vus par ${M[m].name}</label>`).join('') : ''}</div>
+    <label style="display:grid;gap:6px"><span class="lab">Durée max</span><select id="dur-max">${[[0, 'Toutes'], [90, '1h30'], [120, '2h'], [150, '2h30']].map(([v, l]) => `<option value="${v}" ${v === state.maxDur ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
+  </div></details>`;
+
+  h += `<p class="count"><b>${pool.length}</b> cassettes dans la machine</p><div class="shelf" id="shelf"><div class="strip" id="strip"></div></div>`;
+  const imposed = s && s.open && totalVetos() === 0;
+  if (!s || s.open) {
+    h += `<button class="btn primary lever" data-action="spin" ${pool.length < 2 ? 'disabled' : ''} style="font-size:18px;padding:16px">Piocher une cassette</button>`;
+    if (pool.length < 2) h += `<p class="lever-note">Il faut au moins 2 cassettes pour piocher. Ajoute des films ou élargis les filtres.</p>`;
+    else if (imposed) h += `<p class="lever-note">Plus personne n'a de veto : la prochaine cassette ira directement dans le magnéto.</p>`;
+    else if (!s) h += `<p class="lever-note">Tirage local, sans vote.</p>`;
+  }
+  if (s && s.discarded.size) h += `<div><span class="lab">Retournées sur l'étagère</span><div class="gone">${[...s.discarded].map(id => `<span>${F(id).t}</span>`).join('')}</div></div>`;
+  $('#screen-machine').innerHTML = h;
+  idleShelf(pool);
+}
+const STEP = 40;
+function idleShelf(pool) {
+  const strip = $('#strip'); if (!strip) return;
+  const src = pool.length ? pool : space().films.map(F);
+  strip.innerHTML = Array.from({ length: 9 }, (_, i) => tapeHTML(src[i % src.length], { i })).join('');
+  place(4, 0);
+}
+function place(i, D) {
+  const strip = $('#strip'), shelf = $('#shelf');
+  strip.style.transition = D ? `transform ${D}ms cubic-bezier(.15,.85,.25,1)` : 'none';
+  strip.style.transform = `translateY(${shelf.clientHeight / 2 - (i * STEP + 17)}px)`;
+}
+function spin() {
+  if (spinning) return;
+  const pool = computePool(); if (pool.length < 2) return;
+  const s = sess(), imposed = !!(s && s.open && totalVetos() === 0);
+  spinning = true;
+  const winner = pick(pool), n = 32, W = n - 4;
+  const items = Array.from({ length: n }, () => pick(pool)); items[W] = winner;
+  const strip = $('#strip');
+  strip.innerHTML = items.map((f, i) => tapeHTML(f, { i })).join('');
+  place(2, 0); void strip.offsetHeight;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const D = reduce ? 0 : 2800;
+  place(W, D);
+  if (!reduce) SND.roll(D, W - 2);
+  document.querySelectorAll('[data-action="spin"]').forEach(b => b.disabled = true);
+  setTimeout(() => {
+    strip.querySelector(`[data-i="${W}"]`).classList.add('out');
+    setTimeout(() => { spinning = false; reveal(winner, imposed); }, reduce ? 0 : 450);
+  }, D + 60);
+}
+
+/* ---------- Reveal + vote ---------- */
+function reveal(f, imposed) {
+  const r = $('#reveal'); r.hidden = false; r.scrollTop = 0; vote = null;
+  SND.chunk();
+  if (imposed) {
+    drawReveal(f, `<div class="postit">Plus personne n'a de veto : ${f.t} reste dans le magnéto.</div><button class="btn primary" data-action="close-reveal" style="width:100%">Fermer</button>`, '▶ PLAY');
+    accept(f);
+  } else if (!shared()) {
+    drawReveal(f, `<div class="two"><button class="btn secondary" data-action="reroll">Rembobiner</button><button class="btn primary" data-action="accept" data-id="${f.id}">Garder</button></div>`, '▶ PLAY');
+  } else startVote(f);
+}
+function drawReveal(f, bottom, ledText) {
+  $('#reveal-body').innerHTML = `<div class="vcr"><span class="slot"></span><span class="l">Dans le magnéto</span><span class="t">${f.t}</span><span class="ledbox" id="rv-led">${ledText}</span></div>
+    <button class="jaq big" data-action="sheet" data-id="${f.id}" aria-label="Ouvrir la fiche de ${f.t}">${jaqHTML(f)}</button>
+    <p class="meta">${f.y} · ${dur(f.min)} · ${f.g.join(', ')} · ${certLabel(f.cert)}</p>${bottom}`;
+}
+function startVote(f) {
+  const s = sess(), present = [...s.present];
+  vote = { f, votes: {}, auto: {}, timers: [], deadline: s.timeout ? Date.now() + s.timeout * 1000 : null, done: false };
+  present.filter(m => m !== ME).forEach(m => vote.timers.push(setTimeout(() => {
+    if (!vote || vote.done) return;
+    vote.votes[m] = (s.vetos[m] > 0 && Math.random() < .3) ? 'veto' : 'ok';
+    drawVote(); checkVote();
+  }, 1500 + Math.random() * 3500)));
+  if (vote.deadline) vote.timers.push(setInterval(() => {
+    if (!vote || vote.done) return;
+    if (Date.now() >= vote.deadline) { SND.bip(); present.forEach(m => { if (!vote.votes[m]) { vote.votes[m] = 'ok'; vote.auto[m] = true; } }); drawVote(); checkVote(); }
+    else drawLed();
+  }, 250));
+  drawVote();
+}
+function ledText() {
+  if (!vote || vote.done || !vote.deadline) return '▶ PLAY';
+  const left = Math.max(0, Math.ceil((vote.deadline - Date.now()) / 1000));
+  return `⏱ 0:${String(left).padStart(2, '0')}`;
+}
+function drawLed() { const l = $('#rv-led'); if (l) l.textContent = ledText(); }
+function drawVote(verdict) {
+  const s = sess(), present = [...s.present], mine = vote.votes[ME], myV = s.vetos[ME] || 0;
+  const chips = present.map(m => { const v = vote.votes[m]; return `<span class="${v === 'ok' ? 'ok' : v === 'veto' ? 'vt' : ''}"><span class="av sm" style="margin:0;background:${M[m].tint}">${M[m].name[0]}</span>${M[m].name} <b>${v === 'ok' ? (vote.auto[m] ? 'OK (délai)' : 'OK') : v === 'veto' ? 'VETO' : '…'}</b></span>`; }).join('');
+  let b = `<div class="vote"><div class="votes">${chips}</div>`;
+  if (!vote.done) {
+    b += `<div class="two"><button class="tag no" data-action="vote" data-v="veto" ${mine || myV === 0 ? 'disabled' : ''}>Veto<small>${myV ? `${myV} restant${myV > 1 ? 's' : ''}` : 'plus de veto'}</small></button><button class="tag ok" data-action="vote" data-v="ok" ${mine ? 'disabled' : ''}>OK<small>ça me va</small></button></div>`;
+    if (mine) b += `<p class="wait">Ton vote est enregistré. On attend les autres.</p>`;
+  } else b += verdict;
+  b += `</div>`;
+  const jaq = $('#reveal .big');
+  if (jaq) { $('#reveal .vote')?.remove(); $('#reveal-body').insertAdjacentHTML('beforeend', b); drawLed(); }
+  else drawReveal(vote.f, b, ledText());
+}
+function checkVote() {
+  const s = sess(), present = [...s.present];
+  if (vote.done || !present.every(m => vote.votes[m])) return;
+  vote.done = true; vote.timers.forEach(t => { clearTimeout(t); clearInterval(t); });
+  const f = vote.f, vetoers = present.filter(m => vote.votes[m] === 'veto');
+  if (!vetoers.length) { accept(f); drawVote(`<div class="postit">Tout le monde est d'accord : ${f.t} reste dans le magnéto.</div><button class="btn primary" data-action="close-reveal">Fermer</button>`); drawLed(); return; }
+  s.discarded.add(f.id);
+  let msg;
+  if (vetoers.length === present.length && present.length >= 2) msg = `Veto unanime : ${f.t} retourne sur l'étagère et tout le monde récupère son veto.`;
+  else { vetoers.forEach(m => s.vetos[m]--); msg = `${names(vetoers)} ${vetoers.length > 1 ? 'ont' : 'a'} mis un veto. ${f.t} retourne sur l'étagère.`; }
+  drawVote(`<div class="postit bad">${msg}</div><div class="two"><button class="btn secondary" data-action="close-reveal">Retour</button><button class="btn primary" data-action="reroll">Rembobiner</button></div>`);
+  const l = $('#rv-led'); if (l) l.textContent = '⏏ EJECT';
+}
+function accept(f) {
+  state.nowShowing[state.space] = f.id;
+  const s = sess(); if (s) { s.open = false; s.discarded.clear(); s.vetos = {}; }
+}
+function closeReveal() {
+  if (vote) { vote.timers.forEach(t => { clearTimeout(t); clearInterval(t); }); vote = null; }
+  $('#reveal').hidden = true; renderMachine();
+}
+
+/* ---------- Étagère ---------- */
+function categories(films) {
+  const groups = {}, add = (g, k) => { groups[g] = groups[g] || {}; groups[g][k] = (groups[g][k] || 0) + 1; };
+  films.forEach(f => {
+    f.g.forEach(g => add('Genre', g)); add('Type', f.type);
+    add('Durée', f.min < 90 ? '< 1h30' : f.min <= 120 ? '1h30 – 2h' : f.min <= 150 ? '2h – 2h30' : '> 2h30');
+    add('Époque', f.y < 1970 ? 'Avant 1970' : `Années ${String(Math.floor(f.y / 10) * 10).slice(f.y >= 2000 ? 0 : 2)}`);
+    add('Réalisateur', f.dir); add('Classification', certLabel(f.cert)); if (f.note >= 7.5) add('Note', 'Très bien noté');
+  });
+  Object.keys(groups.Réalisateur || {}).forEach(k => { if (groups.Réalisateur[k] < 2) delete groups.Réalisateur[k]; });
+  return groups;
+}
+function renderLibrary() {
+  const sp = space(), films = sp.films.map(F);
+  const segs = [['avoir', 'À voir'], ['boites', 'Boîtes'], ['cat', 'Catégories'], ['vus', 'Déjà vus']];
+  let h = `<div><span class="lab">${shared() ? sp.name : 'Mon étagère'}</span><h2 class="h" style="margin-top:6px">${films.length} cassettes sur l'étagère</h2></div>
+    <div class="seg">${segs.map(([k, l]) => `<button data-action="seg" data-seg="${k}" aria-pressed="${state.libSeg === k}">${l}</button>`).join('')}</div>`;
+  if (state.libSeg === 'avoir') {
+    h += `${shared() ? '<p class="muted" style="margin:0;font-size:13px">Pastilles : qui a ajouté ou partagé la cassette.</p>' : ''}<div class="shelf-list">${films.map(f => tapeHTML(f, { button: true, who: true, showSeen: true })).join('')}</div>`;
+  } else if (state.libSeg === 'boites') {
+    const cols = {}; films.forEach(f => f.col.forEach(c => (cols[c] = cols[c] || []).push(f)));
+    h += Object.entries(cols).map(([c, fs]) => `<section class="box"><h3>Boîte « ${c} »<small>${fs.length} FILMS</small></h3><div class="rack">${fs.map(f => `<button class="jaq${f.seen.includes(ME) ? ' seen' : ''}" data-action="sheet" data-id="${f.id}" aria-label="${f.t}">${jaqHTML(f)}</button>`).join('')}</div></section>`).join('')
+      + `<button class="btn secondary">Nouvelle boîte</button>`;
+  } else if (state.libSeg === 'cat') {
+    h += Object.entries(categories(films)).filter(([, v]) => Object.keys(v).length).map(([k, v]) => `<div class="cat"><span class="lab">${k}</span><div class="chips">${Object.entries(v).sort((a, b) => b[1] - a[1]).map(([n, c]) => `<span>${n} <b>${c}</b></span>`).join('')}</div></div>`).join('');
+  } else {
+    const seen = films.filter(f => f.seen.includes(ME));
+    h += seen.length ? `<div class="shelf-list">${seen.map(f => tapeHTML(f, { button: true, showSeen: true })).join('')}</div>` : `<p class="muted">Aucun film vu dans cet espace.</p>`;
+  }
+  $('#screen-library').innerHTML = h;
+}
+
+/* ---------- Découvrir ---------- */
+function renderDiscover() {
+  const q = state.query.trim().toLowerCase();
+  const list = q ? ALL.filter(f => f.t.toLowerCase().includes(q) || f.dir.toLowerCase().includes(q)) : EXTRA;
+  const inSpace = id => space().films.includes(id);
+  $('#screen-discover').innerHTML = `<input class="search" id="search" type="search" placeholder="Un titre, un réalisateur…" aria-label="Rechercher un film" value="${state.query.replace(/"/g, '&quot;')}">
+    <span class="lab">${q ? 'Résultats' : 'Tendances de la semaine'}</span>
+    <div class="grid3">${list.map(f => `<div class="card"><button class="jaq" data-action="sheet" data-id="${f.id}" aria-label="${f.t}">${jaqHTML(f, 'hot')}</button>
+      <button class="btn ${inSpace(f.id) ? 'secondary' : 'primary'}" data-action="add" data-id="${f.id}" ${inSpace(f.id) ? 'disabled' : ''}>${inSpace(f.id) ? 'Sur l\'étagère' : '+ Étagère'}</button></div>`).join('') || '<p class="muted">Aucun film trouvé.</p>'}</div>`;
+}
+
+/* ---------- Profil ---------- */
+function renderProfile() {
+  $('#screen-profile').innerHTML = `<div class="card-membre"><div class="top"><span class="logo" style="--s:14px"><span class="stripes"></span><span class="word">Spinema</span></span><span>CARTE DE MEMBRE Nº 0001</span></div>
+      ${av(ME)}<b>Océane</b><small>@OCEANE · 27 ANS</small></div>
+    ${state.invites.length ? `<section class="panel"><span class="lab">Invitation reçue</span>${state.invites.map((iv, i) => `<p style="margin:0">${M[iv.from].name} t'invite dans le salon « ${iv.salon} ».</p>
+      <div class="two"><button class="btn secondary" data-action="invite" data-i="${i}" data-ok="0">Refuser</button><button class="btn primary" data-action="invite" data-i="${i}" data-ok="1">Accepter</button></div>`).join('')}</section>` : ''}
+    <div style="display:grid;gap:8px"><span class="lab">Mes salons</span><div class="list">${SPACES.filter(s => s.kind === 'shared').map(s => `<button data-action="go-space" data-s="${s.id}"><span>${s.name}</span><span class="sub">${s.members.length} MEMBRES · PROPRIO</span></button>`).join('')}</div></div>
+    <div style="display:grid;gap:8px"><span class="lab">Réglages</span><div class="list">
+      <label for="pref-sound"><span>Effets sonores</span><input class="switch" type="checkbox" id="pref-sound" ${state.sound ? 'checked' : ''}></label>
+      <label for="pref-notif"><span>Notifications de séance</span><input class="switch" type="checkbox" id="pref-notif" checked></label>
+      <button><span>Utilisateurs bloqués</span><span class="sub">0</span></button></div></div>
+    <div style="display:grid;gap:8px"><span class="lab">Compte</span><div class="list"><button><span>Se déconnecter</span></button><button class="danger"><span>Supprimer mon compte</span></button></div></div>`;
+}
+
+/* ---------- Fiche ---------- */
+function openSheet(id) {
+  const f = F(id), sp = space(), sh = shared();
+  const seenBy = f.seen.filter(m => sp.members.includes(m)), notSeen = sp.members.filter(m => !f.seen.includes(m));
+  const adders = f.add.filter(m => sp.members.includes(m));
+  const el = $('#sheet');
+  el.style.setProperty('--c1', f.c1); el.style.setProperty('--c2', f.c2);
+  el.innerHTML = `<button class="close" data-action="close-sheet" aria-label="Fermer la fiche">${svg('close')}</button><div class="backdrop"></div>
+    <div class="inner">
+      <div class="top"><div class="jaq${f.seen.includes(ME) ? ' seen' : ''}">${jaqHTML(f)}</div>
+        <div style="display:grid;gap:8px;min-width:0"><span class="title-label">${f.t}</span>${f.ot && f.ot !== f.t ? `<span class="ot">${f.ot}</span>` : ''}
+          <span class="meta">${f.y} · ${dur(f.min).toUpperCase()} · ${certLabel(f.cert).toUpperCase()} · ★ ${f.note.toFixed(1).replace('.', ',')}</span></div></div>
+      <p>${f.syn}</p>
+      <div class="trailer"><span>Bande-annonce</span></div>
+      <dl class="facts"><dt>Genres</dt><dd>${f.type} · ${f.g.join(', ')}</dd><dt>Réalisation</dt><dd>${f.dir}</dd><dt>Casting</dt><dd>${f.cast.join(', ')}</dd>
+        ${sh ? `<dt>Vu</dt><dd>${seenBy.length ? `Vu par ${names(seenBy)}` : "Personne ne l'a vu"}${seenBy.length && notSeen.length ? ` · pas par ${names(notSeen)}` : ''}</dd>` : ''}
+        ${sh && adders.length ? `<dt>Ajouté par</dt><dd style="display:flex;padding-left:5px">${adders.map(m => av(m, true)).join('')}</dd>` : ''}
+        ${f.col.length ? `<dt>Boîtes</dt><dd>${f.col.join(', ')}</dd>` : ''}</dl>
+      <div class="actions"><button class="btn primary" data-action="toggle-seen" data-id="${f.id}">${f.seen.includes(ME) ? 'Marquer comme pas vu' : "Je l'ai vu"}</button>
+        <div class="two"><button class="btn secondary" data-action="toast" data-msg="Choix : mon étagère, l'étagère du salon ou une boîte.">Ranger dans…</button><button class="btn secondary" data-action="toast" data-msg="Cases à cocher : Ciné entre potes, Nous deux.">Partager avec…</button></div></div>
+    </div>`;
+  el.hidden = false; el.scrollTop = 0;
+  requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('open')));
+}
+function closeSheet() { const el = $('#sheet'); el.classList.remove('open'); setTimeout(() => { el.hidden = true; }, 360); }
+
+/* ---------- Navigation ---------- */
+const TABS = [['machine', 'Machine', 'machine'], ['library', 'Étagère', 'shelf'], ['discover', 'Découvrir', 'search'], ['profile', 'Profil', 'card']];
+function renderAll() {
+  $('#space-name').textContent = space().name;
+  $('#sound-btn').setAttribute('aria-pressed', String(state.sound));
+  $('#tabs').innerHTML = TABS.map(([k, l, i]) => `<button role="tab" data-tab="${k}" aria-selected="${state.tab === k}">${svg(i)}${l}</button>`).join('');
+  TABS.forEach(([k]) => $('#screen-' + k).hidden = k !== state.tab);
+  ({ machine: renderMachine, library: renderLibrary, discover: renderDiscover, profile: renderProfile })[state.tab]();
+}
+function toggleMenu(open) {
+  const m = $('#space-menu'); m.hidden = !open; $('#space-btn').setAttribute('aria-expanded', String(open));
+  if (open) m.innerHTML = SPACES.map(s => `<button data-action="go-space" data-s="${s.id}" aria-current="${s.id === state.space}"><b>${s.name}</b><small>${s.kind === 'personal' ? 'ESPACE PERSO · PRIVÉ' : `${s.members.length} MEMBRES`}</small></button>`).join('')
+    + `<button class="create" data-action="toast" data-msg="Créer un salon ou rejoindre avec un lien.">+ Créer ou rejoindre un salon</button>`;
+}
+
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-action], [data-tab], #space-btn, #sound-btn');
+  if (!t) { if (!e.target.closest('#space-menu')) toggleMenu(false); return; }
+  if (t.id === 'space-btn') return toggleMenu($('#space-menu').hidden);
+  if (t.id === 'sound-btn') { state.sound = !state.sound; toast(state.sound ? 'Effets sonores activés.' : 'Effets sonores coupés.'); return renderAll(); }
+  if (t.dataset.tab) { state.tab = t.dataset.tab; $('#screens').scrollTop = 0; return renderAll(); }
+  const a = t.dataset.action, s = sess();
+  switch (a) {
+    case 'go-space': if (spinning) return; state.space = t.dataset.s; toggleMenu(false); if (state.tab === 'profile') state.tab = 'machine'; renderAll(); break;
+    case 'open-session':
+      s.vetosPer = +$('#set-vetos').value; s.timeout = +$('#set-timeout').value; s.open = true; s.discarded.clear();
+      space().members.forEach(m => s.vetos[m] = s.vetosPer); toast('Séance ouverte : les membres sont notifiés.'); renderMachine(); break;
+    case 'close-session': s.open = false; s.discarded.clear(); s.vetos = {}; renderMachine(); break;
+    case 'presence': { const m = t.dataset.m; if (s.present.has(m)) s.present.delete(m); else { s.present.add(m); if (s.vetos[m] == null && s.open) s.vetos[m] = s.vetosPer; } renderMachine(); break; }
+    case 'spin': spin(); break;
+    case 'vote': vote.votes[ME] = t.dataset.v; drawVote(); checkVote(); break;
+    case 'accept': { const f = F(t.dataset.id); accept(f); closeReveal(); toast(`${f.t} est dans le magnéto.`); break; }
+    case 'reroll': SND.rewind(); closeReveal(); setTimeout(spin, 300); break;
+    case 'close-reveal': closeReveal(); break;
+    case 'seen-now': { const f = F(state.nowShowing[state.space]); if (!f.seen.includes(ME)) f.seen.push(ME); state.nowShowing[state.space] = null; toast(`${f.t} : tampon « VU ».`); renderMachine(); break; }
+    case 'clear-now': state.nowShowing[state.space] = null; renderMachine(); break;
+    case 'sheet': openSheet(t.dataset.id); break;
+    case 'close-sheet': closeSheet(); break;
+    case 'toggle-seen': { const f = F(t.dataset.id), i = f.seen.indexOf(ME); if (i >= 0) f.seen.splice(i, 1); else f.seen.push(ME); openSheet(f.id); renderAll(); break; }
+    case 'seg': state.libSeg = t.dataset.seg; renderLibrary(); break;
+    case 'add': space().films.push(t.dataset.id); toast(`${F(t.dataset.id).t} rangé sur ${shared() ? `l'étagère de ${space().name}` : 'ton étagère'}.`); renderDiscover(); break;
+    case 'invite': { const iv = state.invites.splice(+t.dataset.i, 1)[0]; toast(t.dataset.ok === '1' ? `Tu as rejoint « ${iv.salon} ».` : 'Invitation refusée.'); renderProfile(); break; }
+    case 'toast': toast(t.dataset.msg); toggleMenu(false); break;
+  }
+});
+document.addEventListener('change', e => {
+  const t = e.target;
+  if (t.dataset.cert) { t.checked ? state.certs.add(t.dataset.cert) : state.certs.delete(t.dataset.cert); renderMachine(); }
+  else if (t.id === 'seen-all') { presentList().forEach(m => state.seenIncl[m] = t.checked); renderMachine(); }
+  else if (t.dataset.seen) { state.seenIncl[t.dataset.seen] = t.checked; renderMachine(); }
+  else if (t.id === 'dur-max') { state.maxDur = +t.value; renderMachine(); }
+  else if (t.id === 'pref-sound') { state.sound = t.checked; $('#sound-btn').setAttribute('aria-pressed', String(state.sound)); }
+});
+document.addEventListener('toggle', e => { if (e.target.id === 'filters') state.filtersOpen = e.target.open; }, true);
+document.addEventListener('input', e => {
+  if (e.target.id === 'search') { state.query = e.target.value; const pos = e.target.selectionStart; renderDiscover(); const s = $('#search'); s.focus(); s.setSelectionRange(pos, pos); }
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { toggleMenu(false); if (!$('#sheet').hidden) closeSheet(); } });
+window.addEventListener('resize', () => { if (!spinning && state.tab === 'machine') idleShelf(computePool()); });
+renderAll();
+</script>

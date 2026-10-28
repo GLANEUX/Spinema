@@ -427,7 +427,7 @@ Seuils de couverture bloquants en CI (proposition : 100 % `shared`, ≥ 90 % `ap
 | Invitations | Lien (domaine dispo) ou recherche par pseudo. |
 | Build | APK buildé dans GitHub Actions ; mises à jour OTA via EAS Update. |
 | Qualité | Couverture maximale, CI/CD complète, envs dev / staging / prod. |
-| Maquette | Artifact (HTML cliquable), à refaire en direction Vieilles VHS. |
+| Maquette | Artifact (HTML cliquable) en direction Vieilles VHS : `mockup/spinema-maquette.html`. |
 | Plus tard | Tirage pondéré, Letterboxd, TikTok / Insta, thèmes, swipe, journal, iOS, séries, Google Play. |
 
 ---
