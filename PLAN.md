@@ -341,12 +341,13 @@ Fiche film : affiche, backdrop, date, genres, durée, classification, synopsis, 
              [Ajouter à… (mon À voir / À voir commun / collections)] [Partager avec… ☑] [Je l'ai vu]
 ```
 
-### Direction visuelle : grand écran art déco
-- **Palette** : bordeaux profond (fonds), or (accents, cadres, boutons), crème (textes, cartes). Thème sombre par défaut.
-- **Typo** : serif art déco pour les titres (ex. Limelight, Poiret One), sans serif lisible pour le texte courant.
-- **Machine** : rouleau en **pellicule 35 mm perforée** qui fait défiler les affiches ; le film gagnant est révélé par un **rideau rouge** qui s'ouvre.
-- **À l'affiche** : présenté comme un fronton de cinéma (marquee) avec ampoules.
-- **Motifs** : éventails, chevrons et filets dorés art déco, avec parcimonie pour laisser les affiches respirer.
+### Direction visuelle : Vieilles VHS
+Charte complète : [`design/charte-graphique.html`](design/charte-graphique.html) (tokens, composants, mouvement, son, ton).
+- **Concept** : l'étagère de cassettes enregistrées à la maison. Chaque film est une VHS avec une étiquette jaunie écrite au feutre ; la bibliothèque est « l'étagère », le film à l'affiche est « dans le magnéto ».
+- **Palette** : étagère brun-noir, plastique noir, étiquettes crème ; moutarde pour l'action principale, bleu-vert pour OK, rouge passé pour le veto ; rayures délavées (rouge, orange, moutarde, bleu-vert) dans le logo. Thème sombre uniquement en v1.
+- **Typo** : Archivo (italique large et grasse pour les titres et boutons, normale pour le texte), Permanent Marker pour les titres de films sur les étiquettes, IBM Plex Mono pour les compteurs.
+- **Machine** : l'étagère défile puis ralentit, une cassette sort, entre dans le magnéto (LED « PLAY »), puis la jaquette apparaît. Sons mécaniques courts.
+- **Interdits** : horreur, codes du cinéma classique (rideau, dorures), reflets irisés.
 
 ---
 
@@ -417,7 +418,7 @@ Seuils de couverture bloquants en CI (proposition : 100 % `shared`, ≥ 90 % `ap
 | Emails | SMTP dès la v1 (vérification + mot de passe oublié). |
 | Serveur | Nginx existant comme reverse proxy ; prod + staging sur la même machine (≥ 4 Go de RAM). |
 | SMTP | Brevo. |
-| Direction visuelle | B. Grand écran art déco. |
+| Direction visuelle | Vieilles VHS (charte dans `design/charte-graphique.html`). |
 | Repo | Public, licence MIT. |
 | Perso | Tirage local, sans veto. |
 | Backend | API TypeScript sur serveur perso sous Docker. |
@@ -426,7 +427,7 @@ Seuils de couverture bloquants en CI (proposition : 100 % `shared`, ≥ 90 % `ap
 | Invitations | Lien (domaine dispo) ou recherche par pseudo. |
 | Build | APK buildé dans GitHub Actions ; mises à jour OTA via EAS Update. |
 | Qualité | Couverture maximale, CI/CD complète, envs dev / staging / prod. |
-| Maquette | Artifact (HTML cliquable) en direction art déco. |
+| Maquette | Artifact (HTML cliquable), à refaire en direction Vieilles VHS. |
 | Plus tard | Tirage pondéré, Letterboxd, TikTok / Insta, thèmes, swipe, journal, iOS, séries, Google Play. |
 
 ---
