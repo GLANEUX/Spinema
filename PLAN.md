@@ -212,7 +212,8 @@ Supabase auto-hébergé est possible mais lourd (une dizaine de conteneurs) pour
 | Temps réel | **WebSocket** (Socket.IO) — une room par salon pour la machine à sous et les votes |
 | Jobs | pg-boss (file de tâches dans Postgres) : rafraîchissement du cache TMDB, expiration des invitations, fin des délais de vote, rappels 24 h, plus tard synchro Letterboxd |
 | Données films | **TMDB API** via l'API (clé cachée côté serveur, cache en base) |
-| Emails | **SMTP dès la v1** (Nodemailer) : vérification d'email, mot de passe oublié. Fournisseur à choisir (§11). |
+| Emails | **SMTP dès la v1** (Nodemailer) : vérification d'email, mot de passe oublié. Fournisseur **Brevo** (300 mails/jour gratuits, données en UE), domaine d'envoi avec SPF / DKIM / DMARC. |
+| Hébergement | Serveur perso (≥ 4 Go de RAM). **Prod et staging sur la même machine** : deux stacks Docker Compose séparées (bases distinctes), sous-domaines `<domaine>` et `staging.<domaine>`. |
 | Push | Expo Push → FCM |
 | Reverse proxy | **Nginx existant** sur le serveur : un bloc `server` par domaine (API + WebSocket, page web), certificats Let's Encrypt |
 | Observabilité | Logs structurés (pino), healthcheck, Sentry (app + API) optionnel |
@@ -340,6 +341,13 @@ Fiche film : affiche, backdrop, date, genres, durée, classification, synopsis, 
              [Ajouter à… (mon À voir / À voir commun / collections)] [Partager avec… ☑] [Je l'ai vu]
 ```
 
+### Direction visuelle : grand écran art déco
+- **Palette** : bordeaux profond (fonds), or (accents, cadres, boutons), crème (textes, cartes). Thème sombre par défaut.
+- **Typo** : serif art déco pour les titres (ex. Limelight, Poiret One), sans serif lisible pour le texte courant.
+- **Machine** : rouleau en **pellicule 35 mm perforée** qui fait défiler les affiches ; le film gagnant est révélé par un **rideau rouge** qui s'ouvre.
+- **À l'affiche** : présenté comme un fronton de cinéma (marquee) avec ampoules.
+- **Motifs** : éventails, chevrons et filets dorés art déco, avec parcimonie pour laisser les affiches respirer.
+
 ---
 
 ## 8. Qualité, tests et CI/CD
@@ -407,7 +415,9 @@ Seuils de couverture bloquants en CI (proposition : 100 % `shared`, ≥ 90 % `ap
 | Son | Effets sonores de la machine activés par défaut, désactivables. |
 | Langue | Français, i18n dès le départ ; titre FR + titre original. |
 | Emails | SMTP dès la v1 (vérification + mot de passe oublié). |
-| Serveur | Nginx existant comme reverse proxy. |
+| Serveur | Nginx existant comme reverse proxy ; prod + staging sur la même machine (≥ 4 Go de RAM). |
+| SMTP | Brevo. |
+| Direction visuelle | B. Grand écran art déco. |
 | Repo | Public, licence MIT. |
 | Perso | Tirage local, sans veto. |
 | Backend | API TypeScript sur serveur perso sous Docker. |
@@ -416,21 +426,11 @@ Seuils de couverture bloquants en CI (proposition : 100 % `shared`, ≥ 90 % `ap
 | Invitations | Lien (domaine dispo) ou recherche par pseudo. |
 | Build | APK buildé dans GitHub Actions ; mises à jour OTA via EAS Update. |
 | Qualité | Couverture maximale, CI/CD complète, envs dev / staging / prod. |
-| Maquette | Artifact (HTML cliquable), après choix de la direction visuelle. |
+| Maquette | Artifact (HTML cliquable) en direction art déco. |
 | Plus tard | Tirage pondéré, Letterboxd, TikTok / Insta, thèmes, swipe, journal, iOS, séries, Google Play. |
 
 ---
 
 ## 11. Questions ouvertes
 
-Les questions précédentes (vetos, âge, à l'affiche, cycle de vie, invitations, produit, repo) sont tranchées et reportées dans le plan et au §10.
-
-### Infra
-1. **Fournisseur SMTP** : Brevo (300 mails/jour gratuits) ou Resend (3 000/mois gratuits) ? Il faudra un domaine d'envoi avec SPF / DKIM.
-2. **Serveur** : machine (CPU / RAM), staging sur le même serveur que la prod (deux stacks Docker, deux sous-domaines) ?
-
-### Design
-3. Choix de la direction visuelle pour la maquette :
-   - **A. Néon de casino rétro** — fond noir violacé, néons rose / cyan, machine à sous avec levier et ampoules qui clignotent, typo display rétro.
-   - **B. Grand écran art déco** — bordeaux, or et crème, rideau rouge qui s'ouvre sur l'affiche gagnante, rouleau en pellicule 35 mm perforée, typo serif art déco. Colle bien à « À l'affiche ».
-   - **C. Sombre minimaliste** — anthracite + une couleur d'accent, les affiches font tout le travail, rouleau d'affiches avec flou de mouvement, typo sans serif moderne.
+Aucune pour l'instant : toutes les questions sont tranchées et reportées dans le plan et au §10. Les nouvelles questions qui apparaîtront pendant la réalisation seront ajoutées ici.
