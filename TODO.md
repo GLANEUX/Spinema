@@ -10,8 +10,8 @@
 - [x] Page web : accueil, `/i/<code>`, `assetlinks.json`
 - [x] Docker Compose (db, api, web) et compose de dev
 - [x] CI : format, lint, typecheck, tests avec couverture, build, expo-doctor, image Docker sur GHCR
-- [ ] Pousser sur GitHub et vérifier que la CI passe
-- [ ] Tester l'app sur le Galaxy A56 avec Expo Go
+- [x] Pousser sur GitHub et vérifier que la CI passe (sauf GitGuardian : faux positif sur un ancien mot de passe d'exemple)
+- [x] Tester l'app sur le Galaxy A56 avec Expo Go (WSL en réseau « mirrored »)
 - [ ] Déploiement staging : stack `docker compose` sur le serveur (`staging.<domaine>`), job CI qui fait `docker compose pull && up -d` en SSH (secrets : hôte, utilisateur, clé)
 - [ ] Build APK signé dans GitHub Actions (`eas build --local`, keystore en secret) sur les tags `v*`
 - [ ] EAS Update (canaux `staging` et `production`)
