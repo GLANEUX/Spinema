@@ -102,7 +102,21 @@ pnpm build
 pnpm format:check
 ```
 
-Couverture minimale : 100 % pour `packages/shared`, 90 % pour l'API, 80 % pour l'app. La CI GitHub Actions ([.github/workflows/ci.yml](.github/workflows/ci.yml)) lance tout ça sur chaque pull request, puis construit l'image Docker de l'API et la publie sur GHCR à chaque push sur `main`.
+Couverture minimale : 100 % pour `packages/shared`, 90 % pour l'API, 80 % pour l'app. La CI GitHub Actions ([.github/workflows/ci.yml](.github/workflows/ci.yml)) lance tout ça sur chaque pull request et sur `dev`, `preprod` et `main` (voir « Branches et versions »).
+
+## Branches et versions
+
+| Branche            | Rôle                                                  | Ce que lance GitHub                                                                      |
+| ------------------ | ----------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `dev` (par défaut) | Travail de tous les jours, les PR arrivent ici        | Vérifications rapides (format, lint, types, tests, build)                                |
+| `preprod`          | Version à tester : on y fusionne `dev`                | + APK « Spinema préprod » (release `preprod`) et image Docker `:preprod` pour le staging |
+| `main`             | Production : on y fusionne `preprod` une fois validée | + APK et AAB de prod (release `v<version>`) et image Docker `:main`                      |
+
+- Les builds Android (~25 min) ne tournent que sur `preprod` et `main`, pour économiser les minutes GitHub Actions. Un build à la main reste possible : onglet Actions > Android > Run workflow.
+- **Avant de fusionner dans `main`**, augmenter `version` dans [apps/mobile/app.config.ts](apps/mobile/app.config.ts) : le build s'arrête si cette version est déjà publiée.
+- L'app préprod s'appelle « Spinema préprod », s'installe à côté de la vraie et affiche un bout de scotch « préprod ».
+- Les adresses de l'API pour chaque variante sont des variables GitHub : `API_URL_PREVIEW` et `API_URL_PRODUCTION`.
+- La clé de signature Android se crée une fois avec `./scripts/create-android-keystore.sh` (il enregistre lui-même les secrets GitHub).
 
 ## Variables d'environnement
 
