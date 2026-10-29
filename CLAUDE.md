@@ -14,6 +14,7 @@ Spinema : app Android (Expo) + API TypeScript, en monorepo pnpm. Le plan produit
 
 ## Conventions
 
+- Branches : on travaille sur `dev` (branche par défaut, cible des PR) ; `dev` → `preprod` pour une version de test (APK préprod, staging) ; `preprod` → `main` pour la prod. Augmenter `version` dans `apps/mobile/app.config.ts` avant de fusionner dans `main`.
 - La logique de tirage, de filtres et de votes vit dans `packages/shared/src/draw.ts`, en fonctions pures testées à 100 %.
 - Les paquets `@spinema/*` exportent leurs sources TypeScript ; l'API les embarque au build (tsup).
 - `node-linker=hoisted` est requis par Expo (Metro).

@@ -1,0 +1,35 @@
+version: 2
+updates:
+  # pnpm workspaces are handled by the npm ecosystem.
+  - package-ecosystem: npm
+    directory: /
+    target-branch: dev
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    groups:
+      dev-tools:
+        dependency-type: development
+      runtime:
+        dependency-type: production
+    ignore:
+      # Expo pins these per SDK: upgrade them with `expo install --fix` when moving to a new SDK.
+      - dependency-name: 'expo*'
+      - dependency-name: 'react'
+      - dependency-name: 'react-native*'
+      - dependency-name: '@react-native/*'
+      - dependency-name: 'jest-expo'
+      # typescript-eslint does not support TypeScript 7 yet.
+      - dependency-name: 'typescript'
+        versions: ['>=7']
+  - package-ecosystem: github-actions
+    directory: /
+    target-branch: dev
+    schedule:
+      interval: monthly
+  - package-ecosystem: docker
+    directory: /apps/api
+    target-branch: dev
+    schedule:
+      interval: monthly
