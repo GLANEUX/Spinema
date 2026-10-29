@@ -1,0 +1,11 @@
+**/node_modules
+**/dist
+**/coverage
+**/.turbo
+**/.expo
+.git
+.env
+.env.*
+apps/mobile
+design
+mockup
