@@ -71,10 +71,21 @@ button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
   repeating-linear-gradient(90deg, #2b211a 0 14px, #30251d 14px 16px, #2b211a 16px 30px, rgba(217,164,65,.07) 30px 31px); }
 .topbar { display: flex; align-items: center; gap: 10px; padding: 10px 14px 8px; position: relative; z-index: 5; }
 .tape-label { border: 0; background: var(--scotch); color: var(--feutre); font: 400 15px/1 var(--f-feutre); padding: 7px 12px 5px; transform: rotate(var(--r, -1.5deg)); clip-path: polygon(0 6%, 4% 0, 96% 3%, 100% 0, 98% 94%, 100% 100%, 3% 97%, 0 100%); }
-.space-btn { margin-left: auto; max-width: 56%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.knob { width: 34px; height: 34px; border-radius: 50%; border: 0; background: radial-gradient(circle at 40% 35%, #4a4542, #1d1a18 70%); box-shadow: 0 2px 0 #000, inset 0 0 0 2px #2c2826; position: relative; }
-.knob::after { content: ""; position: absolute; left: 50%; top: 5px; width: 3px; height: 10px; margin-left: -1.5px; border-radius: 2px; background: var(--etiquette); transform-origin: 50% 12px; transform: rotate(var(--a, 40deg)); transition: transform .2s; }
-.knob[aria-pressed="false"] { --a: -60deg; }
+.space-btn { margin-left: auto; min-width: 0; max-width: 60%; display: flex; align-items: center; gap: 8px; border: 0; background: var(--etiquette); color: var(--feutre); padding: 5px 5px 5px 11px; border-radius: 7px; box-shadow: 0 3px 0 #9c8f72, 0 6px 10px rgba(0,0,0,.35); text-align: left; }
+.space-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #9c8f72; }
+.space-btn span { display: grid; min-width: 0; line-height: 1.05; }
+.space-btn small { font: 700 13px/1 var(--f-main); color: #6b5e50; }
+.space-btn b { font: 400 15px/1.1 var(--f-feutre); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.space-btn i { flex: none; width: 26px; height: 26px; border-radius: 50%; background: var(--feutre); color: var(--etiquette); display: grid; place-items: center; font: 900 11px/1 var(--f-ui); font-style: normal; }
+.sound { flex: none; display: flex; align-items: center; gap: 5px; border: 0; background: linear-gradient(#3c3734, #2a2624); color: var(--etiquette); padding: 8px 9px; border-radius: 7px; box-shadow: 0 3px 0 #0e0c0b; font: 800 11px/1 var(--f-ui); }
+.sound:active { transform: translateY(2px); box-shadow: 0 1px 0 #0e0c0b; }
+.sound svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.sound .led { width: 7px; height: 7px; border-radius: 50%; background: var(--led); box-shadow: 0 0 6px var(--led); }
+.sound .x { display: none; }
+.sound[aria-pressed="false"] { color: var(--poussiere); }
+.sound[aria-pressed="false"] .led { background: #3a3532; box-shadow: none; }
+.sound[aria-pressed="false"] .wave { display: none; }
+.sound[aria-pressed="false"] .x { display: inline; }
 .space-menu { position: absolute; top: calc(var(--sb) + 50px); right: 12px; z-index: 30; display: grid; gap: 8px; justify-items: end; padding: 6px; }
 .space-menu button { --r: 1deg; }
 .space-menu button:nth-child(2) { --r: -2deg; } .space-menu button:nth-child(3) { --r: .5deg; }
@@ -102,9 +113,16 @@ button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .jet.used { background: none; box-shadow: inset 0 0 0 1.5px rgba(196,87,74,.6); }
 .pola .stamp { position: absolute; inset: 5px 5px auto; aspect-ratio: 1; display: grid; place-items: center; font: 400 44px/1 var(--f-feutre); transform: rotate(-12deg); text-shadow: 0 0 2px rgba(0,0,0,.3); }
 .pola .stamp.ok { color: #2e6f6b; } .pola .stamp.no { color: #b2362a; }
+.polas.sm { min-height: 0; padding-top: 8px; gap: 16px; }
+.polas.sm .pola { width: 54px; padding: 4px 4px 2px; }
+.polas.sm .ph { font-size: 22px; }
+.polas.sm .nm { font-size: 15px; padding-top: 1px; }
+.polas.sm .stamp { font-size: 34px; inset: 4px 4px auto; }
+.polas.sm .jets { bottom: 14px; }
+.polas.sm .jet { width: 12px; height: 12px; }
 
 /* ---------- Upright VHS on a plank ---------- */
-.plank { position: relative; height: 196px; padding: 0 0 0; }
+.plank { position: relative; height: 150px; }
 .plank::after { content: ""; position: absolute; left: -14px; right: -14px; bottom: 0; height: 14px; background: linear-gradient(#6a5140, #4a382b 40%, #2f241c); box-shadow: 0 8px 12px rgba(0,0,0,.45); }
 .plank .row { position: absolute; left: 0; bottom: 14px; display: flex; align-items: flex-end; gap: 4px; will-change: transform; }
 .vt { flex: none; width: 34px; height: var(--h, 168px); background: linear-gradient(90deg, #191716, #2a2725 30%, #1f1c1b); border-radius: 2px 2px 1px 1px; padding: 7px 4px 10px; display: flex; flex-direction: column; align-items: center; gap: 4px; position: relative; border: 0; color: inherit; transition: transform .38s cubic-bezier(.2,.9,.3,1.3); }
@@ -122,8 +140,11 @@ button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .plank-tag { position: absolute; left: 6px; bottom: -6px; z-index: 2; font-size: 13px; --r: -3deg; }
 
 /* ---------- TV + VCR + remote ---------- */
-.console { display: grid; grid-template-columns: minmax(0, 1fr) 70px; gap: 6px; align-items: end; }
-.tv-stack { display: grid; gap: 0; position: relative; }
+.console { display: grid; grid-template-columns: minmax(0, 1fr) 64px; gap: 6px; align-items: end; }
+.tv-stack { display: grid; gap: 0; position: relative; width: 100%; max-width: 250px; justify-self: center; }
+.tv-stack .tv { border: 0; color: inherit; text-align: left; width: 100%; }
+.vcr .vk { border: 0; border-radius: 3px; background: linear-gradient(#4a4440, #34302d); color: var(--etiquette); font: 800 10px/1 var(--f-ui); padding: 5px 7px 4px; box-shadow: 0 2px 0 #0e0c0b; }
+.vcr .vk:active { transform: translateY(1px); box-shadow: none; }
 .tv { background: linear-gradient(#34302d, #211e1c); border-radius: 16px 16px 10px 10px; padding: 12px 12px 10px; box-shadow: 0 10px 18px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.08); display: grid; gap: 7px; position: relative; }
 .screen-crt { position: relative; aspect-ratio: 4 / 3; border-radius: 22px / 26px; overflow: hidden; background: #070707; box-shadow: inset 0 0 22px rgba(0,0,0,.9), 0 0 0 3px #121010; }
 .screen-crt .pic { position: absolute; inset: 0; display: grid; align-content: end; padding: 12px; background: radial-gradient(circle at 72% 28%, color-mix(in srgb, var(--c2) 85%, transparent) 0 20%, transparent 21%), linear-gradient(165deg, var(--c1) 35%, color-mix(in srgb, var(--c1) 55%, var(--c2))); }
@@ -200,9 +221,17 @@ button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .meta-hand { margin: -4px 0 0; text-align: center; font: 700 19px/1.1 var(--f-main); color: var(--poussiere); }
 
 /* ---------- Étagère screen ---------- */
-.sorter { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; padding-top: 6px; }
-.sorter button { border: 0; background: none; font: 700 21px/1 var(--f-main); color: var(--poussiere); padding: 4px 2px; }
-.sorter button[aria-pressed="true"] { color: var(--etiquette); text-decoration: underline wavy var(--moutarde) 2px; text-underline-offset: 6px; }
+.page-head { display: grid; gap: 2px; padding-top: 4px; }
+.page-head h2 { margin: 0; font: 400 28px/1.05 var(--f-feutre); color: var(--etiquette); }
+.page-head p { margin: 0; font: 700 18px/1.15 var(--f-main); color: var(--poussiere); }
+.sorter { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.sorter button { border: 0; border-radius: 6px; background: linear-gradient(#3c3734, #2a2624); color: var(--poussiere); box-shadow: 0 3px 0 #0e0c0b; font: 700 17px/1 var(--f-main); padding: 9px 2px 7px; }
+.sorter button[aria-pressed="true"] { background: var(--etiquette); color: var(--feutre); box-shadow: 0 3px 0 #9c8f72; }
+.sec-title { margin: 6px 0 -6px; font: 700 21px/1 var(--f-main); color: var(--etiquette); }
+.cartons { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 14px; padding-top: 6px; }
+.cartons .box { width: 100%; height: 96px; }
+.box .peek { position: absolute; left: 12px; top: -14px; display: flex; gap: 3px; z-index: 0; margin: 0; padding: 0; }
+.box .peek i { width: 14px; height: 30px; border-radius: 2px 2px 0 0; background: var(--c); box-shadow: inset 0 0 0 2px #1f1c1b; }
 .shelfwall { display: grid; gap: 22px; }
 .shelfwall .plank { height: auto; min-height: 190px; display: flex; align-items: flex-end; }
 .shelfwall .plank .row { position: relative; left: auto; bottom: auto; margin-bottom: 14px; flex-wrap: nowrap; }
@@ -217,7 +246,10 @@ button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .search-tape { width: 100%; border: 0; background: var(--scotch); color: var(--feutre); font: 700 22px/1 var(--f-main); padding: 12px 16px 9px; transform: rotate(-1deg); clip-path: polygon(0 6%, 3% 0, 97% 4%, 100% 0, 99% 95%, 100% 100%, 2% 96%, 0 100%); }
 .search-tape::placeholder { color: rgba(29,27,46,.55); }
 .crate { background: linear-gradient(#7a5a3f, #5e4430); border-radius: 4px; padding: 16px 12px 14px; box-shadow: inset 0 0 0 6px #4e3a29, 0 10px 18px rgba(0,0,0,.5); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px 10px; }
-.crate .item { position: relative; transform: rotate(var(--r)); }
+.crate .item { position: relative; transform: rotate(var(--r)); display: grid; gap: 8px; }
+.add-btn { border: 0; border-radius: 6px; padding: 8px 4px 6px; font: 700 16px/1 var(--f-main); background: var(--moutarde); color: var(--feutre); box-shadow: 0 3px 0 var(--moutarde-ombre); }
+.add-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--moutarde-ombre); }
+.add-btn:disabled { background: #2f4a48; color: var(--t-menthe); box-shadow: 0 3px 0 #1c2c2b; cursor: default; transform: none; }
 .jaq { display: grid; grid-template-columns: 12px 1fr; background: var(--plastique); padding: 5px 5px 5px 0; border-radius: 4px; box-shadow: 0 8px 14px rgba(0,0,0,.45); position: relative; border: 0; color: inherit; text-align: left; width: 100%; }
 .jaq::after { content: ""; position: absolute; inset: 0; border-radius: 4px; background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,.12) 45%, transparent 55%); pointer-events: none; }
 .jaq .spine { writing-mode: vertical-rl; transform: rotate(180deg); font: 400 9px/1 var(--f-feutre); color: var(--etiquette); text-align: center; overflow: hidden; white-space: nowrap; }
@@ -297,8 +329,8 @@ button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
     <div class="screens wall" id="screens">
       <header class="topbar">
         <span class="logo"><span class="stripes"></span><span class="word">Spinema</span></span>
-        <button class="tape-label space-btn" id="space-btn" aria-haspopup="true" aria-expanded="false"></button>
-        <button class="knob" id="sound-btn" aria-pressed="true" aria-label="Son"></button>
+        <button class="space-btn" id="space-btn" aria-haspopup="true" aria-expanded="false"><span><small id="space-kind">salon</small><b id="space-name"></b></span><i>▼</i></button>
+        <button class="sound" id="sound-btn" aria-pressed="true" aria-label="Son"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path class="wave" d="M16.5 9a4 4 0 0 1 0 6M19 6.5a7.5 7.5 0 0 1 0 11"/><path class="x" d="M16 9l5 6M21 9l-5 6"/></svg><span class="led"></span><b id="sound-state">ON</b></button>
       </header>
       <main class="scene" id="view"></main>
     </div>
@@ -415,7 +447,7 @@ function toast(msg) { const t = $('#toast'); t.innerHTML = `<span>${msg}</span>`
 /* ---------- Pieces ---------- */
 function vtHTML(f, o = {}) {
   const sp = space(), adders = shared() && o.dots ? f.add.filter(m => sp.members.includes(m)) : [];
-  const h = 150 + (hash(f.id) % 5) * 6;
+  const h = (o.short ? 112 : 150) + (hash(f.id) % 5) * (o.short ? 4 : 6);
   const cls = ['vt', o.seen && f.seen.includes(ME) ? 'seen' : '', hash(f.id) % 4 === 1 ? 'scotch' : ''].join(' ');
   return `<button class="${cls}" style="--h:${h}px" ${o.i != null ? `data-i="${o.i}"` : ''} ${o.open ? `data-action="sheet" data-id="${f.id}"` : 'tabindex="-1"'} aria-label="${f.t}">
     <span class="lbl${f.t.length < 9 ? ' short' : ''}" style="--lb:${tint(f.id)};--r:${tilt(f.id, .4)}deg">${f.t}</span>
@@ -430,8 +462,9 @@ function polaHTML(m, o = {}) {
     ${s && s.open && here ? `<span class="jets">${Array.from({ length: s.vetosPer }, (_, i) => `<i class="jet${i < v ? '' : ' used'}"></i>`).join('')}</span>` : ''}</button>`;
 }
 function tvHTML(f, o = {}) {
-  return `<div class="tv"><div class="screen-crt${o.tracking ? ' tracking' : ''}" id="${o.id || ''}">${f ? `<div class="pic" style="--c1:${f.c1};--c2:${f.c2}"><b>${f.t}</b></div>` : '<div class="snow"></div>'}${o.scribble ? `<div class="scribble">${o.scribble}</div>` : ''}</div>
-    <div class="chin"><span class="brand">SPINEMA · TRINITRON</span><span class="pwr"></span></div></div>`;
+  const tag = o.open && f ? 'button' : 'div';
+  return `<${tag} class="tv" ${o.open && f ? `data-action="sheet" data-id="${f.id}" aria-label="Dans le magnéto : ${f.t}. Ouvrir la fiche"` : ''}><div class="screen-crt${o.tracking ? ' tracking' : ''}">${f ? `<div class="pic" style="--c1:${f.c1};--c2:${f.c2}"><b>${f.t}</b></div>` : '<div class="snow"></div>'}${o.scribble ? `<div class="scribble">${o.scribble}</div>` : ''}</div>
+    <div class="chin"><span class="brand">SPINEMA</span><span class="pwr"></span></div></${tag}>`;
 }
 
 /* ---------- Machine ---------- */
@@ -440,14 +473,12 @@ function renderMachine() {
   const sp = space(), s = sess(), pool = computePool();
   const now = state.nowShowing[sp.id] && F(state.nowShowing[sp.id]);
   let h = '';
-  if (s) h += `<div class="polas">${sp.members.map(m => polaHTML(m, { toggle: s.open })).join('')}</div>`;
+  if (s) h += `<div class="polas sm">${sp.members.map(m => polaHTML(m, { toggle: s.open })).join('')}</div>`;
   h += `<div class="plank" id="plank"><div class="row" id="row"></div></div>`;
-  h += `<div class="console"><div class="tv-stack">
-      ${s && s.discarded.size ? `<div class="flat-tapes">${[...s.discarded].slice(-3).map(id => `<span><b>${F(id).t}</b></span>`).join('')}</div>` : ''}
-      ${tvHTML(now)}
-      <div class="vcr"><span class="slot"></span><span class="lcd" id="lcd">${now && !spinning ? '▶ PLAY' : `${String(pool.length).padStart(2, '0')} K7`}</span><span class="mini"><i></i><i></i><i></i></span></div></div>
+  h += `<div class="console"><div class="tv-stack">${tvHTML(now, { open: true })}
+      <div class="vcr"><span class="slot"></span><span class="lcd" id="lcd">${now ? '▶ PLAY' : `${String(pool.length).padStart(2, '0')} K7`}</span>
+        ${now ? `<span class="mini"><button class="vk" data-action="clear-now">⏏ éjecter</button><button class="vk" data-action="seen-now">✓ vu</button></span>` : ''}</div></div>
     <button class="remote-btn" data-action="remote" aria-label="Télécommande : séance et réglages"><span class="remote-mini"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><span>réglages</span></button></div>`;
-  if (now) h += `<div class="pair"><button class="key dark" data-action="clear-now">⏏ Éjecter</button><button class="key dark" data-action="seen-now">Je l'ai vu</button></div>`;
   if (s && !s.open) h += `<button class="key big" data-action="remote">● Ouvrir la séance</button>`;
   else {
     const imposed = s && totalVetos() === 0;
@@ -461,7 +492,7 @@ function renderMachine() {
 function idleShelf(pool) {
   const row = $('#row'); if (!row) return;
   const src = pool.length ? pool : space().films.map(F);
-  row.innerHTML = Array.from({ length: 14 }, (_, i) => vtHTML(src[i % src.length], { i })).join('');
+  row.innerHTML = Array.from({ length: 14 }, (_, i) => vtHTML(src[i % src.length], { i, short: true })).join('');
   row.style.transition = 'none'; row.style.transform = 'translateX(0)';
 }
 function spin() {
@@ -472,7 +503,7 @@ function spin() {
   const winner = pick(pool), n = 40, W = n - 6;
   const items = Array.from({ length: n }, () => pick(pool)); items[W] = winner;
   const row = $('#row'), plank = $('#plank');
-  row.innerHTML = items.map((f, i) => vtHTML(f, { i })).join('');
+  row.innerHTML = items.map((f, i) => vtHTML(f, { i, short: true })).join('');
   row.style.transition = 'none'; row.style.transform = 'translateX(0)'; void row.offsetWidth;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches, D = reduce ? 0 : 2800;
   const x = plank.clientWidth / 2 - (W * STEP + 17);
@@ -498,7 +529,7 @@ function reveal(f, imposed) {
 function drawWatch(f, o) {
   const s = sess();
   $('#watch').innerHTML = `<div class="scene">
-    ${s ? `<div class="polas">${space().members.filter(m => s.present.has(m)).map(m => polaHTML(m, { vote: vote ? vote.votes : null })).join('')}</div>` : ''}
+    ${s ? `<div class="polas sm">${space().members.filter(m => s.present.has(m)).map(m => polaHTML(m, { vote: vote ? vote.votes : null })).join('')}</div>` : ''}
     ${tvHTML(f, { tracking: !o.keep, scribble: o.scribble, id: 'crt' })}
     <div class="vcr"><span class="slot"></span><span class="lcd" id="w-lcd">${lcdText()}</span><span class="mini"><i></i><i></i><i></i></span></div>
     <p class="meta-hand">${f.y} · ${dur(f.min)} · ${f.g.join(', ').toLowerCase()} · <button data-action="sheet" data-id="${f.id}" style="border:0;background:none;padding:0;font:inherit;color:var(--etiquette);text-decoration:underline">le dos de la boîte</button></p>
@@ -572,25 +603,32 @@ function groupKey(f) {
   if (state.sort === 'durée') return f.min < 110 ? 'court' : f.min <= 130 ? 'moyen' : 'long';
   return null;
 }
+const cartonHTML = (key, label, fs, i) => `<button class="box" style="--r:${i % 2 ? 2 : -2}deg" data-action="box" data-c="${key}" aria-label="${label}, ${fs.length} films">
+  <span class="peek">${fs.slice(0, 4).map(f => `<i style="--c:${tint(f.id)}"></i>`).join('')}</span><span>${label}</span><small>${fs.length}</small></button>`;
+function shelfRows(fs) {
+  const rows = []; for (let i = 0; i < fs.length; i += 9) rows.push(fs.slice(i, i + 9)); return rows;
+}
 function renderLibrary() {
   const sp = space(), films = sp.films.map(F), toSee = films.filter(f => !f.seen.includes(ME)), seen = films.filter(f => f.seen.includes(ME));
-  let items = [];
-  if (state.sort === 'tout') items = toSee.map(f => ({ f }));
-  else {
-    const groups = {}; toSee.forEach(f => (groups[groupKey(f)] = groups[groupKey(f)] || []).push(f));
-    Object.keys(groups).sort().forEach(k => { items.push({ div: k }); groups[k].forEach(f => items.push({ f })); });
-  }
-  const rows = []; let cur = [], w = 0;
-  items.forEach(it => { const iw = it.div ? 50 : 38; if (w + iw > 352 && cur.length) { rows.push(cur); cur = []; w = 0; } cur.push(it); w += iw; });
-  if (cur.length) rows.push(cur);
   const cols = {}; films.forEach(f => f.col.forEach(c => (cols[c] = cols[c] || []).push(f)));
-  $('#view').innerHTML = `<div class="sorter">${['tout', 'genre', 'époque', 'durée'].map(k => `<button data-action="sort" data-k="${k}" aria-pressed="${state.sort === k}">${k}</button>`).join('')}</div>
-    <div class="shelfwall">${rows.map(r => `<div class="plank"><div class="row">${r.map(it => it.div ? `<span class="divider"><span>${it.div}</span></span>` : vtHTML(it.f, { open: true, dots: true })).join('')}</div></div>`).join('')}
-      ${seen.length ? `<div class="plank"><span class="tape-label plank-tag">déjà vus</span><div class="row">${seen.map(f => vtHTML(f, { open: true, seen: true })).join('')}</div></div>` : ''}</div>
-    <div class="boxes">${Object.entries(cols).map(([c, fs], i) => `<button class="box" style="--r:${i % 2 ? 2 : -2}deg" data-action="box" data-c="${c}"><span>${c}</span><small>${fs.length}</small></button>`).join('')}</div>`;
+  const SORTS = [['tout', 'étagère'], ['genre', 'genres'], ['époque', 'époques'], ['durée', 'durées']];
+  let body;
+  if (state.sort === 'tout') {
+    body = `<div class="shelfwall">${shelfRows(toSee).map(r => `<div class="plank"><div class="row">${r.map(f => vtHTML(f, { open: true, dots: true })).join('')}</div></div>`).join('')}</div>
+      ${seen.length ? `<p class="sec-title">Déjà vus</p><div class="shelfwall">${shelfRows(seen).map(r => `<div class="plank"><div class="row">${r.map(f => vtHTML(f, { open: true, seen: true })).join('')}</div></div>`).join('')}</div>` : ''}`;
+  } else {
+    const groups = {}; toSee.forEach(f => (groups[groupKey(f)] = groups[groupKey(f)] || []).push(f));
+    body = `<div class="cartons">${Object.keys(groups).sort().map((k, i) => cartonHTML('g:' + k, k, groups[k], i)).join('')}</div>`;
+  }
+  $('#view').innerHTML = `<div class="page-head"><h2>${shared() ? `Les films du salon` : 'Mes films à voir'}</h2><p>${toSee.length} cassettes à voir · touche-en une pour sa fiche</p></div>
+    <div class="sorter" role="group" aria-label="Ranger par">${SORTS.map(([k, l]) => `<button data-action="sort" data-k="${k}" aria-pressed="${state.sort === k}">${l}</button>`).join('')}</div>
+    ${body}
+    ${Object.keys(cols).length ? `<p class="sec-title">Mes boîtes</p><div class="cartons">${Object.entries(cols).map(([c, fs], i) => cartonHTML(c, c, fs, i + 1)).join('')}</div>` : ''}`;
 }
 function openBox(c) {
-  const fs = space().films.map(F).filter(f => f.col.includes(c));
+  const g = c.startsWith('g:') ? c.slice(2) : null;
+  const fs = space().films.map(F).filter(f => g ? !f.seen.includes(ME) && groupKey(f) === g : f.col.includes(c));
+  if (g) c = g;
   const el = $('#sheet');
   el.innerHTML = `<div class="back" style="background:linear-gradient(var(--carton),#a07a4c);color:var(--feutre)"><button class="x" data-action="close-sheet" aria-label="Fermer">✕</button>
     <h2 style="font:400 28px/1 var(--f-feutre);text-transform:none">${c}</h2>
@@ -603,10 +641,11 @@ function renderDiscover() {
   const q = state.query.trim().toLowerCase();
   const list = q ? ALL.filter(f => f.t.toLowerCase().includes(q) || f.dir.toLowerCase().includes(q)) : EXTRA;
   const inSpace = id => space().films.includes(id);
-  $('#view').innerHTML = `<input class="search-tape" id="search" type="search" placeholder="cherche un film…" aria-label="Rechercher un film" value="${state.query.replace(/"/g, '&quot;')}">
-    <p class="hand">${q ? `${list.length} trouvé${list.length > 1 ? 's' : ''}` : 'le bac des nouveautés'}</p>
+  $('#view').innerHTML = `<div class="page-head"><h2>Trouver des films</h2><p>Ajoute-les à ${shared() ? `l'étagère de ${space().name}` : 'ton étagère'} pour pouvoir les piocher.</p></div>
+    <input class="search-tape" id="search" type="search" placeholder="cherche un titre, un réalisateur…" aria-label="Rechercher un film" value="${state.query.replace(/"/g, '&quot;')}">
+    <p class="sec-title">${q ? `${list.length} trouvé${list.length > 1 ? 's' : ''}` : 'Les nouveautés'}</p>
     <div class="crate">${list.map(f => `<div class="item" style="--r:${tilt(f.id, .8)}deg"><button class="jaq" data-action="sheet" data-id="${f.id}" aria-label="${f.t}">${jaqHTML(f)}</button>
-      <button class="sticker${inSpace(f.id) ? ' done' : ''}" data-action="add" data-id="${f.id}" ${inSpace(f.id) ? 'disabled aria-label="Déjà sur l\'étagère"' : 'aria-label="Ranger sur l\'étagère"'}>${inSpace(f.id) ? '✓' : '+'}</button></div>`).join('') || '<p class="hand dim" style="grid-column:1/-1">Rien dans le bac.</p>'}</div>`;
+      <button class="add-btn" data-action="add" data-id="${f.id}" ${inSpace(f.id) ? 'disabled' : ''}>${inSpace(f.id) ? '✓ ajouté' : '+ ajouter'}</button></div>`).join('') || '<p class="hand dim" style="grid-column:1/-1">Aucun film trouvé.</p>'}</div>`;
 }
 
 /* ---------- Profil ---------- */
@@ -640,12 +679,18 @@ function openSheet(id) {
 function closeSheet() { const el = $('#sheet'); el.classList.remove('open'); setTimeout(() => { el.hidden = true; }, 360); }
 
 /* ---------- Navigation ---------- */
-const TABS = [['machine', 'Machine', '-2deg'], ['library', 'Étagère', '1.5deg'], ['discover', 'Bac', '-1deg'], ['profile', 'Moi', '2deg']];
+const TABS = [['machine', 'Machine', '-2deg'], ['library', 'Étagère', '1.5deg'], ['discover', 'Trouver', '-1deg'], ['profile', 'Moi', '2deg']];
 function renderAll() {
-  $('#space-btn').textContent = space().name + ' ▾';
-  $('#sound-btn').setAttribute('aria-pressed', String(state.sound));
+  $('#space-name').textContent = space().name;
+  $('#space-kind').textContent = shared() ? 'salon · changer' : 'mon espace · changer';
+  setSound();
   $('#tabs').innerHTML = TABS.map(([k, l, r]) => `<button role="tab" data-tab="${k}" aria-selected="${state.tab === k}" style="--r:${r}">${l}</button>`).join('');
   ({ machine: renderMachine, library: renderLibrary, discover: renderDiscover, profile: renderProfile })[state.tab]();
+}
+function setSound() {
+  $('#sound-btn').setAttribute('aria-pressed', String(state.sound));
+  $('#sound-btn').setAttribute('aria-label', state.sound ? 'Son activé, toucher pour couper' : 'Son coupé, toucher pour activer');
+  $('#sound-state').textContent = state.sound ? 'ON' : 'OFF';
 }
 function toggleMenu(open) {
   const m = $('#space-menu'); m.hidden = !open; $('#space-btn').setAttribute('aria-expanded', String(open));
@@ -658,7 +703,7 @@ document.addEventListener('click', e => {
   const t = e.target.closest('[data-action], [data-tab], #space-btn, #sound-btn');
   if (!t) { if (!e.target.closest('#space-menu')) toggleMenu(false); return; }
   if (t.id === 'space-btn') return toggleMenu($('#space-menu').hidden);
-  if (t.id === 'sound-btn') { state.sound = !state.sound; SND.click(); return renderAll(); }
+  if (t.id === 'sound-btn') { state.sound = !state.sound; SND.click(); setSound(); toast(state.sound ? 'Son activé' : 'Son coupé'); if (state.tab === 'profile') renderProfile(); return; }
   if (t.dataset.tab) { state.tab = t.dataset.tab; $('#screens').scrollTop = 0; return renderAll(); }
   const a = t.dataset.action, s = sess();
   if (t.classList.contains('rk')) SND.click();
@@ -691,7 +736,7 @@ document.addEventListener('click', e => {
   }
 });
 document.addEventListener('change', e => {
-  if (e.target.id === 'pref-sound') { state.sound = e.target.checked; $('#sound-btn').setAttribute('aria-pressed', String(state.sound)); }
+  if (e.target.id === 'pref-sound') { state.sound = e.target.checked; setSound(); }
   if (e.target.id === 'pref-notif') state.notif = e.target.checked;
 });
 document.addEventListener('input', e => {
