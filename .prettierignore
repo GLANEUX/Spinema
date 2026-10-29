@@ -1,0 +1,8 @@
+pnpm-lock.yaml
+dist
+coverage
+.turbo
+design
+mockup
+packages/db/drizzle
+PLAN.md

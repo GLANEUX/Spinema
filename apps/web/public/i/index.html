@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Invitation Spinema</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <main>
+      <span class="logo"><i></i><b>SPINEMA</b></span>
+      <div class="ticket">
+        <h1>Tu es invité·e dans un salon</h1>
+        <p>Ouvre l'invitation dans l'app. Le propriétaire du salon validera ta demande.</p>
+      </div>
+      <a class="key" id="open" href="spinema://">Ouvrir dans Spinema</a>
+      <a href="/">Je n'ai pas encore l'app</a>
+    </main>
+    <script>
+      // /i/<code> : with App Links the app opens directly; this page is the fallback.
+      const code = location.pathname.split('/').filter(Boolean)[1] ?? '';
+      document.getElementById('open').href = `spinema://i/${encodeURIComponent(code)}`;
+    </script>
+  </body>
+</html>
