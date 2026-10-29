@@ -12,7 +12,8 @@
 - [x] CI : format, lint, typecheck, tests avec couverture, build, expo-doctor, image Docker sur GHCR
 - [x] Pousser sur GitHub et vérifier que la CI passe (sauf GitGuardian : faux positif sur un ancien mot de passe d'exemple)
 - [x] Tester l'app sur le Galaxy A56 avec Expo Go (WSL en réseau « mirrored »)
-- [ ] Déploiement staging : stack `docker compose` sur le serveur (`staging.<domaine>`), job CI qui fait `docker compose pull && up -d` en SSH (secrets : hôte, utilisateur, clé)
+- [x] Staging : stack [infra/staging](infra/staging), job CI « Deploy staging » sur `preprod` (clé SSH limitée à `deploy.sh`)
+- [ ] Lancer `./scripts/setup-staging-server.sh <domaine>` (à faire soi-même, après les DNS `staging.` et `api.staging.`), puis pousser `dev` sur `preprod` pour le premier déploiement
 - [x] Variantes de l'app : dev (Expo Go), préprod (« Spinema préprod », installable à côté), prod
 - [x] Branches `dev` / `preprod` / `main` ; build Android avec Gradle seulement sur `preprod` (APK préprod) et `main` (APK + AAB, release `v<version>`)
 - [ ] Créer la clé de signature : `./scripts/create-android-keystore.sh` (à lancer soi-même), puis mettre l'empreinte SHA-256 dans `assetlinks.json`
@@ -22,7 +23,8 @@
 - [ ] Tests e2e Maestro sur émulateur
 - [x] Tests de la base sur un vrai Postgres (Testcontainers)
 - [x] Scripts de sauvegarde quotidienne et de test de restauration (`infra/backup/`)
-- [ ] Les mettre en cron sur le serveur et copier `backups/` hors du serveur
+- [x] Cron de sauvegarde sur le serveur (posé par `setup-staging-server.sh`)
+- [ ] Copier `/opt/spinema-staging/backups/` hors du serveur (rclone, rsync…)
 - [x] Dependabot (npm, GitHub Actions, Docker) ; secrets scannés par GitGuardian
 
 ## Améliorations connues

@@ -60,3 +60,36 @@ jobs:
             ghcr.io/glaneux/spinema-api:${{ github.ref_name }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  deploy-staging:
+    name: Deploy staging
+    # preprod -> staging server. Setup: ./scripts/setup-staging-server.sh (infra/staging/README.md).
+    if: github.event_name == 'push' && github.ref_name == 'preprod'
+    runs-on: ubuntu-latest
+    needs: api-image
+    concurrency: deploy-staging
+    permissions:
+      contents: read
+      packages: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy
+        env:
+          SSH_KEY: ${{ secrets.STAGING_SSH_KEY }}
+          SSH_HOST: ${{ vars.STAGING_SSH_HOST }}
+          KNOWN_HOSTS: ${{ vars.STAGING_SSH_KNOWN_HOSTS }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ -z "$SSH_KEY" ]; then
+            echo "::warning::No STAGING_SSH_KEY secret: staging not deployed (run ./scripts/setup-staging-server.sh)."
+            exit 0
+          fi
+          install -m 700 -d ~/.ssh
+          echo "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+          echo "$SSH_KEY" > ~/.ssh/deploy && chmod 600 ~/.ssh/deploy
+          # deploy.sh reads the registry token, then the stack files.
+          {
+            echo "$GH_TOKEN"
+            tar -cz --transform 's|^infra/staging/docker-compose.yml$|docker-compose.yml|' \
+              infra/staging/docker-compose.yml apps/web/public infra/nginx/web.conf infra/backup
+          } | ssh -i ~/.ssh/deploy "spinema@$SSH_HOST" deploy
