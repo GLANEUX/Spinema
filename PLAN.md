@@ -342,12 +342,13 @@ Fiche film : affiche, backdrop, date, genres, durée, classification, synopsis, 
 ```
 
 ### Direction visuelle : Vieilles VHS
-Charte complète : [`design/charte-graphique.html`](design/charte-graphique.html) (tokens, composants, mouvement, son, ton).
-- **Concept** : l'étagère de cassettes enregistrées à la maison. Chaque film est une VHS avec une étiquette jaunie écrite au feutre ; la bibliothèque est « l'étagère », le film à l'affiche est « dans le magnéto ».
-- **Palette** : étagère brun-noir, plastique noir, étiquettes crème ; moutarde pour l'action principale, bleu-vert pour OK, rouge passé pour le veto ; rayures délavées (rouge, orange, moutarde, bleu-vert) dans le logo. Thème sombre uniquement en v1.
-- **Typo** : Archivo (italique large et grasse pour les titres et boutons, normale pour le texte), Permanent Marker pour les titres de films sur les étiquettes, IBM Plex Mono pour les compteurs.
-- **Machine** : l'étagère défile puis ralentit, une cassette sort, entre dans le magnéto (LED « PLAY »), puis la jaquette apparaît. Sons mécaniques courts.
-- **Interdits** : horreur, codes du cinéma classique (rideau, dorures), reflets irisés.
+Charte complète : [`design/charte-graphique.html`](design/charte-graphique.html) (objets, tokens, mouvement, son, ton). Maquette de référence : [`mockup/spinema-maquette.html`](mockup/spinema-maquette.html), écran Galaxy A56 (384 × 832 px CSS).
+- **Concept** : un salon le soir. Au mur, l'étagère de cassettes enregistrées à la maison (étiquettes au feutre) et les polaroids des présents ; dessous, la télé cathodique sur le magnéto, et la télécommande.
+- **Principes** : des objets, pas des écrans (la télécommande règle, la télé montre, les cartons rangent) ; montrer plutôt qu'écrire (jetons de veto, « vu » au feutre, scotch sur une classification bloquée) ; tout ce qui se touche ressemble à une touche ; la Machine tient sans défiler.
+- **Écrans** : Machine (polaroids, planche, télé + magnéto, télécommande), Étagère (planches, puis cartons par genre / époque / durée et boîtes perso), Trouver (recherche, jaquettes avec « + ajouter »), Moi (tableau en liège ; le son ne se règle que là). La fiche d'un film est le dos de sa boîte VHS.
+- **Palette** : papier peint brun rayé, bois, plastique noir, étiquettes crème, scotch, carton, liège ; moutarde pour la touche principale, bleu-vert pour OK, rouge pour le veto ; rayures délavées dans le logo. Thème sombre uniquement en v1.
+- **Typo** : Permanent Marker (titres de page, étiquettes), Caveat (écriture à la main), Archivo (touches, imprimé, texte), IBM Plex Mono (afficheurs LED uniquement). Pas de petites capitales espacées pour titrer.
+- **Interdits** : horreur, codes du cinéma classique (rideau, dorures), reflets irisés, interface en cartes et panneaux.
 
 ---
 
