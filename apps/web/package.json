@@ -1,0 +1,6 @@
+{
+  "name": "@spinema/web",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Page d'invitation /i/<code>, assetlinks.json (Android App Links) et page de téléchargement de l'APK."
+}
