@@ -1,18 +1,15 @@
 name: Android
 
-# Builds the Android app with Gradle (no Expo account needed).
-# - pull request: preview APK, kept as a workflow artifact (checks that the app builds)
-# - push on main: preview APK "Spinema préprod", published on the "preprod" GitHub pre-release
-# - tag v*: production APK + AAB (Play Store), published on a GitHub release
+# Builds the Android app with Gradle (no Expo account needed). Android builds are slow
+# (~25 min), so they only run on the release branches:
+# - push on preprod: "Spinema préprod" APK, published on the "preprod" GitHub pre-release
+# - push on main: production APK + AAB (Play Store), published on the release v<version>
+# - manual run (Actions > Android > Run workflow) on any branch: préprod APK as an artifact
 on:
-  pull_request:
-    paths:
-      ['apps/mobile/**', 'packages/shared/**', 'pnpm-lock.yaml', '.github/workflows/android.yml']
   push:
-    branches: [main]
+    branches: [preprod, main]
     paths:
       ['apps/mobile/**', 'packages/shared/**', 'pnpm-lock.yaml', '.github/workflows/android.yml']
-    tags: ['v*']
   workflow_dispatch:
 
 concurrency:
@@ -26,10 +23,10 @@ jobs:
     permissions:
       contents: write
     env:
-      APP_VARIANT: ${{ startsWith(github.ref, 'refs/tags/v') && 'production' || 'preview' }}
+      APP_VARIANT: ${{ github.ref == 'refs/heads/main' && 'production' || 'preview' }}
       BUILD_NUMBER: ${{ github.run_number }}
       # API addresses are repository variables (Settings > Secrets and variables > Actions > Variables).
-      EXPO_PUBLIC_API_URL: ${{ startsWith(github.ref, 'refs/tags/v') && vars.API_URL_PRODUCTION || vars.API_URL_PREVIEW }}
+      EXPO_PUBLIC_API_URL: ${{ github.ref == 'refs/heads/main' && vars.API_URL_PRODUCTION || vars.API_URL_PREVIEW }}
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -44,6 +41,19 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
 
       - run: pnpm install --frozen-lockfile
+
+      - name: App version
+        id: version
+        working-directory: apps/mobile
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION=$(pnpm exec expo config --type public --json | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>console.log(JSON.parse(s).version))")
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          if [ "$APP_VARIANT" = production ] && gh release view "v$VERSION" >/dev/null 2>&1; then
+            echo "::error::La version $VERSION est déjà publiée. Augmente 'version' dans apps/mobile/app.config.ts avant de fusionner dans main."
+            exit 1
+          fi
 
       - name: Generate the native Android project
         working-directory: apps/mobile
@@ -78,7 +88,7 @@ jobs:
         id: files
         run: |
           mkdir -p out
-          NAME="spinema-${APP_VARIANT}-${GITHUB_REF_NAME//\//-}-${BUILD_NUMBER}"
+          NAME="spinema-${APP_VARIANT}-v${{ steps.version.outputs.version }}-${BUILD_NUMBER}"
           cp apps/mobile/android/app/build/outputs/apk/release/app-release.apk "out/$NAME.apk"
           if [ -f apps/mobile/android/app/build/outputs/bundle/release/app-release.aab ]; then
             cp apps/mobile/android/app/build/outputs/bundle/release/app-release.aab "out/$NAME.aab"
@@ -92,18 +102,19 @@ jobs:
           retention-days: 14
 
       - name: Publish préprod
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/preprod'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release view preprod >/dev/null 2>&1 || gh release create preprod --prerelease --title "Spinema préprod" \
-            --notes "Dernière version de test, reconstruite à chaque mise à jour de main. Installe le fichier .apk sur ton téléphone."
+            --notes "Dernière version de test, reconstruite à chaque mise à jour de la branche preprod. Installe le fichier .apk sur ton téléphone."
           for asset in $(gh release view preprod --json assets --jq '.assets[].name'); do gh release delete-asset preprod "$asset" -y; done
           gh release upload preprod out/*.apk
           gh release edit preprod --target "$GITHUB_SHA" --notes "Version de test nº ${BUILD_NUMBER} (commit ${GITHUB_SHA::7}). Installe le fichier .apk sur ton téléphone."
 
       - name: Publish release
-        if: startsWith(github.ref, 'refs/tags/v')
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "$GITHUB_REF_NAME" out/* --title "Spinema $GITHUB_REF_NAME" --generate-notes
+          VERSION: ${{ steps.version.outputs.version }}
+        run: gh release create "v$VERSION" out/* --target "$GITHUB_SHA" --title "Spinema v$VERSION" --generate-notes
