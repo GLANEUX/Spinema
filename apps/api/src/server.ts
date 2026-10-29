@@ -34,7 +34,8 @@ export async function buildServer({ env, pingDb }: ServerDeps) {
     });
   });
 
-  app.get('/health', async (_request, reply) => {
+  // Called every 30 s by the Docker healthcheck: only log it when something goes wrong.
+  app.get('/health', { logLevel: 'warn' }, async (_request, reply) => {
     const up = await pingDb();
     const body: Health = {
       status: up ? 'ok' : 'degraded',
