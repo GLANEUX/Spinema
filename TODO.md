@@ -14,7 +14,7 @@
 - [x] Tester l'app sur le Galaxy A56 avec Expo Go (WSL en réseau « mirrored »)
 - [ ] Déploiement staging : stack `docker compose` sur le serveur (`staging.<domaine>`), job CI qui fait `docker compose pull && up -d` en SSH (secrets : hôte, utilisateur, clé)
 - [x] Variantes de l'app : dev (Expo Go), préprod (« Spinema préprod », installable à côté), prod
-- [x] Build Android avec Gradle dans GitHub Actions : APK préprod sur `main`, APK + AAB sur les tags `v*`
+- [x] Branches `dev` / `preprod` / `main` ; build Android avec Gradle seulement sur `preprod` (APK préprod) et `main` (APK + AAB, release `v<version>`)
 - [ ] Créer la clé de signature : `./scripts/create-android-keystore.sh` (à lancer soi-même), puis mettre l'empreinte SHA-256 dans `assetlinks.json`
 - [ ] Variables GitHub `API_URL_PREVIEW` et `API_URL_PRODUCTION` (adresses de l'API staging et prod)
 - [ ] Play Console : créer l'app `com.glaneux.spinema`, envoyer le premier AAB à la main en test interne
