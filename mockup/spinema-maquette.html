@@ -1,0 +1,748 @@
+<title>Spinema</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,400..900;1,62..125,400..900&family=Caveat:wght@500;700&family=IBM+Plex+Mono:wght@600&family=Permanent+Marker&display=swap">
+<style>
+/* Layout: each screen is a scene in a living room (wallpaper, shelf, TV, VCR, remote, cork board); objects carry the state, almost no interface chrome. Single dark theme by choice. */
+:root {
+  color-scheme: dark;
+  --etagere: #1b1714; --etagere-haute: #2a211c; --bois: #3c2f27; --bois-clair: #5a4434; --plastique: #242120; --plastique-clair: #34302d;
+  --etiquette: #efe3c4; --poussiere: #a59b90; --feutre: #1d1b2e;
+  --moutarde: #d9a441; --moutarde-ombre: #8c6a28; --bleu-vert: #6fa3a0; --rouge: #a8453a; --orange: #f08a3c;
+  --led: #8dff9a; --led-fond: #071108; --scotch: rgba(236,222,176,.82); --carton: #b98f5e; --liege: #a9794b;
+  --t-paille: #e9d9a8; --t-menthe: #cfe0d6; --t-saumon: #f1c9b8; --t-lavande: #d6dcef;
+  --f-ui: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --f-feutre: "Permanent Marker", "Comic Sans MS", cursive;
+  --f-main: "Caveat", "Segoe Print", cursive;
+  --f-led: "IBM Plex Mono", "Courier New", monospace;
+}
+* { box-sizing: border-box; }
+html, body { min-height: 100%; }
+body {
+  margin: 0; background: #120f0d; color: var(--etiquette); font: 15px/1.45 var(--f-ui);
+  padding-block: 28px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+button, input { font: inherit; color: inherit; }
+button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+:focus-visible { outline: 2px solid var(--moutarde); outline-offset: 2px; }
+.stage { display: flex; flex-wrap: wrap; gap: 40px; justify-content: center; align-items: flex-start; max-width: 1040px; margin: 0 auto; }
+
+.logo { display: inline-flex; align-items: center; gap: .26em; font-size: var(--s, 18px); line-height: 1; }
+.logo .stripes { width: 1.02em; height: .7em; flex: none; transform: skewX(-14deg); background: linear-gradient(var(--rouge) 0 25%, var(--orange) 0 50%, var(--moutarde) 0 75%, var(--bleu-vert) 0); }
+.logo .word { font: italic 900 1em/1 var(--f-ui); font-stretch: 125%; text-transform: uppercase; letter-spacing: -.015em; color: var(--etiquette); }
+
+/* ---------- Notes (outside the phone) ---------- */
+.notes { flex: 1 1 280px; max-width: 360px; display: grid; gap: 16px; padding-top: 12px; }
+.notes .logo { --s: 40px; }
+.notes p { margin: 0; }
+.notes .sub { font-size: 16px; }
+.notes h2 { margin: 6px 0 0; font: 700 24px/1 var(--f-main); color: var(--moutarde); }
+.notes ol { margin: 0; padding-left: 20px; display: grid; gap: 8px; color: var(--poussiere); }
+.notes ol b { color: var(--etiquette); font-weight: 600; }
+.notes .fine { font-size: 13px; color: var(--poussiere); }
+
+/* ---------- Phone: Samsung Galaxy A56 (384 × 832 CSS px) ---------- */
+.device { flex: none; width: calc(400px * var(--k, 1)); height: calc(848px * var(--k, 1)); }
+.phone { --sb: 28px; --gb: 20px; position: relative; width: 384px; height: 832px; margin: 8px; transform: scale(var(--k, 1)); transform-origin: -8px -8px;
+  background: var(--etagere); border-radius: 38px; overflow: hidden; display: flex; flex-direction: column; isolation: isolate;
+  box-shadow: 0 0 0 6px #050505, 0 0 0 8px #3b3d42, 0 0 0 9px #1b1c1f, 0 30px 80px rgba(0,0,0,.6); }
+.phone::after { content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 90; background-image: var(--grain); background-size: 160px; opacity: .07; mix-blend-mode: overlay; }
+.statusbar { height: var(--sb); flex: none; display: flex; align-items: center; justify-content: space-between; padding: 4px 22px 0 26px; background: #15110f; font: 600 13px/1 var(--f-ui); position: relative; z-index: 70; }
+.statusbar .punch { position: absolute; left: 50%; top: 8px; width: 12px; height: 12px; margin-left: -6px; border-radius: 50%; background: #000; box-shadow: inset 0 0 0 2px #15161a; }
+.statusbar .sys { display: flex; gap: 5px; align-items: center; }
+.statusbar svg { width: 15px; height: 15px; fill: currentColor; }
+.statusbar .bat { width: 22px; height: 11px; border: 1.5px solid currentColor; border-radius: 3px; padding: 1px; position: relative; }
+.statusbar .bat::after { content: ""; position: absolute; right: -4px; top: 3px; width: 2px; height: 4px; background: currentColor; }
+.statusbar .bat i { display: block; height: 100%; width: 72%; background: currentColor; }
+.gesture { height: var(--gb); flex: none; background: #0e0b0a; display: grid; place-items: center; position: relative; z-index: 70; }
+.gesture i { width: 108px; height: 4px; border-radius: 2px; background: var(--poussiere); }
+@media (max-width: 520px) {
+  body { padding-block: 0; }
+  .device { width: calc(100% + 32px); height: auto; margin-inline: -16px; }
+  .phone { --sb: 0px; --gb: 0px; margin: 0; transform: none; border-radius: 0; box-shadow: none; width: 100%; height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)); min-height: 600px; }
+  .statusbar, .gesture { display: none; }
+  .notes { padding-bottom: 32px; }
+}
+
+/* ---------- Room ---------- */
+.wall { background:
+  radial-gradient(ellipse at 50% 0, rgba(255,214,140,.14), transparent 60%),
+  repeating-linear-gradient(90deg, #2b211a 0 14px, #30251d 14px 16px, #2b211a 16px 30px, rgba(217,164,65,.07) 30px 31px); }
+.topbar { display: flex; align-items: center; gap: 10px; padding: 10px 14px 8px; position: relative; z-index: 5; }
+.tape-label { border: 0; background: var(--scotch); color: var(--feutre); font: 400 15px/1 var(--f-feutre); padding: 7px 12px 5px; transform: rotate(var(--r, -1.5deg)); clip-path: polygon(0 6%, 4% 0, 96% 3%, 100% 0, 98% 94%, 100% 100%, 3% 97%, 0 100%); }
+.space-btn { margin-left: auto; min-width: 0; max-width: 66%; display: flex; align-items: center; gap: 8px; border: 0; background: var(--etiquette); color: var(--feutre); padding: 5px 5px 5px 11px; border-radius: 7px; box-shadow: 0 3px 0 #9c8f72, 0 6px 10px rgba(0,0,0,.35); text-align: left; }
+.space-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #9c8f72; }
+.space-btn span { display: grid; min-width: 0; line-height: 1.05; }
+.space-btn small { font: 700 13px/1 var(--f-main); color: #6b5e50; }
+.space-btn b { font: 400 15px/1.1 var(--f-feutre); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.space-btn i { flex: none; width: 26px; height: 26px; border-radius: 50%; background: var(--feutre); color: var(--etiquette); display: grid; place-items: center; font: 900 11px/1 var(--f-ui); font-style: normal; }
+.sound { flex: none; display: flex; align-items: center; gap: 5px; border: 0; background: linear-gradient(#3c3734, #2a2624); color: var(--etiquette); padding: 8px 9px; border-radius: 7px; box-shadow: 0 3px 0 #0e0c0b; font: 800 11px/1 var(--f-ui); }
+.sound:active { transform: translateY(2px); box-shadow: 0 1px 0 #0e0c0b; }
+.sound svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.sound .led { width: 7px; height: 7px; border-radius: 50%; background: var(--led); box-shadow: 0 0 6px var(--led); }
+.sound .x { display: none; }
+.sound[aria-pressed="false"] { color: var(--poussiere); }
+.sound[aria-pressed="false"] .led { background: #3a3532; box-shadow: none; }
+.sound[aria-pressed="false"] .wave { display: none; }
+.sound[aria-pressed="false"] .x { display: inline; }
+.space-menu { position: absolute; top: calc(var(--sb) + 50px); right: 12px; z-index: 30; display: grid; gap: 8px; justify-items: end; padding: 6px; }
+.space-menu button { --r: 1deg; }
+.space-menu button:nth-child(2) { --r: -2deg; } .space-menu button:nth-child(3) { --r: .5deg; }
+.space-menu button[aria-current="true"] { background: var(--moutarde); }
+.space-menu .new { background: none; color: var(--etiquette); font: 700 19px/1 var(--f-main); clip-path: none; }
+
+.screens { flex: 1; overflow-y: auto; overflow-x: hidden; position: relative; }
+.scene { min-height: 100%; padding: 4px 14px 22px; display: grid; gap: 16px; align-content: start; position: relative; }
+
+/* ---------- Tabs: masking tape on the shelf edge ---------- */
+.tabs { flex: none; display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 10px 10px 12px; background: linear-gradient(#4a382b, #3c2f27 30%, #33281f); box-shadow: inset 0 2px 0 rgba(255,255,255,.08), 0 -6px 14px rgba(0,0,0,.4); position: relative; z-index: 5; }
+.tabs button { border: 0; background: rgba(236,222,176,.45); color: var(--feutre); font: 400 14px/1 var(--f-feutre); padding: 9px 2px 7px; transform: rotate(var(--r)); opacity: .7; clip-path: polygon(0 8%, 5% 0, 95% 4%, 100% 0, 97% 92%, 100% 100%, 4% 96%, 0 100%); }
+.tabs button[aria-selected="true"] { background: var(--scotch); opacity: 1; transform: rotate(var(--r)) translateY(-3px); }
+
+/* ---------- Polaroids (members) ---------- */
+.polas { display: flex; justify-content: center; gap: 14px; padding-top: 10px; min-height: 104px; }
+.pola { position: relative; width: 70px; background: #f4efe4; padding: 5px 5px 4px; border: 0; color: var(--feutre); transform: rotate(var(--r)); box-shadow: 0 6px 12px rgba(0,0,0,.45); transition: filter .2s, transform .2s; }
+.pola::before { content: ""; position: absolute; top: -6px; left: 50%; width: 12px; height: 12px; margin-left: -6px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #ff8a7a, #a8453a 70%); box-shadow: 0 2px 2px rgba(0,0,0,.5); z-index: 2; }
+.pola .ph { display: grid; place-items: center; aspect-ratio: 1; background: radial-gradient(circle at 50% 38%, rgba(255,255,255,.25), transparent 60%), var(--tint); font: 400 30px/1 var(--f-feutre); color: rgba(29,27,46,.75); position: relative; overflow: hidden; }
+.pola .ph::after { content: ""; position: absolute; inset: 0; background: linear-gradient(160deg, rgba(255,255,255,.18), transparent 40%), radial-gradient(ellipse, transparent 55%, rgba(0,0,0,.25)); }
+.pola .nm { display: block; text-align: center; font: 700 17px/1.1 var(--f-main); padding-top: 3px; }
+.pola.away { filter: grayscale(1) brightness(.55); transform: rotate(var(--r)) translateY(6px); }
+.pola .jets { position: absolute; right: -7px; bottom: 18px; display: grid; gap: 2px; }
+.jet { width: 14px; height: 14px; border-radius: 50%; background: radial-gradient(circle, #c4574a 0 45%, #8f362d 46% 60%, #c4574a 61%); box-shadow: 0 1px 2px rgba(0,0,0,.6); }
+.jet.used { background: none; box-shadow: inset 0 0 0 1.5px rgba(196,87,74,.6); }
+.pola .stamp { position: absolute; inset: 5px 5px auto; aspect-ratio: 1; display: grid; place-items: center; font: 400 44px/1 var(--f-feutre); transform: rotate(-12deg); text-shadow: 0 0 2px rgba(0,0,0,.3); }
+.pola .stamp.ok { color: #2e6f6b; } .pola .stamp.no { color: #b2362a; }
+.polas.sm { min-height: 0; padding-top: 8px; gap: 16px; }
+.polas.sm .pola { width: 54px; padding: 4px 4px 2px; }
+.polas.sm .ph { font-size: 22px; }
+.polas.sm .nm { font-size: 15px; padding-top: 1px; }
+.polas.sm .stamp { font-size: 34px; inset: 4px 4px auto; }
+.polas.sm .jets { bottom: 14px; }
+.polas.sm .jet { width: 12px; height: 12px; }
+
+/* ---------- Upright VHS on a plank ---------- */
+.plank { position: relative; height: 150px; }
+.plank::after { content: ""; position: absolute; left: -14px; right: -14px; bottom: 0; height: 14px; background: linear-gradient(#6a5140, #4a382b 40%, #2f241c); box-shadow: 0 8px 12px rgba(0,0,0,.45); }
+.plank .row { position: absolute; left: 0; bottom: 14px; display: flex; align-items: flex-end; gap: 4px; will-change: transform; }
+.vt { flex: none; width: 34px; height: var(--h, 168px); background: linear-gradient(90deg, #191716, #2a2725 30%, #1f1c1b); border-radius: 2px 2px 1px 1px; padding: 7px 4px 10px; display: flex; flex-direction: column; align-items: center; gap: 4px; position: relative; border: 0; color: inherit; transition: transform .38s cubic-bezier(.2,.9,.3,1.3); }
+.vt .lbl { flex: 1; width: 100%; background: var(--lb); color: var(--feutre); writing-mode: vertical-rl; transform: rotate(180deg) rotate(var(--r, 0deg)); font: 400 15px/1 var(--f-feutre); display: flex; align-items: center; justify-content: center; white-space: nowrap; overflow: hidden; padding: 4px 0;
+  background-image: linear-gradient(0deg, rgba(120,80,30,.14), transparent 40%, rgba(120,80,30,.1)); }
+.vt .lbl.short { flex: 0 0 62%; }
+.vt .dots { display: flex; flex-direction: column; gap: 2px; }
+.vt .dots i { width: 7px; height: 7px; border-radius: 50%; background: var(--c); }
+.vt.seen .lbl { filter: saturate(.25) brightness(.78); }
+.vt.seen::after { content: "vu"; position: absolute; left: 50%; top: 42%; transform: translateX(-50%) rotate(-70deg); font: 400 16px/1 var(--f-feutre); color: #b2362a; }
+.vt.scotch::before { content: ""; position: absolute; left: -3px; right: -3px; top: 38%; height: 16px; background: var(--scotch); opacity: .8; transform: rotate(-6deg); z-index: 1; }
+.vt.pull { transform: translateY(-30px) rotate(-5deg); box-shadow: 0 0 0 2px var(--moutarde), 0 10px 20px rgba(0,0,0,.6); z-index: 3; }
+.divider { flex: none; width: 46px; height: 120px; background: var(--carton); border-radius: 6px 6px 0 0; position: relative; display: flex; justify-content: center; padding-top: 8px; box-shadow: inset -3px 0 0 rgba(0,0,0,.15); }
+.divider span { writing-mode: vertical-rl; transform: rotate(180deg); font: 700 18px/1 var(--f-main); color: var(--feutre); }
+.plank-tag { position: absolute; left: 6px; bottom: -6px; z-index: 2; font-size: 13px; --r: -3deg; }
+
+/* ---------- TV + VCR + remote ---------- */
+.console { display: grid; grid-template-columns: minmax(0, 1fr) 64px; gap: 6px; align-items: end; }
+.tv-stack { display: grid; gap: 0; position: relative; width: 100%; max-width: 250px; justify-self: center; }
+.tv-stack .tv { border: 0; color: inherit; text-align: left; width: 100%; }
+.vcr .vk { border: 0; border-radius: 3px; background: linear-gradient(#4a4440, #34302d); color: var(--etiquette); font: 800 10px/1 var(--f-ui); padding: 5px 7px 4px; box-shadow: 0 2px 0 #0e0c0b; }
+.vcr .vk:active { transform: translateY(1px); box-shadow: none; }
+.tv { background: linear-gradient(#34302d, #211e1c); border-radius: 16px 16px 10px 10px; padding: 12px 12px 10px; box-shadow: 0 10px 18px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.08); display: grid; gap: 7px; position: relative; }
+.screen-crt { position: relative; aspect-ratio: 4 / 3; border-radius: 22px / 26px; overflow: hidden; background: #070707; box-shadow: inset 0 0 22px rgba(0,0,0,.9), 0 0 0 3px #121010; }
+.screen-crt .pic { position: absolute; inset: 0; display: grid; align-content: end; padding: 12px; background: radial-gradient(circle at 72% 28%, color-mix(in srgb, var(--c2) 85%, transparent) 0 20%, transparent 21%), linear-gradient(165deg, var(--c1) 35%, color-mix(in srgb, var(--c1) 55%, var(--c2))); }
+.screen-crt .pic b { font: italic 900 22px/1 var(--f-ui); font-stretch: 112%; text-transform: uppercase; color: #fff; text-shadow: 0 2px 8px rgba(0,0,0,.5); }
+.screen-crt::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(transparent 0 2px, rgba(0,0,0,.22) 2px 3px), radial-gradient(ellipse at 50% 45%, rgba(255,255,255,.1), transparent 55%, rgba(0,0,0,.45)); }
+.snow { position: absolute; inset: 0; background-image: var(--grain); background-size: 120px; animation: snow .18s steps(3) infinite; filter: contrast(1.6) brightness(.9); }
+@keyframes snow { 33% { background-position: 37px 11px; } 66% { background-position: -23px 41px; } 100% { background-position: 9px -30px; } }
+.tracking::before { content: ""; position: absolute; left: 0; right: 0; height: 22px; top: 30%; z-index: 2; background: repeating-linear-gradient(90deg, rgba(255,255,255,.8) 0 7px, transparent 7px 16px, rgba(255,255,255,.4) 16px 30px, transparent 30px 34px); animation: trk .7s steps(6) both; }
+@keyframes trk { from { top: 8%; opacity: 1; } 95% { top: 80%; opacity: 1; } to { opacity: 0; } }
+.tv .chin { display: flex; justify-content: space-between; align-items: center; padding: 0 4px; }
+.tv .brand { font: italic 900 9px/1 var(--f-ui); font-stretch: 125%; letter-spacing: .06em; color: #8a837d; }
+.tv .pwr { width: 6px; height: 6px; border-radius: 50%; background: #ff5a4a; box-shadow: 0 0 6px #ff5a4a; }
+.scribble { position: absolute; inset: 0; z-index: 3; display: grid; place-items: center; padding: 14px; text-align: center; font: 400 26px/1.05 var(--f-feutre); color: var(--etiquette); transform: rotate(-6deg); text-shadow: 0 2px 0 rgba(0,0,0,.6), 0 0 12px rgba(0,0,0,.8); pointer-events: none; }
+.vcr { background: linear-gradient(#2e2a27, #1c1918); border-radius: 4px; padding: 7px 10px; display: grid; grid-template-columns: 1fr auto; gap: 6px; align-items: center; box-shadow: 0 6px 12px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.07); margin: 0 6px; }
+.vcr .slot { height: 9px; background: #080707; border-radius: 2px; box-shadow: inset 0 2px 3px #000; position: relative; }
+.vcr .slot::after { content: ""; position: absolute; left: 6px; right: 6px; top: 3px; height: 2px; background: #2a2624; }
+.lcd { font: 600 13px/1 var(--f-led); color: var(--led); text-shadow: 0 0 6px rgba(141,255,154,.7); background: var(--led-fond); padding: 5px 7px; border-radius: 2px; min-width: 70px; text-align: center; font-variant-numeric: tabular-nums; }
+.vcr .mini { grid-column: 1 / -1; display: flex; gap: 5px; }
+.vcr .mini i { width: 18px; height: 5px; border-radius: 1px; background: #3f3a37; }
+.remote-btn { justify-self: center; border: 0; background: none; padding: 0; display: grid; justify-items: center; gap: 4px; transform: rotate(12deg); margin-bottom: 4px; }
+.remote-mini { width: 40px; height: 132px; border-radius: 12px 12px 16px 16px; background: linear-gradient(90deg, #1d1a18, #2e2a27 40%, #1d1a18); box-shadow: 0 8px 14px rgba(0,0,0,.55); display: grid; grid-template-columns: repeat(2, 1fr); align-content: start; gap: 5px; padding: 12px 7px; }
+.remote-mini i { height: 7px; border-radius: 3px; background: #4b4541; }
+.remote-mini i:first-child { grid-column: 1 / -1; height: 9px; background: var(--moutarde); }
+.remote-mini i:nth-child(2) { background: #8f362d; }
+.remote-btn span { font: 700 16px/1 var(--f-main); color: var(--etiquette); }
+.flat-tapes { position: absolute; top: -10px; right: 10px; display: grid; gap: 2px; justify-items: end; transform: translateY(-100%); z-index: 2; }
+.flat-tapes span { width: 120px; height: 18px; background: var(--plastique); border-radius: 2px; padding: 3px 8px; box-shadow: 0 2px 4px rgba(0,0,0,.5); display: flex; }
+.flat-tapes b { flex: 1; background: var(--etiquette); color: var(--feutre); font: 400 11px/12px var(--f-feutre); padding: 0 4px; white-space: nowrap; overflow: hidden; text-decoration: line-through 2px #b2362a; }
+
+/* ---------- Physical keys ---------- */
+.key { border: 0; border-radius: 8px; padding: 13px 14px 11px; font: italic 900 15px/1 var(--f-ui); font-stretch: 112%; text-transform: uppercase; letter-spacing: .01em; position: relative; transition: transform .08s, box-shadow .08s; }
+.key:active { transform: translateY(3px); }
+.key.big { width: 100%; font-size: 19px; padding: 17px 14px 15px; background: linear-gradient(#e6b453, var(--moutarde)); color: var(--feutre); box-shadow: 0 5px 0 var(--moutarde-ombre), 0 9px 14px rgba(0,0,0,.45); }
+.key.big:active { box-shadow: 0 2px 0 var(--moutarde-ombre), 0 4px 8px rgba(0,0,0,.4); }
+.key.dark { background: linear-gradient(#3c3734, #2a2624); color: var(--etiquette); box-shadow: 0 4px 0 #0e0c0b; }
+.key.green { background: linear-gradient(#83b8b5, var(--bleu-vert)); color: var(--etagere); box-shadow: 0 5px 0 #3e6764; }
+.key.red { background: linear-gradient(#bd5649, var(--rouge)); color: var(--etiquette); box-shadow: 0 5px 0 #6e2c25; }
+.key:disabled { filter: grayscale(.8) brightness(.6); cursor: not-allowed; transform: none; }
+.key small { display: flex; justify-content: center; gap: 3px; margin-top: 6px; }
+.key small .jet { width: 11px; height: 11px; }
+.hand { font: 700 18px/1.1 var(--f-main); color: var(--etiquette); text-align: center; margin: 0; }
+.hand.dim { color: var(--poussiere); }
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+/* ---------- Remote sheet ---------- */
+.veil { position: absolute; inset: var(--sb) 0 var(--gb); z-index: 45; background: rgba(8,6,5,.6); display: grid; align-items: end; justify-items: center; overflow: hidden; }
+.remote { width: 244px; background: linear-gradient(90deg, #1b1817, #2e2a27 35%, #262220 70%, #1b1817); border-radius: 34px 34px 46px 46px / 30px 30px 60px 60px; padding: 22px 18px 34px; display: grid; gap: 14px; box-shadow: 0 -10px 30px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.08); transform: translateY(40px); animation: slideup .32s cubic-bezier(.2,.9,.3,1.1) forwards; max-height: calc(100% - 24px); overflow-y: auto; }
+@keyframes slideup { from { transform: translateY(100%); } to { transform: translateY(40px); } }
+.remote .lcd { justify-self: stretch; font-size: 16px; padding: 9px; }
+.remote .grp { display: grid; gap: 7px; }
+.remote .print { font: italic 800 10px/1 var(--f-ui); font-stretch: 112%; color: #b6aea6; letter-spacing: .04em; text-align: center; }
+.keys { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.keys.k4 { grid-template-columns: repeat(4, 1fr); }
+.keys.k3 { grid-template-columns: repeat(3, 1fr); }
+.rk { position: relative; border: 0; border-radius: 9px; height: 34px; background: linear-gradient(#45403c, #312d2a); color: var(--etiquette); font: 800 12px/1 var(--f-ui); box-shadow: 0 3px 0 #0e0c0b; display: grid; place-items: center; }
+.rk::after { content: ""; position: absolute; top: 4px; right: 5px; width: 5px; height: 5px; border-radius: 50%; background: #1a1716; }
+.rk[aria-pressed="true"]::after { background: var(--led); box-shadow: 0 0 5px var(--led); }
+.rk:active { transform: translateY(2px); box-shadow: 0 1px 0 #0e0c0b; }
+.rk.locked { color: #6d6560; }
+.rk.locked::before { content: attr(data-why); position: absolute; inset: 7px -3px auto; height: 18px; background: var(--scotch); color: var(--feutre); font: 700 12px/18px var(--f-main); transform: rotate(-8deg); z-index: 1; white-space: nowrap; }
+.rk.wide { grid-column: span 2; }
+.stepper { display: grid; grid-template-columns: 34px 1fr 34px; gap: 6px; align-items: center; }
+.stepper .val { display: flex; justify-content: center; gap: 4px; }
+.stepper .val .jet { width: 16px; height: 16px; }
+.stepper .lcd { min-width: 0; }
+.remote .key.big { font-size: 16px; padding: 14px 10px 12px; }
+.remote .close-hint { text-align: center; font: 700 16px/1 var(--f-main); color: var(--poussiere); }
+
+/* ---------- Result (watching) ---------- */
+.watch { position: absolute; inset: var(--sb) 0 var(--gb); z-index: 40; overflow-y: auto; background: radial-gradient(ellipse at 50% 30%, #2a211b, #0f0c0a 70%); }
+.watch .scene { padding-top: 14px; gap: 14px; }
+.watch .tv { padding: 14px 14px 12px; }
+.watch .screen-crt .pic b { font-size: 34px; }
+.meta-hand { margin: -4px 0 0; text-align: center; font: 700 19px/1.1 var(--f-main); color: var(--poussiere); }
+
+/* ---------- Étagère screen ---------- */
+.page-head { display: grid; gap: 2px; padding-top: 4px; }
+.page-head h2 { margin: 0; font: 400 28px/1.05 var(--f-feutre); color: var(--etiquette); }
+.page-head p { margin: 0; font: 700 18px/1.15 var(--f-main); color: var(--poussiere); }
+.sorter { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.sorter button { border: 0; border-radius: 6px; background: linear-gradient(#3c3734, #2a2624); color: var(--poussiere); box-shadow: 0 3px 0 #0e0c0b; font: 700 17px/1 var(--f-main); padding: 9px 2px 7px; }
+.sorter button[aria-pressed="true"] { background: var(--etiquette); color: var(--feutre); box-shadow: 0 3px 0 #9c8f72; }
+.sec-title { margin: 6px 0 -6px; font: 700 21px/1 var(--f-main); color: var(--etiquette); }
+.cartons { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 14px; padding-top: 6px; }
+.cartons .box { width: 100%; height: 96px; }
+.box .peek { position: absolute; left: 12px; top: -14px; display: flex; gap: 3px; z-index: 0; margin: 0; padding: 0; }
+.box .peek i { width: 14px; height: 30px; border-radius: 2px 2px 0 0; background: var(--c); box-shadow: inset 0 0 0 2px #1f1c1b; }
+.shelfwall { display: grid; gap: 22px; }
+.shelfwall .plank { height: auto; min-height: 190px; display: flex; align-items: flex-end; }
+.shelfwall .plank .row { position: relative; left: auto; bottom: auto; margin-bottom: 14px; flex-wrap: nowrap; }
+.boxes { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; padding-top: 10px; }
+.box { width: 120px; height: 84px; border: 0; background: linear-gradient(var(--carton), #a07a4c); border-radius: 3px; position: relative; display: grid; place-items: center; box-shadow: 0 8px 12px rgba(0,0,0,.45); transform: rotate(var(--r)); color: var(--feutre); }
+.box::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 16px; background: linear-gradient(#c9a172, #b48c5c); border-bottom: 2px solid rgba(0,0,0,.15); }
+.box::after { content: ""; position: absolute; left: 44%; width: 12%; top: 0; height: 40px; background: var(--scotch); }
+.box span { font: 400 16px/1.05 var(--f-feutre); position: relative; z-index: 1; margin-top: 18px; text-align: center; padding: 0 6px; }
+.box small { position: absolute; right: 8px; bottom: 6px; font: 700 15px/1 var(--f-main); }
+
+/* ---------- Découvrir ---------- */
+.search-tape { width: 100%; border: 0; background: var(--scotch); color: var(--feutre); font: 700 22px/1 var(--f-main); padding: 12px 16px 9px; transform: rotate(-1deg); clip-path: polygon(0 6%, 3% 0, 97% 4%, 100% 0, 99% 95%, 100% 100%, 2% 96%, 0 100%); }
+.search-tape::placeholder { color: rgba(29,27,46,.55); }
+.crate { background: linear-gradient(#7a5a3f, #5e4430); border-radius: 4px; padding: 16px 12px 14px; box-shadow: inset 0 0 0 6px #4e3a29, 0 10px 18px rgba(0,0,0,.5); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px 10px; }
+.crate .item { position: relative; transform: rotate(var(--r)); display: grid; gap: 8px; }
+.add-btn { border: 0; border-radius: 6px; padding: 8px 4px 6px; font: 700 16px/1 var(--f-main); background: var(--moutarde); color: var(--feutre); box-shadow: 0 3px 0 var(--moutarde-ombre); }
+.add-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--moutarde-ombre); }
+.add-btn:disabled { background: #2f4a48; color: var(--t-menthe); box-shadow: 0 3px 0 #1c2c2b; cursor: default; transform: none; }
+.jaq { display: grid; grid-template-columns: 12px 1fr; background: var(--plastique); padding: 5px 5px 5px 0; border-radius: 4px; box-shadow: 0 8px 14px rgba(0,0,0,.45); position: relative; border: 0; color: inherit; text-align: left; width: 100%; }
+.jaq::after { content: ""; position: absolute; inset: 0; border-radius: 4px; background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,.12) 45%, transparent 55%); pointer-events: none; }
+.jaq .spine { writing-mode: vertical-rl; transform: rotate(180deg); font: 400 9px/1 var(--f-feutre); color: var(--etiquette); text-align: center; overflow: hidden; white-space: nowrap; }
+.jaq .art { aspect-ratio: 2 / 3; container-type: inline-size; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; padding: 9cqi;
+  background: radial-gradient(circle at 70% 28%, color-mix(in srgb, var(--c2) 85%, transparent) 0 22%, transparent 23%), linear-gradient(165deg, var(--c1) 40%, color-mix(in srgb, var(--c1) 60%, var(--c2))); }
+.jaq .art b { font: italic 900 15cqi/.95 var(--f-ui); font-stretch: 112%; text-transform: uppercase; color: #fff; text-shadow: 0 2px 8px rgba(0,0,0,.45); overflow-wrap: anywhere; }
+.sticker { position: absolute; top: -9px; right: -9px; z-index: 2; width: 34px; height: 34px; border-radius: 50%; border: 0; background: var(--orange); color: var(--feutre); font: 400 22px/1 var(--f-feutre); display: grid; place-items: center; box-shadow: 0 2px 4px rgba(0,0,0,.5); transform: rotate(10deg); }
+.sticker.done { background: var(--bleu-vert); font-size: 18px; }
+
+/* ---------- Profil: cork board ---------- */
+.cork { background: radial-gradient(circle at 20% 30%, rgba(0,0,0,.12) 0 1px, transparent 1.5px) 0 0 / 7px 7px, radial-gradient(circle at 70% 60%, rgba(255,255,255,.08) 0 1px, transparent 1.5px) 0 0 / 9px 9px, var(--liege); border: 10px solid #4a382b; box-shadow: inset 0 0 20px rgba(0,0,0,.35), 0 10px 18px rgba(0,0,0,.4); padding: 22px 16px 26px; display: grid; gap: 22px; justify-items: center; }
+.pin { position: relative; }
+.pin::before { content: ""; position: absolute; top: -7px; left: 50%; width: 13px; height: 13px; margin-left: -6px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #9fd4c9, #3e6764 70%); box-shadow: 0 2px 2px rgba(0,0,0,.5); z-index: 3; }
+.card-m { width: 250px; background: var(--etiquette); color: var(--feutre); padding: 14px 16px 12px; transform: rotate(-2deg); box-shadow: 0 6px 12px rgba(0,0,0,.35); display: grid; grid-template-columns: auto 1fr; gap: 2px 12px; align-items: center; }
+.card-m .logo { grid-column: 1 / -1; --s: 13px; margin-bottom: 8px; }
+.card-m .logo .word { color: var(--feutre); }
+.card-m .face { width: 54px; height: 54px; grid-row: span 2; display: grid; place-items: center; background: var(--t-paille); font: 400 28px/1 var(--f-feutre); border: 3px solid #fff; box-shadow: 0 2px 4px rgba(0,0,0,.3); }
+.card-m b { font: 400 26px/1 var(--f-feutre); }
+.card-m span { font: 700 17px/1 var(--f-main); }
+.envelope { width: 240px; background: #f2ead8; color: var(--feutre); padding: 14px 14px 12px; transform: rotate(1.5deg); box-shadow: 0 6px 12px rgba(0,0,0,.35); position: relative; display: grid; gap: 10px; background-image: linear-gradient(135deg, transparent 49%, rgba(0,0,0,.06) 50%, transparent 51%), linear-gradient(225deg, transparent 49%, rgba(0,0,0,.06) 50%, transparent 51%); }
+.envelope p { margin: 0; font: 700 20px/1.1 var(--f-main); }
+.envelope .stampbox { position: absolute; top: 8px; right: 8px; width: 30px; height: 36px; background: var(--rouge); border: 2px dashed #f2ead8; outline: 1px solid var(--rouge); }
+.envelope .pair .key { font-size: 13px; padding: 10px 8px 8px; }
+.keyring { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.keytag { border: 0; background: #f4efe4; color: var(--feutre); width: 92px; padding: 16px 6px 10px; font: 400 14px/1.1 var(--f-feutre); transform: rotate(var(--r)); box-shadow: 0 4px 8px rgba(0,0,0,.35); position: relative; clip-path: polygon(14% 0, 86% 0, 100% 14%, 100% 100%, 0 100%, 0 14%); }
+.keytag::before { content: ""; position: absolute; top: 5px; left: 50%; width: 8px; height: 8px; margin-left: -4px; border-radius: 50%; background: var(--liege); box-shadow: inset 0 0 0 1.5px rgba(0,0,0,.3); }
+.keytag small { display: block; font: 700 14px/1 var(--f-main); margin-top: 4px; }
+.memo { width: 280px; background: #f7f2e6; color: var(--feutre); padding: 16px 16px 14px; transform: rotate(.8deg); box-shadow: 0 6px 12px rgba(0,0,0,.35); display: grid; gap: 4px;
+  background-image: repeating-linear-gradient(transparent 0 29px, rgba(79,109,154,.22) 29px 30px); background-position: 0 40px; }
+.memo h3 { margin: 0 0 4px; font: 400 22px/1 var(--f-feutre); }
+.tog { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 44px; font: 600 16px/1.2 var(--f-ui); cursor: pointer; }
+.tog span { display: grid; }
+.tog small { font: 400 13px/1.2 var(--f-ui); color: #5f564c; }
+.tog input { appearance: none; flex: none; width: 52px; height: 30px; border-radius: 15px; background: #c9bfae; position: relative; cursor: pointer; margin: 0; transition: background .15s; box-shadow: inset 0 2px 3px rgba(0,0,0,.2); }
+.tog input::after { content: ""; position: absolute; top: 3px; left: 3px; width: 24px; height: 24px; border-radius: 50%; background: #fff; box-shadow: 0 2px 3px rgba(0,0,0,.3); transition: transform .15s; }
+.tog input:checked { background: var(--bleu-vert); }
+.tog input:checked::after { transform: translateX(22px); }
+.acct { display: grid; gap: 10px; width: 280px; }
+.acct .key { width: 100%; font-size: 15px; }
+
+/* ---------- Fiche: back cover of the VHS box ---------- */
+.sheet { position: absolute; inset: var(--sb) 0 var(--gb); z-index: 50; background: rgba(8,6,5,.7); overflow-y: auto; transform: translateY(100%); transition: transform .35s cubic-bezier(.2,.8,.2,1); padding: 18px 12px 24px; }
+.sheet.open { transform: none; }
+.back { background: #f1e8d4; color: #1a1612; padding: 16px 16px 14px; display: grid; gap: 12px; box-shadow: 0 10px 24px rgba(0,0,0,.6); border-radius: 3px; position: relative; background-image: linear-gradient(90deg, rgba(120,80,30,.08), transparent 30%, rgba(120,80,30,.05) 80%); }
+.back .x { position: absolute; top: -12px; right: -6px; z-index: 2; width: 40px; height: 40px; border-radius: 50%; border: 0; background: var(--plastique); color: var(--etiquette); font: 400 20px/1 var(--f-feutre); box-shadow: 0 3px 6px rgba(0,0,0,.5); }
+.back h2 { margin: 0; font: italic 900 30px/.92 var(--f-ui); font-stretch: 112%; text-transform: uppercase; letter-spacing: -.01em; padding-right: 30px; text-wrap: balance; }
+.back .ot { font: italic 400 13px/1.2 var(--f-ui); color: #6b5e50; margin-top: -6px; }
+.frames { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.frames span { aspect-ratio: 4 / 3; background: linear-gradient(var(--a), var(--b)); box-shadow: inset 0 0 0 2px #f1e8d4, 0 0 0 1px #c9bca3; }
+.frames button { border: 0; padding: 0; aspect-ratio: 4 / 3; background: #111; display: grid; place-items: center; color: var(--etiquette); font: 700 14px/1 var(--f-main); box-shadow: inset 0 0 0 2px #f1e8d4, 0 0 0 1px #c9bca3; }
+.frames button::before { content: "▶"; font-size: 18px; }
+.back p.syn { margin: 0; font: 400 14px/1.45 var(--f-ui); }
+.billing { font: 700 11px/1.15 var(--f-ui); font-stretch: 62%; text-transform: uppercase; letter-spacing: .02em; text-align: center; color: #3a3128; border-top: 1px solid #c9bca3; border-bottom: 1px solid #c9bca3; padding: 8px 0; }
+.billing big { font-size: 15px; display: block; }
+.specs { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.specs .cert { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font: 900 12px/1 var(--f-ui); color: #fff; background: var(--cc); }
+.specs .box1 { border: 1.5px solid #1a1612; padding: 3px 6px; font: 800 10px/1 var(--f-ui); font-stretch: 112%; text-transform: uppercase; }
+.barcode { margin-left: auto; width: 74px; height: 30px; background: repeating-linear-gradient(90deg, #1a1612 0 1px, transparent 1px 3px, #1a1612 3px 5px, transparent 5px 6px, #1a1612 6px 7px, transparent 7px 10px); }
+.who { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; font: 700 17px/1.1 var(--f-main); }
+.who .mini-pola { width: 34px; background: #fff; padding: 3px 3px 8px; box-shadow: 0 2px 4px rgba(0,0,0,.25); transform: rotate(var(--r)); position: relative; }
+.who .mini-pola i { display: grid; place-items: center; aspect-ratio: 1; background: var(--tint); font: 400 15px/1 var(--f-feutre); font-style: normal; color: rgba(29,27,46,.75); }
+.who .mini-pola.seen::after { content: "✓"; position: absolute; right: -6px; bottom: -4px; font: 400 18px/1 var(--f-feutre); color: #2e6f6b; }
+.back .acts { display: grid; gap: 10px; }
+.stampbtn { border: 3px solid #b2362a; color: #b2362a; background: none; font: italic 900 20px/1 var(--f-ui); font-stretch: 112%; text-transform: uppercase; padding: 10px; transform: rotate(-2deg); border-radius: 4px; }
+.stampbtn.on { background: #b2362a; color: #f1e8d4; }
+.back .pair .key { font-size: 12px; }
+
+.toast { position: absolute; left: 0; right: 0; top: calc(var(--sb) + 56px); z-index: 80; display: grid; justify-items: center; pointer-events: none; }
+.toast span { background: var(--scotch); color: var(--feutre); font: 700 20px/1.1 var(--f-main); padding: 9px 16px 7px; transform: rotate(-2deg); box-shadow: 0 4px 10px rgba(0,0,0,.4); max-width: 86%; text-align: center; clip-path: polygon(0 6%, 4% 0, 96% 3%, 100% 0, 98% 94%, 100% 100%, 3% 97%, 0 100%); }
+
+@media (prefers-reduced-motion: reduce) {
+  .snow { animation: none; } .tracking::before { animation: none; display: none; }
+  .vt, .sheet, .remote { transition: none; animation: none; transform: none; }
+}
+</style>
+
+<div class="stage">
+  <div class="device" id="device"><div class="phone" id="phone">
+    <div class="statusbar" aria-hidden="true"><span id="clock">20:41</span><i class="punch"></i>
+      <span class="sys"><svg viewBox="0 0 16 16"><path d="M8 13.5L1 6.2a10 10 0 0 1 14 0z"/></svg><svg viewBox="0 0 16 16"><path d="M2 14h2v-3H2zM6 14h2V8H6zM10 14h2V5h-2zM14 14h1V2h-1z"/></svg><span class="bat"><i></i></span></span></div>
+    <div class="screens wall" id="screens">
+      <header class="topbar">
+        <span class="logo"><span class="stripes"></span><span class="word">Spinema</span></span>
+        <button class="space-btn" id="space-btn" aria-haspopup="true" aria-expanded="false"><span><small id="space-kind">salon</small><b id="space-name"></b></span><i>▼</i></button>      </header>
+      <main class="scene" id="view"></main>
+    </div>
+    <div class="space-menu" id="space-menu" hidden></div>
+    <nav class="tabs" role="tablist" id="tabs"></nav>
+    <div class="gesture" aria-hidden="true"><i></i></div>
+    <div class="watch" id="watch" hidden></div>
+    <div class="veil" id="veil" hidden></div>
+    <div class="sheet" id="sheet" hidden></div>
+    <div class="toast" id="toast" role="status" hidden></div>
+  </div></div>
+
+  <aside class="notes">
+    <span class="logo"><span class="stripes"></span><span class="word">Spinema</span></span>
+    <p class="sub">Maquette, version « des objets, pas des écrans ». Chaque onglet est un coin du salon : l'étagère, la télé et le magnéto, la télécommande, le bac à cassettes, le tableau en liège.</p>
+    <h2>à essayer</h2>
+    <ol>
+      <li><b>Prends la télécommande</b> pour ouvrir la séance, choisir les vetos (les jetons rouges) et le délai, ou régler les filtres.</li>
+      <li><b>Appuie sur « Piocher »</b> : l'étagère défile, une cassette sort et part dans le magnéto.</li>
+      <li><b>Vote</b> avec les grosses touches. Les polaroids de Lou et Sam se font tamponner.</li>
+      <li><b>Touche le polaroid de Lou</b> pour la faire sortir du salon : le scotch « Lou 15 » disparaît des touches -16 et -18.</li>
+      <li><b>Touche une cassette</b> : c'est le dos de la boîte qui s'ouvre.</li>
+    </ol>
+    <p class="fine">Format Samsung Galaxy A56 (384 × 832 px CSS). Films, membres et votes sont des exemples ; les jaquettes sont dessinées en CSS en attendant les affiches TMDB.</p>
+  </aside>
+</div>
+
+<script>
+const M = { oce: { name: 'Océane', age: 27, tint: '#e9d9a8' }, lou: { name: 'Lou', age: 15, tint: '#f1c9b8' }, sam: { name: 'Sam', age: 31, tint: '#cfe0d6' }, alex: { name: 'Alex', age: 29, tint: '#d6dcef' } };
+const ME = 'oce';
+const TINTS = ['#efe3c4', '#e9d9a8', '#cfe0d6', '#f1c9b8', '#d6dcef'];
+const FILMS = [
+  { id: 'coraline', t: 'Coraline', ot: '', y: 2009, min: 100, g: ['Fantastique'], type: 'Animation', cert: 'TP', dir: 'Henry Selick', cast: ['Dakota Fanning', 'Teri Hatcher'], note: 7.8, syn: "En emménageant dans une vieille maison, Coraline découvre une porte secrète vers un monde parallèle où tout semble meilleur. Trop beau pour être vrai.", c1: '#23305e', c2: '#e8a83e', seen: [], add: ['lou', 'oce'], col: ['DVD', 'Soirée doudou'] },
+  { id: 'parasite', t: 'Parasite', ot: 'Gisaengchung', y: 2019, min: 132, g: ['Thriller', 'Comédie'], type: 'Film', cert: '12', dir: 'Bong Joon-ho', cast: ['Song Kang-ho', 'Choi Woo-shik', 'Park So-dam'], note: 8.5, syn: "Toute la famille de Ki-taek est au chômage. Quand le fils décroche un poste de professeur particulier chez les riches Park, une mécanique s'enclenche.", c1: '#1f3b2e', c2: '#d9c27a', seen: [], add: ['sam'], col: [] },
+  { id: 'chihiro', t: 'Le Voyage de Chihiro', ot: 'Sen to Chihiro no kamikakushi', y: 2001, min: 125, g: ['Fantastique'], type: 'Animation', cert: 'TP', dir: 'Hayao Miyazaki', cast: ['Rumi Hiiragi', 'Miyu Irino'], note: 8.5, syn: "Pendant un déménagement, Chihiro et ses parents s'égarent dans une ville peuplée d'esprits. Pour les sauver, elle doit travailler dans un établissement de bains.", c1: '#6b1f3a', c2: '#f0b25a', seen: ['oce', 'sam'], add: ['oce'], col: ['DVD', 'Soirée doudou'] },
+  { id: 'getout', t: 'Get Out', ot: '', y: 2017, min: 104, g: ['Thriller'], type: 'Film', cert: '12', dir: 'Jordan Peele', cast: ['Daniel Kaluuya', 'Allison Williams'], note: 7.6, syn: "Chris part rencontrer la famille de sa petite amie le temps d'un week-end. L'accueil est trop chaleureux pour être honnête.", c1: '#2b2b33', c2: '#d8d2c0', seen: [], add: ['sam', 'lou'], col: [] },
+  { id: 'alien', t: 'Alien', ot: '', y: 1979, min: 117, g: ['Science-fiction'], type: 'Film', cert: '12', dir: 'Ridley Scott', cast: ['Sigourney Weaver', 'Tom Skerritt'], note: 8.1, syn: "L'équipage du cargo spatial Nostromo répond à un signal de détresse et ramène à bord une créature mortelle.", c1: '#0f2a2a', c2: '#9fd3c7', seen: ['sam'], add: ['sam'], col: ['DVD'] },
+  { id: 'madmax', t: 'Mad Max : Fury Road', ot: 'Mad Max: Fury Road', y: 2015, min: 120, g: ['Action', 'Science-fiction'], type: 'Film', cert: '12', dir: 'George Miller', cast: ['Tom Hardy', 'Charlize Theron'], note: 7.6, syn: "Dans un désert post-apocalyptique, Max et l'imperator Furiosa fuient le tyran Immortan Joe à bord d'un camion de guerre.", c1: '#7a3410', c2: '#f1b04c', seen: [], add: ['oce'], col: [] },
+  { id: 'knives', t: 'À couteaux tirés', ot: 'Knives Out', y: 2019, min: 130, g: ['Policier', 'Comédie'], type: 'Film', cert: 'TP', dir: 'Rian Johnson', cast: ['Daniel Craig', 'Ana de Armas', 'Chris Evans'], note: 7.8, syn: "Le romancier Harlan Thrombey est retrouvé mort au lendemain de ses 85 ans. Le détective Benoit Blanc interroge une famille qui a tout à perdre.", c1: '#3b2416', c2: '#e4c58a', seen: [], add: ['lou', 'sam', 'oce'], col: [] },
+  { id: 'oldboy', t: 'Old Boy', ot: 'Oldeuboi', y: 2003, min: 120, g: ['Thriller'], type: 'Film', cert: '16', dir: 'Park Chan-wook', cast: ['Choi Min-sik', 'Yoo Ji-tae'], note: 8.2, syn: "Enlevé et séquestré quinze ans sans explication, Oh Dae-su est soudain relâché. Il a cinq jours pour comprendre pourquoi.", c1: '#4a0f17', c2: '#9ca7a8', seen: [], add: ['sam'], col: [] },
+  { id: 'midsommar', t: 'Midsommar', ot: '', y: 2019, min: 147, g: ['Drame'], type: 'Film', cert: '16', dir: 'Ari Aster', cast: ['Florence Pugh', 'Jack Reynor'], note: 7.1, syn: "Un groupe d'étudiants américains assiste à une fête du solstice dans un village suédois isolé.", c1: '#5c6b2a', c2: '#f4e3a1', seen: [], add: ['oce'], col: [] },
+  { id: 'shining', t: 'Shining', ot: 'The Shining', y: 1980, min: 146, g: ['Thriller'], type: 'Film', cert: '12', dir: 'Stanley Kubrick', cast: ['Jack Nicholson', 'Shelley Duvall'], note: 8.2, syn: "Jack Torrance devient gardien d'un hôtel isolé dans les montagnes pour l'hiver, avec sa femme et son fils.", c1: '#5a1414', c2: '#e6b84a', seen: [], add: ['sam'], col: ['DVD'] },
+  { id: 'paddington', t: 'Paddington 2', ot: '', y: 2017, min: 104, g: ['Comédie', 'Familial'], type: 'Film', cert: 'TP', dir: 'Paul King', cast: ['Ben Whishaw', 'Hugh Grant'], note: 7.5, syn: "Paddington cherche le cadeau parfait pour les cent ans de sa tante Lucy. Le livre qu'il convoite est volé, et c'est lui qu'on accuse.", c1: '#1d3f6e', c2: '#e9853a', seen: ['lou'], add: ['lou'], col: ['Soirée doudou'] },
+  { id: 'chateau', t: 'Le Château ambulant', ot: 'Hauru no ugoku shiro', y: 2004, min: 119, g: ['Fantastique', 'Romance'], type: 'Animation', cert: 'TP', dir: 'Hayao Miyazaki', cast: ['Chieko Baishō', 'Takuya Kimura'], note: 8.4, syn: "Transformée en vieille femme par une sorcière, Sophie trouve refuge dans le château mouvant du magicien Hauru.", c1: '#2e4a5c', c2: '#eacb7a', seen: [], add: ['lou', 'oce'], col: ['Soirée doudou'] },
+  { id: 'lalaland', t: 'La La Land', ot: '', y: 2016, min: 128, g: ['Comédie musicale', 'Romance'], type: 'Film', cert: 'TP', dir: 'Damien Chazelle', cast: ['Emma Stone', 'Ryan Gosling'], note: 7.9, syn: "À Los Angeles, une aspirante actrice et un pianiste de jazz tombent amoureux en poursuivant chacun leur rêve.", c1: '#2d1e5c', c2: '#f2c14e', seen: [], add: ['alex', 'oce'], col: ['DVD'] },
+  { id: 'amelie', t: "Le Fabuleux Destin d'Amélie Poulain", ot: '', y: 2001, min: 122, g: ['Comédie', 'Romance'], type: 'Film', cert: 'TP', dir: 'Jean-Pierre Jeunet', cast: ['Audrey Tautou', 'Mathieu Kassovitz'], note: 7.9, syn: "À Montmartre, une jeune serveuse décide de changer en secret la vie des gens qui l'entourent.", c1: '#2f4d1f', c2: '#d94f3a', seen: ['oce', 'alex'], add: ['alex'], col: ['DVD', 'Soirée doudou'] },
+  { id: 'portrait', t: 'Portrait de la jeune fille en feu', ot: '', y: 2019, min: 122, g: ['Drame', 'Romance'], type: 'Film', cert: 'TP', dir: 'Céline Sciamma', cast: ['Noémie Merlant', 'Adèle Haenel'], note: 8.1, syn: "1770. Marianne, peintre, doit réaliser le portrait de mariage d'Héloïse, sans que celle-ci le sache.", c1: '#3a2a1c', c2: '#e07a3a', seen: [], add: ['oce'], col: [] },
+  { id: 'perfect', t: 'Perfect Days', ot: '', y: 2023, min: 124, g: ['Drame'], type: 'Film', cert: 'TP', dir: 'Wim Wenders', cast: ['Kōji Yakusho'], note: 7.8, syn: "Hirayama nettoie les toilettes publiques de Tokyo et savoure chaque jour la routine qu'il s'est choisie.", c1: '#1d3b45', c2: '#c9d7c4', seen: [], add: ['oce'], col: [] },
+];
+const EXTRA = [
+  { id: 'dune2', t: 'Dune : Deuxième partie', ot: 'Dune: Part Two', y: 2024, min: 166, g: ['Science-fiction'], type: 'Film', cert: 'TP', dir: 'Denis Villeneuve', cast: ['Timothée Chalamet', 'Zendaya'], note: 8.1, syn: "Paul Atréides s'allie aux Fremen pour venger sa famille et affronter l'empereur.", c1: '#5c3a12', c2: '#f0c27a', seen: [], add: [], col: [] },
+  { id: 'anatomie', t: "Anatomie d'une chute", ot: '', y: 2023, min: 151, g: ['Drame', 'Policier'], type: 'Film', cert: 'TP', dir: 'Justine Triet', cast: ['Sandra Hüller', 'Swann Arlaud'], note: 7.7, syn: "Un homme est retrouvé mort au pied de son chalet. Sa femme, écrivaine, est soupçonnée.", c1: '#2a3240', c2: '#d8dde3', seen: [], add: [], col: [] },
+  { id: 'pastlives', t: 'Past Lives', ot: '', y: 2023, min: 106, g: ['Romance', 'Drame'], type: 'Film', cert: 'TP', dir: 'Celine Song', cast: ['Greta Lee', 'Teo Yoo'], note: 7.7, syn: "Nora et Hae Sung, amis d'enfance séparés par l'émigration, se retrouvent vingt ans plus tard à New York.", c1: '#2c3b5a', c2: '#e6a07a', seen: [], add: [], col: [] },
+  { id: 'heron', t: 'Le Garçon et le Héron', ot: 'Kimitachi wa dō ikiru ka', y: 2023, min: 124, g: ['Fantastique'], type: 'Animation', cert: 'TP', dir: 'Hayao Miyazaki', cast: ['Soma Santoki'], note: 7.4, syn: "Après la mort de sa mère, Mahito suit un héron mystérieux dans un monde où vivants et morts se croisent.", c1: '#24452e', c2: '#d9c48a', seen: [], add: [], col: [] },
+  { id: 'substance', t: 'The Substance', ot: '', y: 2024, min: 141, g: ['Drame'], type: 'Film', cert: '16', dir: 'Coralie Fargeat', cast: ['Demi Moore', 'Margaret Qualley'], note: 7.2, syn: "Une star déchue teste un produit qui crée une version plus jeune et plus parfaite d'elle-même.", c1: '#1a1a2e', c2: '#f0d24a', seen: [], add: [], col: [] },
+  { id: 'oppen', t: 'Oppenheimer', ot: '', y: 2023, min: 180, g: ['Drame', 'Histoire'], type: 'Film', cert: 'TP', dir: 'Christopher Nolan', cast: ['Cillian Murphy', 'Emily Blunt'], note: 8.1, syn: "Le physicien Robert Oppenheimer dirige le projet Manhattan, qui aboutit à la première bombe atomique.", c1: '#3d1a0e', c2: '#f08a3a', seen: [], add: [], col: [] },
+];
+const ALL = [...FILMS, ...EXTRA];
+const F = id => ALL.find(f => f.id === id);
+const SPACES = [
+  { id: 'perso', name: 'Perso', kind: 'personal', members: ['oce'], films: ['coraline', 'parasite', 'chihiro', 'lalaland', 'amelie', 'portrait', 'paddington', 'chateau', 'perfect', 'knives'] },
+  { id: 'potes', name: 'Ciné entre potes', kind: 'shared', members: ['oce', 'lou', 'sam'], films: ['coraline', 'parasite', 'chihiro', 'getout', 'alien', 'madmax', 'knives', 'oldboy', 'midsommar', 'shining', 'paddington', 'chateau'] },
+  { id: 'deux', name: 'Nous deux', kind: 'shared', members: ['oce', 'alex'], films: ['lalaland', 'amelie', 'portrait', 'perfect', 'parasite'] },
+];
+const CERTS = [['TP', 'TP', 0], ['10', '-10', 10], ['12', '-12', 12], ['16', '-16', 16], ['18', '-18', 18]];
+const CERT_COLOR = { TP: '#2e8a6a', '10': '#4f6d9a', '12': '#d9a441', '16': '#c4574a', '18': '#1a1612' };
+
+const state = { space: 'potes', tab: 'machine', sort: 'tout', sound: true, query: '', certs: new Set(CERTS.map(c => c[0])), seenIncl: {}, maxDur: 0, nowShowing: { perso: null, potes: 'knives', deux: null }, invites: [{ from: 'sam', salon: 'Soirée doudou' }], notif: true };
+const sessions = {};
+SPACES.filter(s => s.kind === 'shared').forEach(s => { sessions[s.id] = { open: false, vetosPer: 2, timeout: 20, vetos: {}, discarded: new Set(), present: new Set(s.members) }; });
+let spinning = false, vote = null;
+
+const $ = s => document.querySelector(s);
+const space = () => SPACES.find(s => s.id === state.space);
+const sess = () => sessions[state.space] || null;
+const shared = () => space().kind === 'shared';
+const presentList = () => shared() ? [...sess().present] : [ME];
+const dur = m => `${Math.floor(m / 60)}h${String(m % 60).padStart(2, '0')}`;
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const names = ids => ids.map(i => M[i].name).join(', ').replace(/, ([^,]*)$/, ' et $1');
+const hash = s => [...s].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7);
+const tint = id => TINTS[hash(id) % TINTS.length];
+const tilt = (id, k = .5) => (((hash(id) >> 3) % 7) - 3) * k;
+function limitInfo() { let age = Infinity, who = null; presentList().forEach(m => { if (M[m].age < age) { age = M[m].age; who = m; } }); return { age, who }; }
+const certAllowed = (c, age) => age >= CERTS.find(x => x[0] === c)[2];
+function computePool() {
+  const { age } = limitInfo(), s = sess(), present = presentList();
+  return space().films.map(F).filter(f => certAllowed(f.cert, age) && state.certs.has(f.cert) && !(state.maxDur && f.min > state.maxDur) && !present.some(m => f.seen.includes(m) && !state.seenIncl[m]) && !(s && s.discarded.has(f.id)));
+}
+const totalVetos = () => presentList().reduce((n, m) => n + (sess().vetos[m] || 0), 0);
+
+/* ---------- Grain texture (generated once) ---------- */
+(function grain() {
+  const c = document.createElement('canvas'); c.width = c.height = 160; const x = c.getContext('2d'), d = x.createImageData(160, 160);
+  for (let i = 0; i < d.data.length; i += 4) { const v = Math.random() * 255; d.data[i] = d.data[i + 1] = d.data[i + 2] = v; d.data[i + 3] = 255; }
+  x.putImageData(d, 0, 0); document.documentElement.style.setProperty('--grain', `url(${c.toDataURL()})`);
+})();
+
+/* ---------- Sound ---------- */
+let actx = null;
+function ac() { if (!state.sound) return null; try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); actx.resume && actx.resume(); return actx; } catch (e) { return null; } }
+function noise(c, t, len, freq, vol) { const b = c.createBuffer(1, Math.ceil(c.sampleRate * len), c.sampleRate), d = b.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / d.length); const s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain(); s.buffer = b; f.type = 'bandpass'; f.frequency.value = freq; g.gain.value = vol; s.connect(f); f.connect(g); g.connect(c.destination); s.start(t); }
+function osc(c, t, type, f0, f1, len, vol) { const o = c.createOscillator(), g = c.createGain(); o.type = type; o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(f1, t + len); g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(.0001, t + len); o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + len + .02); }
+const SND = {
+  roll: (D, n) => { const c = ac(); if (c) for (let k = 1; k <= n; k++) noise(c, c.currentTime + D / 1000 * (1 - Math.cbrt(1 - k / n)), .03, 2200, .35); },
+  chunk: () => { const c = ac(); if (!c) return; const t = c.currentTime + .01; osc(c, t, 'sine', 140, 50, .12, .6); noise(c, t, .05, 900, .5); osc(c, t + .14, 'sine', 110, 45, .14, .6); noise(c, t + .14, .06, 700, .5); },
+  rewind: () => { const c = ac(); if (!c) return; const t = c.currentTime + .01; osc(c, t, 'sawtooth', 220, 1100, .7, .05); noise(c, t, .7, 3000, .08); },
+  click: () => { const c = ac(); if (c) noise(c, c.currentTime + .005, .02, 3500, .25); },
+  bip: () => { const c = ac(); if (c) osc(c, c.currentTime + .01, 'sine', 1400, 1400, .14, .2); },
+};
+let toastT;
+function toast(msg) { const t = $('#toast'); t.innerHTML = `<span>${msg}</span>`; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 2400); }
+
+/* ---------- Pieces ---------- */
+function vtHTML(f, o = {}) {
+  const sp = space(), adders = shared() && o.dots ? f.add.filter(m => sp.members.includes(m)) : [];
+  const h = (o.short ? 112 : 150) + (hash(f.id) % 5) * (o.short ? 4 : 6);
+  const cls = ['vt', o.seen && f.seen.includes(ME) ? 'seen' : '', hash(f.id) % 4 === 1 ? 'scotch' : ''].join(' ');
+  return `<button class="${cls}" style="--h:${h}px" ${o.i != null ? `data-i="${o.i}"` : ''} ${o.open ? `data-action="sheet" data-id="${f.id}"` : 'tabindex="-1"'} aria-label="${f.t}">
+    <span class="lbl${f.t.length < 9 ? ' short' : ''}" style="--lb:${tint(f.id)};--r:${tilt(f.id, .4)}deg">${f.t}</span>
+    ${adders.length ? `<span class="dots">${adders.map(m => `<i style="--c:${M[m].tint}"></i>`).join('')}</span>` : ''}</button>`;
+}
+const jaqHTML = f => `<span class="spine">${f.t}</span><span class="art" style="--c1:${f.c1};--c2:${f.c2}"><b>${f.t}</b></span>`;
+function polaHTML(m, o = {}) {
+  const s = sess(), here = s ? s.present.has(m) : true, v = s && s.open ? (s.vetos[m] ?? s.vetosPer) : 0;
+  const stamp = o.vote ? (o.vote[m] === 'ok' ? '<span class="stamp ok">✓</span>' : o.vote[m] === 'veto' ? '<span class="stamp no">✗</span>' : '') : '';
+  return `<button class="pola${here ? '' : ' away'}" style="--r:${tilt(m, 2.2)}deg;--tint:${M[m].tint}" ${o.toggle && m !== ME ? `data-action="presence" data-m="${m}"` : 'tabindex="-1"'} aria-label="${M[m].name}${here ? '' : ' (absente)'}">
+    <span class="ph">${M[m].name[0]}</span><span class="nm">${m === ME ? 'moi' : M[m].name}</span>${stamp}
+    ${s && s.open && here ? `<span class="jets">${Array.from({ length: s.vetosPer }, (_, i) => `<i class="jet${i < v ? '' : ' used'}"></i>`).join('')}</span>` : ''}</button>`;
+}
+function tvHTML(f, o = {}) {
+  const tag = o.open && f ? 'button' : 'div';
+  return `<${tag} class="tv" ${o.open && f ? `data-action="sheet" data-id="${f.id}" aria-label="Dans le magnéto : ${f.t}. Ouvrir la fiche"` : ''}><div class="screen-crt${o.tracking ? ' tracking' : ''}">${f ? `<div class="pic" style="--c1:${f.c1};--c2:${f.c2}"><b>${f.t}</b></div>` : '<div class="snow"></div>'}${o.scribble ? `<div class="scribble">${o.scribble}</div>` : ''}</div>
+    <div class="chin"><span class="brand">SPINEMA</span><span class="pwr"></span></div></${tag}>`;
+}
+
+/* ---------- Machine ---------- */
+const STEP = 38;
+function renderMachine() {
+  const sp = space(), s = sess(), pool = computePool();
+  const now = state.nowShowing[sp.id] && F(state.nowShowing[sp.id]);
+  let h = '';
+  if (s) h += `<div class="polas sm">${sp.members.map(m => polaHTML(m, { toggle: s.open })).join('')}</div>`;
+  h += `<div class="plank" id="plank"><div class="row" id="row"></div></div>`;
+  h += `<div class="console"><div class="tv-stack">${tvHTML(now, { open: true })}
+      <div class="vcr"><span class="slot"></span><span class="lcd" id="lcd">${now ? '▶ PLAY' : `${String(pool.length).padStart(2, '0')} K7`}</span>
+        ${now ? `<span class="mini"><button class="vk" data-action="clear-now">⏏ éjecter</button><button class="vk" data-action="seen-now">✓ vu</button></span>` : ''}</div></div>
+    <button class="remote-btn" data-action="remote" aria-label="Télécommande : séance et réglages"><span class="remote-mini"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><span>réglages</span></button></div>`;
+  if (s && !s.open) h += `<button class="key big" data-action="remote">● Ouvrir la séance</button>`;
+  else {
+    const imposed = s && totalVetos() === 0;
+    h += `<button class="key big" data-action="spin" ${pool.length < 2 ? 'disabled' : ''}>▶ Piocher une cassette</button>`;
+    if (pool.length < 2) h += `<p class="hand dim">Il faut au moins 2 cassettes.</p>`;
+    else if (imposed) h += `<p class="hand">Plus de jetons : la prochaine reste dans le magnéto.</p>`;
+  }
+  $('#view').innerHTML = h;
+  idleShelf(pool);
+}
+function idleShelf(pool) {
+  const row = $('#row'); if (!row) return;
+  const src = pool.length ? pool : space().films.map(F);
+  row.innerHTML = Array.from({ length: 14 }, (_, i) => vtHTML(src[i % src.length], { i, short: true })).join('');
+  row.style.transition = 'none'; row.style.transform = 'translateX(0)';
+}
+function spin() {
+  if (spinning) return;
+  const pool = computePool(); if (pool.length < 2) return;
+  const s = sess(), imposed = !!(s && s.open && totalVetos() === 0);
+  spinning = true;
+  const winner = pick(pool), n = 40, W = n - 6;
+  const items = Array.from({ length: n }, () => pick(pool)); items[W] = winner;
+  const row = $('#row'), plank = $('#plank');
+  row.innerHTML = items.map((f, i) => vtHTML(f, { i, short: true })).join('');
+  row.style.transition = 'none'; row.style.transform = 'translateX(0)'; void row.offsetWidth;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches, D = reduce ? 0 : 2800;
+  const x = plank.clientWidth / 2 - (W * STEP + 17);
+  row.style.transition = D ? `transform ${D}ms cubic-bezier(.15,.85,.25,1)` : 'none';
+  row.style.transform = `translateX(${x}px)`;
+  $('#lcd').textContent = '◀◀ REW';
+  if (!reduce) SND.roll(D, W - 4);
+  document.querySelectorAll('[data-action="spin"]').forEach(b => b.disabled = true);
+  setTimeout(() => {
+    row.querySelector(`[data-i="${W}"]`).classList.add('pull');
+    setTimeout(() => { spinning = false; reveal(winner, imposed); }, reduce ? 0 : 600);
+  }, D + 60);
+}
+
+/* ---------- Watching (result + vote) ---------- */
+function reveal(f, imposed) {
+  const w = $('#watch'); w.hidden = false; w.scrollTop = 0; vote = null;
+  SND.chunk();
+  if (imposed) { accept(f); drawWatch(f, { scribble: 'La machine a parlé !', keys: `<button class="key big" data-action="close-watch">Fermer</button>` }); }
+  else if (!shared()) drawWatch(f, { keys: `<div class="pair"><button class="key dark" data-action="reroll">◀◀ Rembobiner</button><button class="key green" data-action="accept" data-id="${f.id}">▶ On garde</button></div>` });
+  else startVote(f);
+}
+function drawWatch(f, o) {
+  const s = sess();
+  $('#watch').innerHTML = `<div class="scene">
+    ${s ? `<div class="polas sm">${space().members.filter(m => s.present.has(m)).map(m => polaHTML(m, { vote: vote ? vote.votes : null })).join('')}</div>` : ''}
+    ${tvHTML(f, { tracking: !o.keep, scribble: o.scribble, id: 'crt' })}
+    <div class="vcr"><span class="slot"></span><span class="lcd" id="w-lcd">${lcdText()}</span><span class="mini"><i></i><i></i><i></i></span></div>
+    <p class="meta-hand">${f.y} · ${dur(f.min)} · ${f.g.join(', ').toLowerCase()} · <button data-action="sheet" data-id="${f.id}" style="border:0;background:none;padding:0;font:inherit;color:var(--etiquette);text-decoration:underline">le dos de la boîte</button></p>
+    ${o.keys}</div>`;
+}
+function lcdText() {
+  if (!vote || vote.done || !vote.deadline) return '▶ PLAY';
+  return `0:${String(Math.max(0, Math.ceil((vote.deadline - Date.now()) / 1000))).padStart(2, '0')}`;
+}
+function voteKeys() {
+  const s = sess(), mine = vote.votes[ME], myV = s.vetos[ME] || 0;
+  if (mine) return `<p class="hand dim">C'est noté. On attend les autres…</p>`;
+  return `<div class="pair"><button class="key red" data-action="vote" data-v="veto" ${myV === 0 ? 'disabled' : ''}>■ Veto<small>${myV ? Array.from({ length: myV }, () => '<i class="jet"></i>').join('') : 'plus de jeton'}</small></button>
+    <button class="key green" data-action="vote" data-v="ok">▶ OK<small>&nbsp;</small></button></div>`;
+}
+function startVote(f) {
+  const s = sess(), present = [...s.present];
+  vote = { f, votes: {}, timers: [], deadline: s.timeout ? Date.now() + s.timeout * 1000 : null, done: false };
+  present.filter(m => m !== ME).forEach(m => vote.timers.push(setTimeout(() => {
+    if (!vote || vote.done) return;
+    vote.votes[m] = (s.vetos[m] > 0 && Math.random() < .3) ? 'veto' : 'ok'; SND.click();
+    drawWatch(f, { keys: voteKeys(), keep: true }); checkVote();
+  }, 1500 + Math.random() * 3500)));
+  if (vote.deadline) vote.timers.push(setInterval(() => {
+    if (!vote || vote.done) return;
+    if (Date.now() >= vote.deadline) { SND.bip(); present.forEach(m => { if (!vote.votes[m]) vote.votes[m] = 'ok'; }); drawWatch(f, { keys: '', keep: true }); checkVote(); }
+    else { const l = $('#w-lcd'); if (l) l.textContent = lcdText(); }
+  }, 250));
+  drawWatch(f, { keys: voteKeys() });
+}
+function checkVote() {
+  const s = sess(), present = [...s.present];
+  if (vote.done || !present.every(m => vote.votes[m])) return;
+  vote.done = true; vote.timers.forEach(t => { clearTimeout(t); clearInterval(t); });
+  const f = vote.f, vetoers = present.filter(m => vote.votes[m] === 'veto');
+  if (!vetoers.length) { accept(f); drawWatch(f, { keep: true, scribble: 'Adopté !', keys: `<button class="key big" data-action="close-watch">On regarde ça</button>` }); return; }
+  s.discarded.add(f.id);
+  let msg;
+  if (vetoers.length === present.length && present.length >= 2) msg = 'Tout le monde a dit non. Jetons rendus !';
+  else { vetoers.forEach(m => s.vetos[m]--); msg = `${names(vetoers)} ${vetoers.length > 1 ? 'ont' : 'a'} dit non.`; }
+  drawWatch(f, { keep: true, scribble: msg, keys: `<div class="pair"><button class="key dark" data-action="close-watch">⏏ Sortir</button><button class="key big" data-action="reroll" style="font-size:15px">◀◀ Rembobiner</button></div>` });
+  const l = $('#w-lcd'); if (l) l.textContent = '⏏ EJECT';
+}
+function accept(f) { state.nowShowing[state.space] = f.id; const s = sess(); if (s) { s.open = false; s.discarded.clear(); s.vetos = {}; } }
+function closeWatch() { if (vote) { vote.timers.forEach(t => { clearTimeout(t); clearInterval(t); }); vote = null; } $('#watch').hidden = true; renderMachine(); }
+
+/* ---------- Remote (séance + réglages) ---------- */
+function openRemote() {
+  const s = sess(), lim = limitInfo(), pool = computePool(), present = presentList();
+  let h = `<div class="remote" role="dialog" aria-label="Télécommande"><span class="lcd">${String(pool.length).padStart(2, '0')} K7 dans la machine</span>`;
+  if (s && !s.open) {
+    h += `<div class="grp"><span class="print">JETONS DE VETO PAR PERSONNE</span><div class="stepper"><button class="rk" data-action="vetos" data-d="-1" aria-label="Moins">−</button><span class="val">${Array.from({ length: s.vetosPer }, () => '<i class="jet"></i>').join('')}</span><button class="rk" data-action="vetos" data-d="1" aria-label="Plus">+</button></div></div>
+      <div class="grp"><span class="print">TEMPS POUR VOTER</span><div class="keys k4">${[[0, '∞'], [10, '10s'], [20, '20s'], [60, '60s']].map(([v, l]) => `<button class="rk" data-action="timeout" data-v="${v}" aria-pressed="${s.timeout === v}">${l}</button>`).join('')}</div></div>`;
+  }
+  h += `<div class="grp"><span class="print">CLASSIFICATION</span><div class="keys">${CERTS.map(([c, l]) => certAllowed(c, lim.age)
+      ? `<button class="rk" data-action="cert" data-c="${c}" aria-pressed="${state.certs.has(c)}">${l}</button>`
+      : `<button class="rk locked" disabled data-why="${M[lim.who].name} ${lim.age}" aria-label="${l}, bloqué par l'âge de ${M[lim.who].name}">${l}</button>`).join('')}</div></div>
+    <div class="grp"><span class="print">DÉJÀ VUS PAR…</span><div class="keys k3">${present.map(m => `<button class="rk" data-action="seen" data-m="${m}" aria-pressed="${!!state.seenIncl[m]}">${m === ME ? 'moi' : M[m].name}</button>`).join('')}</div></div>
+    <div class="grp"><span class="print">DURÉE MAX</span><div class="keys k4">${[[90, '1h30'], [120, '2h'], [150, '2h30'], [0, '∞']].map(([v, l]) => `<button class="rk" data-action="dur" data-v="${v}" aria-pressed="${state.maxDur === v}">${l}</button>`).join('')}</div></div>`;
+  if (s && !s.open) h += `<button class="key big" data-action="open-session">● Ouvrir la séance</button>`;
+  else if (s) h += `<button class="key dark" data-action="close-session">■ Fin de séance</button>`;
+  h += `<span class="close-hint">touche à côté pour reposer</span></div>`;
+  const v = $('#veil'); v.innerHTML = h; v.hidden = false;
+}
+function closeRemote() { $('#veil').hidden = true; if (state.tab === 'machine' && !spinning) renderMachine(); }
+
+/* ---------- Étagère ---------- */
+function groupKey(f) {
+  if (state.sort === 'genre') return f.g[0];
+  if (state.sort === 'époque') return f.y < 2000 ? `années ${String(f.y).slice(2, 3)}0` : `${Math.floor(f.y / 10) * 10}s`;
+  if (state.sort === 'durée') return f.min < 110 ? 'court' : f.min <= 130 ? 'moyen' : 'long';
+  return null;
+}
+const cartonHTML = (key, label, fs, i) => `<button class="box" style="--r:${i % 2 ? 2 : -2}deg" data-action="box" data-c="${key}" aria-label="${label}, ${fs.length} films">
+  <span class="peek">${fs.slice(0, 4).map(f => `<i style="--c:${tint(f.id)}"></i>`).join('')}</span><span>${label}</span><small>${fs.length}</small></button>`;
+function shelfRows(fs) {
+  const rows = []; for (let i = 0; i < fs.length; i += 9) rows.push(fs.slice(i, i + 9)); return rows;
+}
+function renderLibrary() {
+  const sp = space(), films = sp.films.map(F), toSee = films.filter(f => !f.seen.includes(ME)), seen = films.filter(f => f.seen.includes(ME));
+  const cols = {}; films.forEach(f => f.col.forEach(c => (cols[c] = cols[c] || []).push(f)));
+  const SORTS = [['tout', 'étagère'], ['genre', 'genres'], ['époque', 'époques'], ['durée', 'durées']];
+  let body;
+  if (state.sort === 'tout') {
+    body = `<div class="shelfwall">${shelfRows(toSee).map(r => `<div class="plank"><div class="row">${r.map(f => vtHTML(f, { open: true, dots: true })).join('')}</div></div>`).join('')}</div>
+      ${seen.length ? `<p class="sec-title">Déjà vus</p><div class="shelfwall">${shelfRows(seen).map(r => `<div class="plank"><div class="row">${r.map(f => vtHTML(f, { open: true, seen: true })).join('')}</div></div>`).join('')}</div>` : ''}`;
+  } else {
+    const groups = {}; toSee.forEach(f => (groups[groupKey(f)] = groups[groupKey(f)] || []).push(f));
+    body = `<div class="cartons">${Object.keys(groups).sort().map((k, i) => cartonHTML('g:' + k, k, groups[k], i)).join('')}</div>`;
+  }
+  $('#view').innerHTML = `<div class="page-head"><h2>${shared() ? `Les films du salon` : 'Mes films à voir'}</h2><p>${toSee.length} cassettes à voir · touche-en une pour sa fiche</p></div>
+    <div class="sorter" role="group" aria-label="Ranger par">${SORTS.map(([k, l]) => `<button data-action="sort" data-k="${k}" aria-pressed="${state.sort === k}">${l}</button>`).join('')}</div>
+    ${body}
+    ${Object.keys(cols).length ? `<p class="sec-title">Mes boîtes</p><div class="cartons">${Object.entries(cols).map(([c, fs], i) => cartonHTML(c, c, fs, i + 1)).join('')}</div>` : ''}`;
+}
+function openBox(c) {
+  const g = c.startsWith('g:') ? c.slice(2) : null;
+  const fs = space().films.map(F).filter(f => g ? !f.seen.includes(ME) && groupKey(f) === g : f.col.includes(c));
+  if (g) c = g;
+  const el = $('#sheet');
+  el.innerHTML = `<div class="back" style="background:linear-gradient(var(--carton),#a07a4c);color:var(--feutre)"><button class="x" data-action="close-sheet" aria-label="Fermer">✕</button>
+    <h2 style="font:400 28px/1 var(--f-feutre);text-transform:none">${c}</h2>
+    <div class="crate" style="box-shadow:none;background:none;padding:0">${fs.map(f => `<div class="item" style="--r:${tilt(f.id, .8)}deg"><button class="jaq" data-action="sheet" data-id="${f.id}" aria-label="${f.t}">${jaqHTML(f)}</button></div>`).join('')}</div></div>`;
+  el.hidden = false; el.scrollTop = 0; requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('open')));
+}
+
+/* ---------- Découvrir ---------- */
+function renderDiscover() {
+  const q = state.query.trim().toLowerCase();
+  const list = q ? ALL.filter(f => f.t.toLowerCase().includes(q) || f.dir.toLowerCase().includes(q)) : EXTRA;
+  const inSpace = id => space().films.includes(id);
+  $('#view').innerHTML = `<div class="page-head"><h2>Trouver des films</h2><p>Ajoute-les à ${shared() ? `l'étagère de ${space().name}` : 'ton étagère'} pour pouvoir les piocher.</p></div>
+    <input class="search-tape" id="search" type="search" placeholder="cherche un titre, un réalisateur…" aria-label="Rechercher un film" value="${state.query.replace(/"/g, '&quot;')}">
+    <p class="sec-title">${q ? `${list.length} trouvé${list.length > 1 ? 's' : ''}` : 'Les nouveautés'}</p>
+    <div class="crate">${list.map(f => `<div class="item" style="--r:${tilt(f.id, .8)}deg"><button class="jaq" data-action="sheet" data-id="${f.id}" aria-label="${f.t}">${jaqHTML(f)}</button>
+      <button class="add-btn" data-action="add" data-id="${f.id}" ${inSpace(f.id) ? 'disabled' : ''}>${inSpace(f.id) ? '✓ ajouté' : '+ ajouter'}</button></div>`).join('') || '<p class="hand dim" style="grid-column:1/-1">Aucun film trouvé.</p>'}</div>`;
+}
+
+/* ---------- Profil ---------- */
+function renderProfile() {
+  $('#view').innerHTML = `<div class="cork">
+    <div class="pin"><div class="card-m"><span class="logo"><span class="stripes"></span><span class="word">Spinema</span></span><span class="face">O</span><b>Océane</b><span>membre nº 0001 · 27 ans</span></div></div>
+    ${state.invites.map((iv, i) => `<div class="pin"><div class="envelope"><span class="stampbox"></span><p>${M[iv.from].name} t'invite<br>dans « ${iv.salon} »</p>
+      <div class="pair"><button class="key dark" data-action="invite" data-i="${i}" data-ok="0">Non merci</button><button class="key green" data-action="invite" data-i="${i}" data-ok="1">J'y vais</button></div></div></div>`).join('')}
+    <div class="keyring">${SPACES.filter(s => s.kind === 'shared').map((s, i) => `<button class="keytag" style="--r:${i % 2 ? 4 : -3}deg" data-action="go-space" data-s="${s.id}">${s.name}<small>${s.members.length} membres</small></button>`).join('')}</div>
+    <div class="pin"><div class="memo"><h3>Réglages</h3>
+      <label class="tog" for="pref-sound"><span>Effets sonores<small>${state.sound ? 'activés' : 'coupés'}</small></span><input type="checkbox" role="switch" id="pref-sound" ${state.sound ? 'checked' : ''}></label>
+      <label class="tog" for="pref-notif"><span>Notifications<small>${state.notif ? 'activées' : 'coupées'}</small></span><input type="checkbox" role="switch" id="pref-notif" ${state.notif ? 'checked' : ''}></label></div></div>
+    <div class="acct"><button class="key dark" data-action="toast" data-msg="Déconnecté (pour de faux).">Se déconnecter</button><button class="key red" data-action="toast" data-msg="Il faudra confirmer deux fois.">Supprimer mon compte</button></div>
+  </div>`;
+}
+
+/* ---------- Fiche: back of the box ---------- */
+function openSheet(id) {
+  const f = F(id), sp = space(), sh = shared();
+  const el = $('#sheet');
+  el.innerHTML = `<div class="back"><button class="x" data-action="close-sheet" aria-label="Fermer">✕</button>
+    <h2>${f.t}</h2>${f.ot ? `<span class="ot">${f.ot}</span>` : ''}
+    <div class="frames"><span style="--a:${f.c1};--b:${f.c2}"></span><span style="--a:${f.c2};--b:${f.c1}"></span><button data-action="toast" data-msg="La bande-annonce se lancerait ici.">bande-annonce</button></div>
+    <p class="syn">${f.syn}</p>
+    <div class="billing">Un film de ${f.dir}<big>avec ${f.cast.join(' · ')}</big>${f.type === 'Animation' ? "film d'animation" : f.g.join(' · ')} · ${f.y} · note ${f.note.toFixed(1).replace('.', ',')}/10</div>
+    <div class="specs"><span class="cert" style="--cc:${CERT_COLOR[f.cert]}">${f.cert === 'TP' ? 'TP' : '-' + f.cert}</span><span class="box1">${f.min} min</span><span class="box1">Couleur</span><span class="box1">VHS Secam</span><span class="barcode"></span></div>
+    ${sh ? `<div class="who">${sp.members.map(m => `<span class="mini-pola${f.seen.includes(m) ? ' seen' : ''}" style="--r:${tilt(m, 2)}deg;--tint:${M[m].tint}"><i>${M[m].name[0]}</i></span>`).join('')}<span>${f.seen.filter(m => sp.members.includes(m)).length ? `vu par ${names(f.seen.filter(m => sp.members.includes(m)))}` : "personne ne l'a vu"}</span></div>` : ''}
+    <div class="acts"><button class="stampbtn${f.seen.includes(ME) ? ' on' : ''}" data-action="toggle-seen" data-id="${f.id}">${f.seen.includes(ME) ? 'Vu ✓' : "Je l'ai vu"}</button>
+      <div class="pair"><button class="key dark" data-action="toast" data-msg="Mon étagère, l'étagère du salon ou une boîte.">Ranger…</button><button class="key dark" data-action="toast" data-msg="Ciné entre potes, Nous deux.">Partager…</button></div></div>
+  </div>`;
+  el.hidden = false; el.scrollTop = 0; requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('open')));
+}
+function closeSheet() { const el = $('#sheet'); el.classList.remove('open'); setTimeout(() => { el.hidden = true; }, 360); }
+
+/* ---------- Navigation ---------- */
+const TABS = [['machine', 'Machine', '-2deg'], ['library', 'Étagère', '1.5deg'], ['discover', 'Trouver', '-1deg'], ['profile', 'Moi', '2deg']];
+function renderAll() {
+  $('#space-name').textContent = space().name;
+  $('#space-kind').textContent = shared() ? 'salon · changer' : 'mon espace · changer';
+  $('#tabs').innerHTML = TABS.map(([k, l, r]) => `<button role="tab" data-tab="${k}" aria-selected="${state.tab === k}" style="--r:${r}">${l}</button>`).join('');
+  ({ machine: renderMachine, library: renderLibrary, discover: renderDiscover, profile: renderProfile })[state.tab]();
+}
+function toggleMenu(open) {
+  const m = $('#space-menu'); m.hidden = !open; $('#space-btn').setAttribute('aria-expanded', String(open));
+  if (open) m.innerHTML = SPACES.map(s => `<button class="tape-label" data-action="go-space" data-s="${s.id}" aria-current="${s.id === state.space}">${s.name}</button>`).join('') + `<button class="tape-label new" data-action="toast" data-msg="Créer un salon ou rejoindre avec un lien.">+ un salon</button>`;
+}
+
+document.addEventListener('click', e => {
+  if (e.target.id === 'veil') return closeRemote();
+  if (e.target.id === 'sheet') return closeSheet();
+  const t = e.target.closest('[data-action], [data-tab], #space-btn, #sound-btn');
+  if (!t) { if (!e.target.closest('#space-menu')) toggleMenu(false); return; }
+  if (t.id === 'space-btn') return toggleMenu($('#space-menu').hidden);
+  if (t.dataset.tab) { state.tab = t.dataset.tab; $('#screens').scrollTop = 0; return renderAll(); }
+  const a = t.dataset.action, s = sess();
+  if (t.classList.contains('rk')) SND.click();
+  switch (a) {
+    case 'go-space': if (spinning) return; state.space = t.dataset.s; toggleMenu(false); if (state.tab === 'profile') state.tab = 'machine'; renderAll(); break;
+    case 'remote': openRemote(); break;
+    case 'vetos': s.vetosPer = Math.min(3, Math.max(1, s.vetosPer + +t.dataset.d)); openRemote(); break;
+    case 'timeout': s.timeout = +t.dataset.v; openRemote(); break;
+    case 'cert': { const c = t.dataset.c; state.certs.has(c) ? state.certs.delete(c) : state.certs.add(c); openRemote(); break; }
+    case 'seen': state.seenIncl[t.dataset.m] = !state.seenIncl[t.dataset.m]; openRemote(); break;
+    case 'dur': state.maxDur = +t.dataset.v; openRemote(); break;
+    case 'open-session': s.open = true; s.discarded.clear(); space().members.forEach(m => s.vetos[m] = s.vetosPer); closeRemote(); toast('Séance ouverte, les autres sont prévenus !'); break;
+    case 'close-session': s.open = false; s.discarded.clear(); s.vetos = {}; closeRemote(); break;
+    case 'presence': { const m = t.dataset.m; if (s.present.has(m)) s.present.delete(m); else { s.present.add(m); if (s.vetos[m] == null && s.open) s.vetos[m] = s.vetosPer; } renderMachine(); break; }
+    case 'spin': spin(); break;
+    case 'vote': SND.click(); vote.votes[ME] = t.dataset.v; drawWatch(vote.f, { keys: voteKeys(), keep: true }); checkVote(); break;
+    case 'accept': { const f = F(t.dataset.id); accept(f); closeWatch(); break; }
+    case 'reroll': SND.rewind(); closeWatch(); setTimeout(spin, 300); break;
+    case 'close-watch': closeWatch(); break;
+    case 'seen-now': { const f = F(state.nowShowing[state.space]); if (!f.seen.includes(ME)) f.seen.push(ME); state.nowShowing[state.space] = null; toast(`${f.t} : vu !`); renderMachine(); break; }
+    case 'clear-now': state.nowShowing[state.space] = null; SND.chunk(); renderMachine(); break;
+    case 'sheet': openSheet(t.dataset.id); break;
+    case 'close-sheet': closeSheet(); break;
+    case 'box': openBox(t.dataset.c); break;
+    case 'toggle-seen': { const f = F(t.dataset.id), i = f.seen.indexOf(ME); if (i >= 0) f.seen.splice(i, 1); else f.seen.push(ME); openSheet(f.id); if (state.tab !== 'machine' || $('#watch').hidden) renderAll(); break; }
+    case 'sort': state.sort = t.dataset.k; renderLibrary(); break;
+    case 'add': space().films.push(t.dataset.id); toast('Rangé sur l\'étagère !'); renderDiscover(); break;
+    case 'invite': { const iv = state.invites.splice(+t.dataset.i, 1)[0]; toast(t.dataset.ok === '1' ? `Bienvenue dans « ${iv.salon} » !` : 'Invitation refusée.'); renderProfile(); break; }
+    case 'toast': toast(t.dataset.msg); toggleMenu(false); break;
+  }
+});
+document.addEventListener('change', e => {
+  if (e.target.id === 'pref-sound') { state.sound = e.target.checked; SND.click(); renderProfile(); }
+  if (e.target.id === 'pref-notif') { state.notif = e.target.checked; renderProfile(); }
+});
+document.addEventListener('input', e => {
+  if (e.target.id === 'search') { state.query = e.target.value; const pos = e.target.selectionStart; renderDiscover(); const s = $('#search'); s.focus(); s.setSelectionRange(pos, pos); }
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { toggleMenu(false); if (!$('#veil').hidden) closeRemote(); if (!$('#sheet').hidden) closeSheet(); } });
+function fit() { const k = innerWidth <= 520 ? 1 : Math.min(1, (innerHeight - 56) / 848, (innerWidth - 32) / 400); $('#device').style.setProperty('--k', Math.max(.5, k).toFixed(3)); }
+function tick() { const d = new Date(); $('#clock').textContent = `${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`; }
+window.addEventListener('resize', fit);
+fit(); tick(); setInterval(tick, 30000);
+renderAll();
+</script>

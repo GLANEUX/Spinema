@@ -1,0 +1,658 @@
+<title>Charte Spinema</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,400..900;1,62..125,400..900&family=Caveat:wght@500;700&family=IBM+Plex+Mono:wght@500;600&family=Permanent+Marker&display=swap">
+<style>
+/* Layout: a long brand document read in the living room itself: striped wallpaper page, cream text, every specimen is the real object from the app. Single dark theme by choice (the app is dark-only in v1). */
+:root {
+  color-scheme: dark;
+  --etagere: #1b1714; --etagere-haute: #2a211c; --bois: #3c2f27; --plastique: #242120; --plastique-clair: #34302d;
+  --etiquette: #efe3c4; --poussiere: #a59b90; --feutre: #1d1b2e;
+  --moutarde: #d9a441; --moutarde-ombre: #8c6a28; --bleu-vert: #6fa3a0; --rouge: #a8453a; --orange: #f08a3c;
+  --led: #8dff9a; --led-fond: #071108;
+  --scotch: #e6d9b0; --carton: #b98f5e; --liege: #a9794b; --papier: #f7f2e6; --polaroid: #f4efe4;
+  --t-paille: #e9d9a8; --t-menthe: #cfe0d6; --t-saumon: #f1c9b8; --t-lavande: #d6dcef;
+  --f-ui: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --f-feutre: "Permanent Marker", "Comic Sans MS", cursive;
+  --f-main: "Caveat", "Segoe Print", cursive;
+  --f-led: "IBM Plex Mono", "Courier New", monospace;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; color: var(--etiquette); font: 16px/1.6 var(--f-ui);
+  background: radial-gradient(ellipse at 50% 0, rgba(255,214,140,.1), transparent 50%), repeating-linear-gradient(90deg, #241c16 0 14px, #281f18 14px 16px, #241c16 16px 30px, rgba(217,164,65,.05) 30px 31px);
+  background-color: #241c16;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 0 80px;
+}
+body::after { content: ""; position: fixed; inset: 0; pointer-events: none; background-image: var(--grain); background-size: 160px; opacity: .06; mix-blend-mode: overlay; z-index: 50; }
+:focus-visible { outline: 2px solid var(--moutarde); outline-offset: 3px; }
+button { font: inherit; color: inherit; cursor: pointer; }
+.page { max-width: 1100px; margin: 0 auto; }
+p { margin: 0; }
+.prose { max-width: 66ch; display: grid; gap: 12px; }
+.muted { color: var(--poussiere); }
+code { font: 500 .88em var(--f-led); color: var(--moutarde); }
+
+/* ---------- Logo ---------- */
+.logo { display: inline-flex; align-items: center; gap: .26em; font-size: var(--s, 40px); line-height: 1; }
+.logo .stripes { width: 1.02em; height: .7em; flex: none; transform: skewX(-14deg); background: linear-gradient(var(--rouge) 0 25%, var(--orange) 0 50%, var(--moutarde) 0 75%, var(--bleu-vert) 0); }
+.logo .word { font: italic 900 1em/1 var(--f-ui); font-stretch: 125%; text-transform: uppercase; letter-spacing: -.015em; color: var(--etiquette); }
+.logo.on-label .word { color: var(--feutre); }
+.logo.mono .stripes { background: linear-gradient(var(--etiquette) 0 18%, transparent 0 25%, var(--etiquette) 0 43%, transparent 0 50%, var(--etiquette) 0 68%, transparent 0 75%, var(--etiquette) 0 93%, transparent 0); }
+.logo .spec { font: 600 .2em/1.25 var(--f-led); letter-spacing: .1em; color: var(--moutarde); display: grid; }
+.cass { width: 1em; height: 1em; border-radius: .2em; background: var(--plastique); padding: .13em; display: grid; grid-template-rows: 47% 1fr; gap: .07em; flex: none; }
+.cass b { border-radius: .03em; background: linear-gradient(var(--etiquette) 0 58%, var(--rouge) 0 68.5%, var(--orange) 0 79%, var(--moutarde) 0 89.5%, var(--bleu-vert) 0); }
+.cass span { background: #0d0b0a; border-radius: .04em; display: flex; justify-content: space-around; align-items: center; }
+.cass i { width: .23em; height: .23em; border-radius: 50%; background: var(--etiquette); box-shadow: inset 0 0 0 .035em #5a524c; }
+.cass.bare { background: none; padding: 0; }
+.cass.monochrome { background: none; padding: 0; }
+.cass.monochrome b { background: var(--t-menthe); } .cass.monochrome span { background: none; box-shadow: inset 0 0 0 .05em var(--t-menthe); } .cass.monochrome i { background: var(--t-menthe); box-shadow: none; }
+
+/* ---------- Cover + sections ---------- */
+.cover { padding-block: 64px 40px; display: grid; gap: 26px; border-bottom: 14px solid var(--bois); box-shadow: 0 8px 12px -6px rgba(0,0,0,.5); }
+.cover .logo { --s: clamp(48px, 10vw, 112px); }
+.cover .lead { font-size: clamp(19px, 2.4vw, 23px); line-height: 1.45; max-width: 46ch; }
+.cover .meta { font: 700 20px/1.3 var(--f-main); color: var(--poussiere); }
+.toc { display: flex; flex-wrap: wrap; gap: 8px; }
+.toc a { text-decoration: none; color: var(--feutre); background: var(--scotch); font: 400 16px/1 var(--f-feutre); padding: 8px 12px 6px; transform: rotate(var(--r, 0deg)); clip-path: polygon(0 6%, 4% 0, 96% 3%, 100% 0, 98% 94%, 100% 100%, 3% 97%, 0 100%); }
+.toc a:hover { background: var(--moutarde); }
+section.ch { padding-block: 60px; border-bottom: 14px solid var(--bois); box-shadow: 0 8px 12px -6px rgba(0,0,0,.5); display: grid; gap: 28px; scroll-margin-top: 16px; }
+.ch-head { display: grid; gap: 8px; }
+.counter { font: 600 13px/1 var(--f-led); letter-spacing: .1em; color: var(--led); background: var(--led-fond); padding: 6px 9px; justify-self: start; text-shadow: 0 0 6px rgba(141,255,154,.6); border-radius: 3px; }
+h2 { margin: 4px 0 0; font: italic 900 clamp(32px, 5vw, 52px)/1 var(--f-ui); font-stretch: 118%; letter-spacing: -.02em; text-wrap: balance; }
+h3 { margin: 0; font: 700 26px/1.1 var(--f-main); color: var(--moutarde); }
+.lab { display: block; margin-bottom: 8px; font: 700 21px/1.1 var(--f-main); color: var(--moutarde); }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 22px; }
+.grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 18px; }
+.spot { background: rgba(0,0,0,.22); padding: 24px 18px; display: grid; place-items: center; gap: 14px; min-height: 160px; border-radius: 4px; }
+.comp { display: grid; gap: 12px; align-content: start; }
+.caption { font-size: 14px; color: var(--poussiere); }
+.caption b { color: var(--etiquette); font-weight: 600; }
+.rules { margin: 0; padding-left: 18px; display: grid; gap: 6px; font-size: 14px; color: var(--poussiere); }
+.rules b { color: var(--etiquette); font-weight: 600; }
+.dodont { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.dodont li { padding-left: 26px; position: relative; }
+.dodont li::before { position: absolute; left: 0; top: 0; font-weight: 900; }
+.dodont.yes li::before { content: "✓"; color: var(--bleu-vert); }
+.dodont.no li::before { content: "✕"; color: #e07a6c; }
+.note-paper { background: var(--papier); color: var(--feutre); padding: 18px 18px 16px; transform: rotate(var(--r, -.6deg)); box-shadow: 0 8px 14px rgba(0,0,0,.4); display: grid; gap: 8px;
+  background-image: repeating-linear-gradient(transparent 0 29px, rgba(79,109,154,.2) 29px 30px); background-position: 0 44px; }
+.note-paper h3 { color: var(--feutre); font: 400 22px/1 var(--f-feutre); }
+.note-paper .dodont.no li::before { color: var(--rouge); }
+.note-paper .dodont.yes li::before { color: #2e6f6b; }
+.principles { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; }
+.principles .note-paper p { font-size: 15px; line-height: 1.45; }
+
+/* ---------- Logo section ---------- */
+.stage { background: rgba(0,0,0,.25); min-height: 170px; display: grid; place-items: center; padding: 28px 16px; border-radius: 4px; }
+.stage.light { background: var(--etiquette); } .stage.plastic { background: var(--plastique); }
+.clear { position: relative; padding: .7em; outline: 1px dashed var(--moutarde); font-size: clamp(34px, 6vw, 54px); }
+.clear .logo { --s: 1em; outline: 1px dashed rgba(217,164,65,.5); }
+.clear .x { position: absolute; font: 700 16px/1 var(--f-main); color: var(--moutarde); }
+.clear .x.t { top: 4px; left: 50%; transform: translateX(-50%); } .clear .x.l { left: 6px; top: 50%; transform: translateY(-50%); }
+.bad { position: relative; overflow: hidden; }
+.bad::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top right, transparent calc(50% - 1.5px), #e07a6c calc(50% - 1.5px) calc(50% + 1.5px), transparent calc(50% + 1.5px)); opacity: .8; pointer-events: none; }
+
+/* ---------- Icon ---------- */
+.adaptive { width: 216px; height: 216px; background: var(--etagere-haute); position: relative; display: grid; place-items: center; background-image: repeating-linear-gradient(0deg, rgba(255,255,255,.04) 0 1px, transparent 1px 12px); }
+.adaptive::before { content: ""; position: absolute; width: 132px; height: 132px; border-radius: 50%; border: 1px dashed var(--moutarde); }
+.adaptive .cass { font-size: 112px; }
+.masks { display: flex; flex-wrap: wrap; gap: 18px; align-items: flex-end; }
+.mask { width: 88px; height: 88px; overflow: hidden; display: grid; place-items: center; background: var(--etagere-haute); }
+.mask .cass { font-size: 50px; }
+.mask.circle { border-radius: 50%; } .mask.squircle { border-radius: 32%; } .mask.rounded { border-radius: 18%; } .mask.themed { background: #23302f; border-radius: 50%; }
+.splash { width: 150px; height: 300px; border-radius: 22px; border: 6px solid #0b0b0b; background: var(--etagere); display: grid; grid-template-rows: 1fr auto; justify-items: center; align-items: center; padding-bottom: 22px; }
+.splash .cass { font-size: 60px; } .splash .logo { --s: 13px; }
+
+/* ---------- Colours ---------- */
+.swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+.sw { display: grid; grid-template-rows: 90px auto; background: rgba(0,0,0,.25); }
+.sw .chip { background: var(--c); }
+.sw .info { padding: 10px 12px 12px; display: grid; gap: 2px; font-size: 13px; }
+.sw .info b { font-size: 15px; }
+.sw .info .hex { font: 500 12px var(--f-led); color: var(--poussiere); }
+.ratio-bar { display: flex; height: 34px; }
+.ratio-bar div { display: flex; align-items: center; padding-left: 8px; font: 700 15px var(--f-main); color: var(--feutre); white-space: nowrap; overflow: hidden; }
+.tablewrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 14px; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--bois); vertical-align: middle; }
+th { font: 700 18px/1.2 var(--f-main); color: var(--moutarde); }
+td.num { font-family: var(--f-led); font-variant-numeric: tabular-nums; }
+.sample { display: inline-block; padding: 4px 10px; font-weight: 700; }
+.pass { color: var(--bleu-vert); font-weight: 700; } .warn { color: var(--moutarde); font-weight: 700; } .fail { color: #e07a6c; font-weight: 700; }
+
+/* ---------- Type ---------- */
+.spec-row { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 18px; align-items: baseline; padding-block: 16px; border-bottom: 1px solid rgba(60,47,39,.8); }
+@media (max-width: 640px) { .spec-row { grid-template-columns: 1fr; gap: 6px; } }
+.spec-row .meta { font-size: 13px; color: var(--poussiere); line-height: 1.5; }
+.spec-row .meta b { color: var(--etiquette); font-weight: 600; display: block; }
+.t-page { font: 400 28px/1.05 var(--f-feutre); }
+.t-hand { font: 700 20px/1.15 var(--f-main); }
+.t-key { font: italic 900 19px/1 var(--f-ui); font-stretch: 112%; text-transform: uppercase; }
+.t-print { font: italic 900 30px/.92 var(--f-ui); font-stretch: 112%; text-transform: uppercase; }
+.t-body { font: 400 16px/1.5 var(--f-ui); max-width: 60ch; }
+.t-billing { font: 700 12px/1.15 var(--f-ui); font-stretch: 62%; text-transform: uppercase; letter-spacing: .02em; }
+.t-lcd { font: 600 15px/1 var(--f-led); color: var(--led); background: var(--led-fond); padding: 6px 9px; text-shadow: 0 0 6px rgba(141,255,154,.7); display: inline-block; }
+.on-label { background: var(--etiquette); color: var(--feutre); padding: 4px 12px; display: inline-block; transform: rotate(-1deg); }
+
+/* ---------- Matières ---------- */
+.tex { height: 120px; position: relative; overflow: hidden; display: grid; place-items: center; border-radius: 3px; }
+.tex-wall { background: repeating-linear-gradient(90deg, #2b211a 0 14px, #30251d 14px 16px, #2b211a 16px 30px, rgba(217,164,65,.12) 30px 31px); }
+.tex-label { background: var(--etiquette); background-image: linear-gradient(90deg, rgba(120,80,30,.14), transparent 30%, rgba(120,80,30,.08) 80%); }
+.tex-label::after { content: "Coraline"; font: 400 30px/1 var(--f-feutre); color: var(--feutre); transform: rotate(-2deg); }
+.tex-tape { background: rgba(0,0,0,.25); }
+.tex-tape::before { content: ""; width: 60%; height: 34px; background: var(--scotch); transform: rotate(-6deg); opacity: .85; clip-path: polygon(0 6%, 4% 0, 96% 3%, 100% 0, 98% 94%, 100% 100%, 3% 97%, 0 100%); }
+.tex-wood { background: linear-gradient(#6a5140, #4a382b 40%, #2f241c); }
+.tex-carton { background: linear-gradient(var(--carton), #a07a4c); }
+.tex-carton::after { content: ""; width: 14%; height: 100%; background: var(--scotch); opacity: .8; }
+.tex-liege { background: radial-gradient(circle at 20% 30%, rgba(0,0,0,.14) 0 1px, transparent 1.5px) 0 0 / 7px 7px, radial-gradient(circle at 70% 60%, rgba(255,255,255,.09) 0 1px, transparent 1.5px) 0 0 / 9px 9px, var(--liege); }
+.tex-plastic { background: linear-gradient(115deg, transparent 40%, rgba(255,255,255,.07) 46%, transparent 52%), var(--plastique); }
+.tex-snow { background-image: var(--grain); background-size: 120px; filter: contrast(1.6) brightness(.9); animation: snow .18s steps(3) infinite; }
+@keyframes snow { 33% { background-position: 37px 11px; } 66% { background-position: -23px 41px; } 100% { background-position: 9px -30px; } }
+.tex-led { background: var(--led-fond); }
+.tex-led::after { content: "12 K7"; font: 600 28px/1 var(--f-led); color: var(--led); text-shadow: 0 0 8px rgba(141,255,154,.7); }
+
+/* ---------- Objects (copied from the app) ---------- */
+.key { border: 0; border-radius: 8px; padding: 13px 14px 11px; font: italic 900 15px/1 var(--f-ui); font-stretch: 112%; text-transform: uppercase; position: relative; transition: transform .08s, box-shadow .08s; }
+.key:active { transform: translateY(3px); }
+.key.big { width: 100%; font-size: 18px; padding: 16px 14px 14px; background: linear-gradient(#e6b453, var(--moutarde)); color: var(--feutre); box-shadow: 0 5px 0 var(--moutarde-ombre), 0 9px 14px rgba(0,0,0,.45); }
+.key.dark { background: linear-gradient(#3c3734, #2a2624); color: var(--etiquette); box-shadow: 0 4px 0 #0e0c0b; }
+.key.green { background: linear-gradient(#83b8b5, var(--bleu-vert)); color: var(--etagere); box-shadow: 0 5px 0 #3e6764; }
+.key.red { background: linear-gradient(#bd5649, var(--rouge)); color: var(--etiquette); box-shadow: 0 5px 0 #6e2c25; }
+.key:disabled { filter: grayscale(.8) brightness(.6); cursor: not-allowed; }
+.key small { display: flex; justify-content: center; gap: 3px; margin-top: 6px; }
+.keys-demo { display: grid; gap: 14px; width: 100%; max-width: 340px; }
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.jet { width: 14px; height: 14px; border-radius: 50%; background: radial-gradient(circle, #c4574a 0 45%, #8f362d 46% 60%, #c4574a 61%); box-shadow: 0 1px 2px rgba(0,0,0,.6); display: inline-block; }
+.jet.used { background: none; box-shadow: inset 0 0 0 1.5px rgba(196,87,74,.6); }
+.key small .jet { width: 11px; height: 11px; }
+
+.polas { display: flex; justify-content: center; gap: 16px; padding-top: 10px; }
+.pola { position: relative; width: 62px; background: var(--polaroid); padding: 4px 4px 2px; border: 0; color: var(--feutre); transform: rotate(var(--r)); box-shadow: 0 6px 12px rgba(0,0,0,.45); }
+.pola::before { content: ""; position: absolute; top: -6px; left: 50%; width: 12px; height: 12px; margin-left: -6px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #ff8a7a, #a8453a 70%); z-index: 2; }
+.pola .ph { display: grid; place-items: center; aspect-ratio: 1; background: radial-gradient(circle at 50% 38%, rgba(255,255,255,.25), transparent 60%), var(--tint); font: 400 24px/1 var(--f-feutre); color: rgba(29,27,46,.75); }
+.pola .nm { display: block; text-align: center; font: 700 15px/1.1 var(--f-main); padding-top: 2px; }
+.pola.away { filter: grayscale(1) brightness(.55); transform: rotate(var(--r)) translateY(6px); }
+.pola .jets { position: absolute; right: -7px; bottom: 16px; display: grid; gap: 2px; }
+.pola .jets .jet { width: 12px; height: 12px; }
+.pola .stamp { position: absolute; inset: 4px 4px auto; aspect-ratio: 1; display: grid; place-items: center; font: 400 38px/1 var(--f-feutre); transform: rotate(-12deg); }
+.pola .stamp.ok { color: #2e6f6b; } .pola .stamp.no { color: #b2362a; }
+
+.plank { position: relative; height: 172px; width: 100%; max-width: 360px; overflow: hidden; }
+.plank::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 14px; background: linear-gradient(#6a5140, #4a382b 40%, #2f241c); }
+.plank .row { position: absolute; left: 0; bottom: 14px; display: flex; align-items: flex-end; gap: 4px; will-change: transform; padding-left: 8px; }
+.vt { flex: none; width: 34px; height: var(--h, 140px); background: linear-gradient(90deg, #191716, #2a2725 30%, #1f1c1b); border-radius: 2px 2px 1px 1px; padding: 7px 4px 10px; display: flex; flex-direction: column; align-items: center; gap: 4px; position: relative; transition: transform .38s cubic-bezier(.2,.9,.3,1.3); }
+.vt .lbl { flex: 1; width: 100%; background: var(--lb); color: var(--feutre); writing-mode: vertical-rl; transform: rotate(180deg) rotate(var(--r, 0deg)); font: 400 15px/1 var(--f-feutre); display: flex; align-items: center; justify-content: center; white-space: nowrap; overflow: hidden; padding: 4px 0; background-image: linear-gradient(0deg, rgba(120,80,30,.14), transparent 40%, rgba(120,80,30,.1)); }
+.vt .dots { display: flex; flex-direction: column; gap: 2px; }
+.vt .dots i { width: 7px; height: 7px; border-radius: 50%; background: var(--c); }
+.vt.seen .lbl { filter: saturate(.25) brightness(.78); }
+.vt.seen::after { content: "vu"; position: absolute; left: 50%; top: 42%; transform: translateX(-50%) rotate(-70deg); font: 400 16px/1 var(--f-feutre); color: #b2362a; }
+.vt.scotch::before { content: ""; position: absolute; left: -3px; right: -3px; top: 38%; height: 16px; background: var(--scotch); opacity: .8; transform: rotate(-6deg); z-index: 1; }
+.vt.pull { transform: translateY(-26px) rotate(-5deg); box-shadow: 0 0 0 2px var(--moutarde), 0 10px 20px rgba(0,0,0,.6); z-index: 3; }
+
+.tv-stack { display: grid; width: 100%; max-width: 250px; }
+.tv { background: linear-gradient(#34302d, #211e1c); border-radius: 16px 16px 10px 10px; padding: 12px 12px 10px; box-shadow: 0 10px 18px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.08); display: grid; gap: 7px; position: relative; }
+.screen-crt { position: relative; aspect-ratio: 4 / 3; border-radius: 22px / 26px; overflow: hidden; background: #070707; box-shadow: inset 0 0 22px rgba(0,0,0,.9), 0 0 0 3px #121010; }
+.screen-crt .pic { position: absolute; inset: 0; display: grid; align-content: end; padding: 12px; background: radial-gradient(circle at 72% 28%, color-mix(in srgb, var(--c2) 85%, transparent) 0 20%, transparent 21%), linear-gradient(165deg, var(--c1) 35%, color-mix(in srgb, var(--c1) 55%, var(--c2))); }
+.screen-crt .pic b { font: italic 900 22px/1 var(--f-ui); font-stretch: 112%; text-transform: uppercase; color: #fff; text-shadow: 0 2px 8px rgba(0,0,0,.5); }
+.screen-crt::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(transparent 0 2px, rgba(0,0,0,.22) 2px 3px), radial-gradient(ellipse at 50% 45%, rgba(255,255,255,.1), transparent 55%, rgba(0,0,0,.45)); }
+.snow { position: absolute; inset: 0; background-image: var(--grain); background-size: 120px; animation: snow .18s steps(3) infinite; filter: contrast(1.6) brightness(.9); }
+.scribble { position: absolute; inset: 0; z-index: 3; display: grid; place-items: center; padding: 14px; text-align: center; font: 400 24px/1.05 var(--f-feutre); color: var(--etiquette); transform: rotate(-6deg); text-shadow: 0 2px 0 rgba(0,0,0,.6), 0 0 12px rgba(0,0,0,.8); }
+.tracking::before { content: ""; position: absolute; left: 0; right: 0; height: 22px; top: 30%; z-index: 2; background: repeating-linear-gradient(90deg, rgba(255,255,255,.8) 0 7px, transparent 7px 16px, rgba(255,255,255,.4) 16px 30px, transparent 30px 34px); animation: trk .7s steps(6) both; }
+@keyframes trk { from { top: 8%; opacity: 1; } 95% { top: 80%; opacity: 1; } to { opacity: 0; } }
+.tv .chin { display: flex; justify-content: space-between; align-items: center; padding: 0 4px; }
+.tv .brand { font: italic 900 9px/1 var(--f-ui); font-stretch: 125%; letter-spacing: .06em; color: #8a837d; }
+.tv .pwr { width: 6px; height: 6px; border-radius: 50%; background: #ff5a4a; box-shadow: 0 0 6px #ff5a4a; }
+.vcr { background: linear-gradient(#2e2a27, #1c1918); border-radius: 4px; padding: 7px 10px; display: grid; grid-template-columns: 1fr auto; gap: 6px; align-items: center; box-shadow: 0 6px 12px rgba(0,0,0,.5); margin: 0 6px; }
+.vcr .slot { height: 9px; background: #080707; border-radius: 2px; box-shadow: inset 0 2px 3px #000; }
+.lcd { font: 600 13px/1 var(--f-led); color: var(--led); text-shadow: 0 0 6px rgba(141,255,154,.7); background: var(--led-fond); padding: 5px 7px; border-radius: 2px; min-width: 70px; text-align: center; font-variant-numeric: tabular-nums; }
+.vcr .mini { grid-column: 1 / -1; display: flex; gap: 5px; }
+.vk { border: 0; border-radius: 3px; background: linear-gradient(#4a4440, #34302d); color: var(--etiquette); font: 800 10px/1 var(--f-ui); padding: 5px 7px 4px; box-shadow: 0 2px 0 #0e0c0b; }
+
+.remote { width: 244px; background: linear-gradient(90deg, #1b1817, #2e2a27 35%, #262220 70%, #1b1817); border-radius: 34px 34px 46px 46px / 30px 30px 60px 60px; padding: 22px 18px 30px; display: grid; gap: 14px; box-shadow: 0 10px 30px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.08); }
+.remote .lcd { font-size: 15px; padding: 9px; }
+.remote .grp { display: grid; gap: 7px; }
+.remote .print { font: italic 800 10px/1 var(--f-ui); font-stretch: 112%; color: #b6aea6; letter-spacing: .04em; text-align: center; }
+.rkeys { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.rkeys.k4 { grid-template-columns: repeat(4, 1fr); }
+.rk { position: relative; border: 0; border-radius: 9px; height: 34px; background: linear-gradient(#45403c, #312d2a); color: var(--etiquette); font: 800 12px/1 var(--f-ui); box-shadow: 0 3px 0 #0e0c0b; display: grid; place-items: center; }
+.rk::after { content: ""; position: absolute; top: 4px; right: 5px; width: 5px; height: 5px; border-radius: 50%; background: #1a1716; }
+.rk[aria-pressed="true"]::after { background: var(--led); box-shadow: 0 0 5px var(--led); }
+.rk.locked { color: #6d6560; }
+.rk.locked::before { content: attr(data-why); position: absolute; inset: 7px -3px auto; height: 18px; background: var(--scotch); color: var(--feutre); font: 700 12px/18px var(--f-main); transform: rotate(-8deg); z-index: 1; white-space: nowrap; }
+.stepper { display: grid; grid-template-columns: 34px 1fr 34px; gap: 6px; align-items: center; }
+.stepper .val { display: flex; justify-content: center; gap: 4px; }
+.stepper .jet { width: 16px; height: 16px; }
+
+.space-btn { display: flex; align-items: center; gap: 8px; border: 0; background: var(--etiquette); color: var(--feutre); padding: 5px 5px 5px 11px; border-radius: 7px; box-shadow: 0 3px 0 #9c8f72, 0 6px 10px rgba(0,0,0,.35); text-align: left; }
+.space-btn span { display: grid; line-height: 1.05; }
+.space-btn small { font: 700 13px/1 var(--f-main); color: #6b5e50; }
+.space-btn b { font: 400 15px/1.1 var(--f-feutre); }
+.space-btn i { width: 26px; height: 26px; border-radius: 50%; background: var(--feutre); color: var(--etiquette); display: grid; place-items: center; font: 900 11px/1 var(--f-ui); font-style: normal; }
+.tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 10px; background: linear-gradient(#4a382b, #3c2f27 30%, #33281f); width: 100%; max-width: 380px; }
+.tabs span { background: rgba(236,222,176,.45); color: var(--feutre); font: 400 14px/1 var(--f-feutre); padding: 9px 2px 7px; text-align: center; transform: rotate(var(--r)); opacity: .7; clip-path: polygon(0 8%, 5% 0, 95% 4%, 100% 0, 97% 92%, 100% 100%, 4% 96%, 0 100%); }
+.tabs span.on { background: var(--scotch); opacity: 1; transform: rotate(var(--r)) translateY(-3px); }
+.toast { background: var(--scotch); color: var(--feutre); font: 700 20px/1.1 var(--f-main); padding: 9px 16px 7px; transform: rotate(-2deg); box-shadow: 0 4px 10px rgba(0,0,0,.4); clip-path: polygon(0 6%, 4% 0, 96% 3%, 100% 0, 98% 94%, 100% 100%, 3% 97%, 0 100%); }
+
+.cartons { display: grid; grid-template-columns: repeat(2, minmax(0, 140px)); gap: 22px 16px; justify-content: center; padding-top: 14px; }
+.box { width: 100%; height: 92px; border: 0; background: linear-gradient(var(--carton), #a07a4c); border-radius: 3px; position: relative; display: grid; place-items: center; box-shadow: 0 8px 12px rgba(0,0,0,.45); transform: rotate(var(--r)); color: var(--feutre); }
+.box::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 16px; background: linear-gradient(#c9a172, #b48c5c); border-bottom: 2px solid rgba(0,0,0,.15); }
+.box::after { content: ""; position: absolute; left: 44%; width: 12%; top: 0; height: 40px; background: var(--scotch); }
+.box .t { font: 400 16px/1.05 var(--f-feutre); position: relative; z-index: 1; margin-top: 18px; }
+.box small { position: absolute; right: 8px; bottom: 6px; font: 700 15px/1 var(--f-main); }
+.box .peek { position: absolute; left: 12px; top: -14px; display: flex; gap: 3px; }
+.box .peek i { width: 14px; height: 30px; border-radius: 2px 2px 0 0; background: var(--c); box-shadow: inset 0 0 0 2px #1f1c1b; }
+
+.jaq { display: grid; grid-template-columns: 12px 1fr; background: var(--plastique); padding: 5px 5px 5px 0; border-radius: 4px; box-shadow: 0 8px 14px rgba(0,0,0,.45); position: relative; width: 100px; }
+.jaq::after { content: ""; position: absolute; inset: 0; border-radius: 4px; background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,.12) 45%, transparent 55%); }
+.jaq .spine { writing-mode: vertical-rl; transform: rotate(180deg); font: 400 9px/1 var(--f-feutre); color: var(--etiquette); text-align: center; overflow: hidden; white-space: nowrap; }
+.jaq .art { aspect-ratio: 2 / 3; container-type: inline-size; display: flex; flex-direction: column; justify-content: flex-end; padding: 9cqi; background: radial-gradient(circle at 70% 28%, color-mix(in srgb, var(--c2) 85%, transparent) 0 22%, transparent 23%), linear-gradient(165deg, var(--c1) 40%, color-mix(in srgb, var(--c1) 60%, var(--c2))); }
+.jaq .art b { font: italic 900 15cqi/.95 var(--f-ui); font-stretch: 112%; text-transform: uppercase; color: #fff; }
+.add-item { display: grid; gap: 8px; width: 100px; }
+.add-btn { border: 0; border-radius: 6px; padding: 8px 4px 6px; font: 700 16px/1 var(--f-main); background: var(--moutarde); color: var(--feutre); box-shadow: 0 3px 0 var(--moutarde-ombre); }
+.add-btn:disabled { background: #2f4a48; color: var(--t-menthe); box-shadow: 0 3px 0 #1c2c2b; }
+.search-tape { width: 100%; max-width: 340px; border: 0; background: var(--scotch); color: var(--feutre); font: 700 22px/1 var(--f-main); padding: 12px 16px 9px; transform: rotate(-1deg); clip-path: polygon(0 6%, 3% 0, 97% 4%, 100% 0, 99% 95%, 100% 100%, 2% 96%, 0 100%); }
+.search-tape::placeholder { color: rgba(29,27,46,.55); }
+
+.back { background: #f1e8d4; color: #1a1612; padding: 16px; display: grid; gap: 12px; box-shadow: 0 10px 24px rgba(0,0,0,.6); border-radius: 3px; max-width: 340px; width: 100%; }
+.back h4 { margin: 0; font: italic 900 28px/.92 var(--f-ui); font-stretch: 112%; text-transform: uppercase; }
+.frames { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.frames span { aspect-ratio: 4 / 3; background: linear-gradient(var(--a), var(--b)); box-shadow: inset 0 0 0 2px #f1e8d4, 0 0 0 1px #c9bca3; }
+.frames em { aspect-ratio: 4 / 3; background: #111; display: grid; place-items: center; color: var(--etiquette); font: 700 13px/1 var(--f-main); font-style: normal; }
+.back p { font-size: 13.5px; line-height: 1.45; }
+.billing { font: 700 11px/1.15 var(--f-ui); font-stretch: 62%; text-transform: uppercase; text-align: center; color: #3a3128; border-block: 1px solid #c9bca3; padding: 8px 0; }
+.billing big { font-size: 15px; display: block; }
+.specs { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.specs .cert { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; font: 900 12px/1 var(--f-ui); color: #fff; background: #2e8a6a; }
+.specs .b1 { border: 1.5px solid #1a1612; padding: 3px 6px; font: 800 10px/1 var(--f-ui); text-transform: uppercase; }
+.barcode { margin-left: auto; width: 70px; height: 28px; background: repeating-linear-gradient(90deg, #1a1612 0 1px, transparent 1px 3px, #1a1612 3px 5px, transparent 5px 6px, #1a1612 6px 7px, transparent 7px 10px); }
+.stampbtn { border: 3px solid #b2362a; color: #b2362a; background: none; font: italic 900 18px/1 var(--f-ui); font-stretch: 112%; text-transform: uppercase; padding: 9px; transform: rotate(-2deg); border-radius: 4px; }
+
+.memo { width: 280px; background: var(--papier); color: var(--feutre); padding: 16px 16px 14px; transform: rotate(.8deg); box-shadow: 0 6px 12px rgba(0,0,0,.35); display: grid; gap: 4px; background-image: repeating-linear-gradient(transparent 0 29px, rgba(79,109,154,.22) 29px 30px); background-position: 0 40px; }
+.memo h4 { margin: 0 0 4px; font: 400 22px/1 var(--f-feutre); }
+.tog { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 44px; font: 600 16px/1.2 var(--f-ui); cursor: pointer; }
+.tog span { display: grid; } .tog small { font: 400 13px/1.2 var(--f-ui); color: #5f564c; }
+.tog input { appearance: none; flex: none; width: 52px; height: 30px; border-radius: 15px; background: #c9bfae; position: relative; cursor: pointer; margin: 0; box-shadow: inset 0 2px 3px rgba(0,0,0,.2); }
+.tog input::after { content: ""; position: absolute; top: 3px; left: 3px; width: 24px; height: 24px; border-radius: 50%; background: #fff; box-shadow: 0 2px 3px rgba(0,0,0,.3); transition: transform .15s; }
+.tog input:checked { background: var(--bleu-vert); } .tog input:checked::after { transform: translateX(22px); }
+.cork { background: radial-gradient(circle at 20% 30%, rgba(0,0,0,.12) 0 1px, transparent 1.5px) 0 0 / 7px 7px, var(--liege); border: 10px solid #4a382b; padding: 22px 14px; display: grid; justify-items: center; width: 100%; max-width: 340px; }
+
+.flow { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; counter-reset: s; }
+.flow div { background: rgba(0,0,0,.25); padding: 12px 14px; font-size: 14px; display: grid; gap: 4px; border-radius: 4px; }
+.flow b { font: 700 19px/1 var(--f-main); color: var(--moutarde); }
+.sounds { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+.sound { background: rgba(0,0,0,.25); padding: 14px; display: grid; gap: 8px; align-content: start; border-radius: 4px; }
+.sound b { font: 700 22px/1 var(--f-main); color: var(--etiquette); }
+.sound p { font-size: 14px; color: var(--poussiere); }
+.lexicon td:first-child { color: var(--poussiere); }
+.lexicon td:nth-child(2) { font-weight: 700; }
+.quotes { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; }
+.quote { background: var(--papier); color: var(--feutre); padding: 14px 16px; display: grid; gap: 6px; transform: rotate(var(--r, -.5deg)); box-shadow: 0 6px 12px rgba(0,0,0,.35); }
+.quote small { font: 700 17px/1 var(--f-main); color: var(--rouge); }
+.quote span { font-size: 15px; }
+pre { margin: 0; background: #0f0c0b; padding: 18px; overflow-x: auto; font: 500 13px/1.6 var(--f-led); color: var(--etiquette); border-radius: 4px; }
+pre .k { color: var(--moutarde); } pre .c { color: var(--poussiere); }
+
+@media (prefers-reduced-motion: reduce) { .snow, .tex-snow, .tracking::before { animation: none; } .vt { transition: none; } }
+</style>
+
+<div class="page">
+
+<header class="cover">
+  <div class="logo"><span class="stripes"></span><span class="word">Spinema</span><span class="spec"><span>E-180</span><span>HI-FI</span></span></div>
+  <p class="lead">Charte graphique de l'app. Direction « Vieilles VHS » : un salon le soir, avec l'étagère de cassettes, la télé, le magnéto et la télécommande.</p>
+  <p class="meta">version 2 · octobre 2026 · Android, thème sombre · écran de référence Galaxy A56</p>
+  <nav class="toc" aria-label="Sommaire">
+    <a href="#concept" style="--r:-1deg">Concept</a><a href="#logo" style="--r:.8deg">Logo</a><a href="#icone" style="--r:-.5deg">Icône</a><a href="#couleurs" style="--r:1deg">Couleurs</a><a href="#typo" style="--r:-.8deg">Typographie</a><a href="#matieres" style="--r:.5deg">Matières</a><a href="#objets" style="--r:-1.2deg">Objets</a><a href="#ecrans" style="--r:.7deg">Écrans</a><a href="#mouvement" style="--r:-.4deg">Mouvement</a><a href="#son" style="--r:1.1deg">Son</a><a href="#ton" style="--r:-.9deg">Ton</a><a href="#tokens" style="--r:.6deg">Tokens</a>
+  </nav>
+</header>
+
+<section class="ch" id="concept">
+  <div class="ch-head"><span class="counter">0:00:00</span><h2>Concept</h2></div>
+  <div class="prose">
+    <p>Spinema est un salon, le soir. Au mur, l'étagère de cassettes enregistrées à la maison, avec leurs étiquettes écrites au feutre. Dessous, la télé cathodique posée sur le magnéto, et la télécommande à côté. Au-dessus, les polaroids des amis présents.</p>
+    <p>On choisit le film comme avant : on passe le doigt sur les tranches, on sort une cassette, on la met dans le magnéto.</p>
+  </div>
+  <div class="principles">
+    <div class="note-paper" style="--r:-1.2deg"><h3>1. Des objets, pas des écrans</h3><p>Chaque fonction est un objet du salon : la télécommande règle, la télé montre, les touches agissent, les cartons rangent. Pas de cartes, de panneaux ou de listes de réglages.</p></div>
+    <div class="note-paper" style="--r:.8deg"><h3>2. Montrer plutôt qu'écrire</h3><p>Le nombre de vetos, ce sont des jetons rouges. Un film vu porte « vu » au feutre. Une classification bloquée a un bout de scotch dessus. Le texte ne sert qu'à ce que l'objet ne peut pas dire.</p></div>
+    <div class="note-paper" style="--r:-.4deg"><h3>3. Évident au toucher</h3><p>Tout ce qui se touche ressemble à une touche : relief, ombre, enfoncement. Un objet décoratif ne doit jamais avoir l'air cliquable, et l'inverse.</p></div>
+    <div class="note-paper" style="--r:1.1deg"><h3>4. Un écran, un coup d'œil</h3><p>La Machine tient sur l'écran du téléphone sans faire défiler, même en salon. Seules l'étagère, la recherche et les fiches défilent.</p></div>
+  </div>
+  <div class="grid2">
+    <div class="comp"><span class="lab">Oui</span><ul class="dodont yes"><li>Étiquettes au feutre, scotch, carton, liège, polaroids</li><li>Les petites marques des vraies cassettes : K7, SP, VHS Secam</li><li>Le magnéto, sa LED verte, le bruit des touches</li><li>Les vraies affiches des films, dans des boîtiers</li></ul></div>
+    <div class="comp"><span class="lab">Non</span><ul class="dodont no"><li>Petits titres en capitales espacées au-dessus de chaque bloc</li><li>Encadrés, cartes et listes de réglages façon formulaire</li><li>Phrases d'explication partout</li><li>Horreur, codes du cinéma classique, reflets irisés</li></ul></div>
+  </div>
+</section>
+
+<section class="ch" id="logo">
+  <div class="ch-head"><span class="counter">0:04:12</span><h2>Logo</h2></div>
+  <div class="prose"><p>Un bloc de rayures penchées, repris des jaquettes de cassettes vierges des années 80, et le nom en capitales larges et italiques. « E-180 · HI-FI » n'apparaît que sur les grands formats.</p></div>
+  <div class="grid2">
+    <div class="comp"><span class="lab">Principal, sur fond sombre</span><div class="stage"><span class="logo" style="--s:clamp(34px,6vw,54px)"><span class="stripes"></span><span class="word">Spinema</span><span class="spec"><span>E-180</span><span>HI-FI</span></span></span></div></div>
+    <div class="comp"><span class="lab">Sur papier (carte de membre)</span><div class="stage light"><span class="logo on-label" style="--s:clamp(34px,6vw,54px)"><span class="stripes"></span><span class="word">Spinema</span></span></div></div>
+    <div class="comp"><span class="lab">Monochrome</span><div class="stage plastic"><span class="logo mono" style="--s:clamp(34px,6vw,54px)"><span class="stripes"></span><span class="word">Spinema</span></span></div></div>
+    <div class="comp"><span class="lab">Zone de protection</span><div class="stage"><div class="clear"><span class="x t">x</span><span class="x l">x</span><span class="logo"><span class="stripes"></span><span class="word">Spinema</span></span></div></div>
+      <p class="caption"><b>x = hauteur des rayures.</b> Taille minimale : 18 px de haut pour le nom. En dessous, on utilise l'icône.</p></div>
+  </div>
+  <div><span class="lab">À ne pas faire</span>
+    <div class="grid3">
+      <div class="comp"><div class="stage bad" style="min-height:110px"><span class="logo" style="--s:28px"><span class="stripes" style="background:conic-gradient(#ff9ad5,#9bf6ff,#fdffb6,#ff9ad5)"></span><span class="word" style="background:linear-gradient(90deg,#ff9ad5,#9bf6ff);-webkit-background-clip:text;background-clip:text;color:transparent">Spinema</span></span></div><p class="caption">Pas de dégradé ni de reflet.</p></div>
+      <div class="comp"><div class="stage bad" style="min-height:110px"><span class="logo" style="--s:28px"><span class="stripes" style="background:linear-gradient(var(--bleu-vert) 0 25%,var(--moutarde) 0 50%,var(--rouge) 0 75%,var(--orange) 0)"></span><span class="word">Spinema</span></span></div><p class="caption">Les rayures gardent leurs couleurs et leur ordre.</p></div>
+      <div class="comp"><div class="stage bad" style="min-height:110px"><span class="logo" style="--s:28px"><span class="stripes"></span><span class="word" style="font:400 1em/1 var(--f-feutre);text-transform:none">Spinema</span></span></div><p class="caption">Le feutre est pour les étiquettes, pas pour le logo.</p></div>
+      <div class="comp"><div class="stage bad" style="min-height:110px"><span class="logo" style="--s:28px;transform:scaleX(1.5)"><span class="stripes"></span><span class="word">Spinema</span></span></div><p class="caption">Ne pas étirer.</p></div>
+    </div></div>
+</section>
+
+<section class="ch" id="icone">
+  <div class="ch-head"><span class="counter">0:09:47</span><h2>Icône d'app</h2></div>
+  <div class="prose"><p>Une cassette vue de face : l'étiquette rayée et les deux bobines.</p></div>
+  <div class="grid3">
+    <div class="comp"><span class="lab">Icône adaptative (108 dp)</span><div class="adaptive"><span class="cass bare"><b></b><span><i></i><i></i></span></span></div>
+      <p class="caption">La cassette tient dans le cercle de sécurité de 66 dp. Fond : bois sombre <code>#2A211C</code>.</p></div>
+    <div class="comp"><span class="lab">Selon le lanceur</span>
+      <div class="masks"><div class="mask circle"><span class="cass bare"><b></b><span><i></i><i></i></span></span></div><div class="mask squircle"><span class="cass bare"><b></b><span><i></i><i></i></span></span></div><div class="mask rounded"><span class="cass bare"><b></b><span><i></i><i></i></span></span></div><div class="mask themed"><span class="cass monochrome"><b></b><span><i></i><i></i></span></span></div></div>
+      <p class="caption">La dernière est l'icône thématique d'Android 13+, teintée par le système.</p></div>
+    <div class="comp"><span class="lab">Démarrage</span><div class="splash"><span class="cass"><b></b><span><i></i><i></i></span></span><span class="logo"><span class="stripes"></span><span class="word">Spinema</span></span></div></div>
+  </div>
+</section>
+
+<section class="ch" id="couleurs">
+  <div class="ch-head"><span class="counter">0:15:03</span><h2>Couleurs</h2></div>
+  <div class="prose"><p>Les couleurs viennent des matières du salon. Les couleurs vives sont réservées aux touches : moutarde pour l'action principale, bleu-vert pour OK, rouge pour le veto.</p></div>
+  <div><span class="lab">Le salon</span><div class="swatches" id="sw-base"></div></div>
+  <div><span class="lab">Le papier et le carton</span><div class="swatches" id="sw-paper"></div></div>
+  <div><span class="lab">Les touches</span><div class="swatches" id="sw-action"></div></div>
+  <div><span class="lab">Les étiquettes (une teinte par cassette, stable)</span><div class="swatches" id="sw-labels"></div></div>
+  <div><span class="lab">Contrastes vérifiés (WCAG 2.1)</span><div class="tablewrap"><table id="contrast"><thead><tr><th>Exemple</th><th>Texte</th><th>Fond</th><th>Ratio</th><th>Résultat</th></tr></thead><tbody></tbody></table></div>
+    <p class="caption" style="margin-top:8px">AA : 4,5:1 pour le texte courant, 3:1 pour le gros texte (24 px, ou 19 px en gras). On ne pose jamais de texte sur l'orange ni sur les rayures.</p></div>
+</section>
+
+<section class="ch" id="typo">
+  <div class="ch-head"><span class="counter">0:21:38</span><h2>Typographie</h2></div>
+  <div class="prose"><p>Quatre polices, chacune liée à un objet. Le feutre écrit sur les étiquettes. La main (Caveat) écrit les petits mots, les noms et les titres secondaires. Archivo est ce qui est imprimé : touches, dos de boîte, texte courant. La police LED n'apparaît que sur les afficheurs.</p></div>
+  <div>
+    <div class="spec-row"><div class="meta"><b>Titre de page, étiquette</b>Permanent Marker · 28 sp (titres), 15 à 22 sp (tranches)</div><div><span class="t-page">Mes films à voir</span> &nbsp; <span class="t-page on-label" style="font-size:20px">Coraline</span></div></div>
+    <div class="spec-row"><div class="meta"><b>Écriture à la main</b>Caveat 700 · 17 à 22 sp</div><div class="t-hand">12 cassettes à voir · touche-en une pour sa fiche</div></div>
+    <div class="spec-row"><div class="meta"><b>Touche</b>Archivo 900 italique, 112 % · 15 à 19 sp, capitales</div><div class="t-key">▶ Piocher une cassette</div></div>
+    <div class="spec-row"><div class="meta"><b>Imprimé (dos de boîte)</b>Archivo 900 italique · 28 à 30 sp</div><div class="t-print">À couteaux tirés</div></div>
+    <div class="spec-row"><div class="meta"><b>Texte courant</b>Archivo 400 / 600 · 15 à 16 sp</div><div class="t-body">Le romancier Harlan Thrombey est retrouvé mort au lendemain de ses 85 ans.</div></div>
+    <div class="spec-row"><div class="meta"><b>Générique</b>Archivo 700, largeur 62 % · 11 à 15 sp</div><div class="t-billing">Un film de Rian Johnson · avec Daniel Craig · Ana de Armas</div></div>
+    <div class="spec-row"><div class="meta"><b>Afficheur</b>IBM Plex Mono 600 · 13 à 16 sp, uniquement sur LED et LCD</div><div><span class="t-lcd">0:17 · 12 K7</span></div></div>
+  </div>
+  <div class="note-paper" style="max-width:520px"><h3>Règles</h3><ul class="dodont no"><li>Pas de petites capitales espacées pour titrer les blocs.</li><li>Pas de paragraphe en feutre ou en Caveat : deux lignes au plus.</li><li>Pas de police LED hors des afficheurs.</li></ul></div>
+</section>
+
+<section class="ch" id="matieres">
+  <div class="ch-head"><span class="counter">0:28:10</span><h2>Matières</h2></div>
+  <div class="grid3">
+    <div class="comp"><div class="tex tex-wall"></div><p class="caption"><b>Papier peint rayé.</b> Le fond de tous les écrans, avec une lumière douce en haut.</p></div>
+    <div class="comp"><div class="tex tex-wood"></div><p class="caption"><b>Bois.</b> Les planches de l'étagère et la barre d'onglets.</p></div>
+    <div class="comp"><div class="tex tex-label"></div><p class="caption"><b>Étiquette.</b> Papier crème jauni, légèrement de travers.</p></div>
+    <div class="comp"><div class="tex tex-tape"></div><p class="caption"><b>Scotch.</b> Onglets, bouton de recherche, messages, interdits d'âge.</p></div>
+    <div class="comp"><div class="tex tex-carton"></div><p class="caption"><b>Carton.</b> Les boîtes : genres, époques, collections.</p></div>
+    <div class="comp"><div class="tex tex-liege"></div><p class="caption"><b>Liège.</b> Le tableau du profil.</p></div>
+    <div class="comp"><div class="tex tex-plastic"></div><p class="caption"><b>Plastique noir.</b> Cassettes, télé, magnéto, télécommande.</p></div>
+    <div class="comp"><div class="tex tex-snow"></div><p class="caption"><b>Neige.</b> La télé quand rien n'est dans le magnéto.</p></div>
+    <div class="comp"><div class="tex tex-led"></div><p class="caption"><b>LED verte.</b> L'afficheur du magnéto et le compte à rebours.</p></div>
+  </div>
+  <p class="caption">Un grain très léger couvre tout l'écran, pour casser l'aspect numérique.</p>
+</section>
+
+<section class="ch" id="objets">
+  <div class="ch-head"><span class="counter">0:33:51</span><h2>Objets</h2></div>
+  <div class="prose"><p>Les briques de l'app. Chacune est un objet du salon, avec un rôle unique.</p></div>
+
+  <div class="grid2">
+    <div class="comp"><h3>Touches</h3><div class="spot"><div class="keys-demo">
+      <button class="key big" type="button">▶ Piocher une cassette</button>
+      <div class="pair"><button class="key red" type="button">■ Veto<small><i class="jet"></i><i class="jet"></i></small></button><button class="key green" type="button">▶ OK<small>&nbsp;</small></button></div>
+      <div class="pair"><button class="key dark" type="button">◀◀ Rembobiner</button><button class="key dark" type="button" disabled>Désactivée</button></div></div></div>
+      <ul class="rules"><li><b>Moutarde</b> : l'action principale de l'écran, une seule.</li><li><b>Rouge / bleu-vert</b> : veto et OK, uniquement pour voter. Le veto toujours à gauche.</li><li><b>Sombre</b> : actions secondaires.</li><li>Relief de 4 à 5 px qui s'écrase à l'appui, zone tactile de 48 dp au moins.</li></ul></div>
+
+    <div class="comp"><h3>Polaroids et jetons</h3><div class="spot"><div class="polas">
+      <span class="pola" style="--r:-3deg;--tint:#e9d9a8"><span class="ph">O</span><span class="nm">moi</span><span class="jets"><i class="jet"></i><i class="jet"></i></span></span>
+      <span class="pola" style="--r:2deg;--tint:#f1c9b8"><span class="ph">L</span><span class="nm">Lou</span><span class="stamp no">✗</span><span class="jets"><i class="jet"></i><i class="jet used"></i></span></span>
+      <span class="pola" style="--r:-1deg;--tint:#cfe0d6"><span class="ph">S</span><span class="nm">Sam</span><span class="stamp ok">✓</span><span class="jets"><i class="jet"></i><i class="jet"></i></span></span>
+      <span class="pola away" style="--r:3deg;--tint:#d6dcef"><span class="ph">A</span><span class="nm">Alex</span></span></div></div>
+      <ul class="rules"><li>Un polaroid par membre, punaisé au mur. <b>Grisé et descendu</b> : absent de la séance.</li><li><b>Jetons rouges</b> : vetos restants. Un jeton vide est un veto utilisé.</li><li><b>Tampon ✓ ou ✗</b> au feutre : le vote de la personne.</li></ul></div>
+  </div>
+
+  <div class="grid2">
+    <div class="comp"><h3>Cassettes debout</h3><div class="spot"><div class="plank"><div class="row">
+      <span class="vt" style="--h:142px"><span class="lbl" style="--lb:#efe3c4">Coraline</span><span class="dots"><i style="--c:#f1c9b8"></i><i style="--c:#e9d9a8"></i></span></span>
+      <span class="vt scotch" style="--h:132px"><span class="lbl" style="--lb:#cfe0d6;--r:1deg">Parasite</span></span>
+      <span class="vt pull" style="--h:138px"><span class="lbl" style="--lb:#f1c9b8">Get Out</span></span>
+      <span class="vt seen" style="--h:146px"><span class="lbl" style="--lb:#d6dcef">Le Château ambulant</span></span>
+      <span class="vt" style="--h:128px"><span class="lbl" style="--lb:#e9d9a8;--r:-1deg">Alien</span></span>
+      <span class="vt" style="--h:140px"><span class="lbl" style="--lb:#efe3c4">Perfect Days</span></span></div></div></div>
+      <ul class="rules"><li>Tranche verticale au feutre, hauteur et teinte d'étiquette propres à chaque film.</li><li><b>Pastilles</b> en bas : qui l'a ajoutée (en salon).</li><li><b>Sortie</b> : soulevée, contour moutarde, c'est le film tiré.</li><li><b>« vu »</b> au feutre rouge et étiquette ternie : déjà vu.</li></ul></div>
+
+    <div class="comp"><h3>Télé et magnéto</h3><div class="spot" style="grid-template-columns:repeat(2,minmax(0,1fr));align-items:end">
+      <div class="tv-stack"><div class="tv"><div class="screen-crt"><div class="pic" style="--c1:#3b2416;--c2:#e4c58a"><b>À couteaux tirés</b></div></div><div class="chin"><span class="brand">SPINEMA</span><span class="pwr"></span></div></div>
+        <div class="vcr"><span class="slot"></span><span class="lcd">▶ PLAY</span><span class="mini"><span class="vk">⏏ éjecter</span><span class="vk">✓ vu</span></span></div></div>
+      <div class="tv-stack"><div class="tv"><div class="screen-crt"><div class="pic" style="--c1:#1f3b2e;--c2:#d9c27a"><b>Parasite</b></div><div class="scribble">Lou a dit non.</div></div><div class="chin"><span class="brand">SPINEMA</span><span class="pwr"></span></div></div>
+        <div class="vcr"><span class="slot"></span><span class="lcd">⏏ EJECT</span></div></div></div>
+      <ul class="rules"><li>La télé montre le film <b>dans le magnéto</b> (à l'affiche), ou de la neige. Un appui ouvre sa fiche.</li><li>L'afficheur dit l'essentiel : <b>12 K7</b>, ◀◀ REW, ▶ PLAY, compte à rebours 0:17, ⏏ EJECT.</li><li>Le verdict d'un vote s'écrit <b>au feutre sur la vitre</b>.</li></ul></div>
+  </div>
+
+  <div class="grid2">
+    <div class="comp"><h3>Télécommande</h3><div class="spot"><div class="remote">
+      <span class="lcd">09 K7 dans la machine</span>
+      <div class="grp"><span class="print">JETONS DE VETO PAR PERSONNE</span><div class="stepper"><span class="rk">−</span><span class="val"><i class="jet"></i><i class="jet"></i></span><span class="rk">+</span></div></div>
+      <div class="grp"><span class="print">CLASSIFICATION</span><div class="rkeys"><span class="rk" aria-pressed="true">TP</span><span class="rk" aria-pressed="true">-10</span><span class="rk" aria-pressed="true">-12</span><span class="rk locked" data-why="Lou 15">-16</span><span class="rk locked" data-why="Lou 15">-18</span></div></div>
+      <div class="grp"><span class="print">DURÉE MAX</span><div class="rkeys k4"><span class="rk">1h30</span><span class="rk" aria-pressed="true">2h</span><span class="rk">2h30</span><span class="rk">∞</span></div></div></div></div>
+      <ul class="rules"><li>Tous les réglages de tirage et l'ouverture de séance, au même endroit.</li><li><b>LED verte</b> sur la touche : option active.</li><li><b>Scotch</b> sur la touche : bloquée par l'âge, avec le prénom et l'âge de la personne.</li><li>Les mentions imprimées sur la télécommande sont les seules capitales espacées autorisées : c'est de la sérigraphie, pas un titre.</li></ul></div>
+
+    <div class="comp"><h3>Cartons</h3><div class="spot"><div class="cartons" style="width:100%">
+      <span class="box" style="--r:-2deg"><span class="peek"><i style="--c:#efe3c4"></i><i style="--c:#cfe0d6"></i><i style="--c:#f1c9b8"></i></span><span class="t">Fantastique</span><small>4</small></span>
+      <span class="box" style="--r:2deg"><span class="peek"><i style="--c:#e9d9a8"></i><i style="--c:#d6dcef"></i></span><span class="t">Soirée doudou</span><small>5</small></span></div></div>
+      <ul class="rules"><li>Les rangements : par genre, époque, durée, et les collections de l'utilisateur.</li><li>Des cassettes dépassent du haut, le nombre est écrit dans le coin.</li><li>Un appui ouvre le carton (les jaquettes à l'intérieur).</li></ul></div>
+  </div>
+
+  <div class="grid2">
+    <div class="comp"><h3>Dos de boîte (fiche film)</h3><div class="spot"><div class="back">
+      <h4>À couteaux tirés</h4>
+      <div class="frames"><span style="--a:#3b2416;--b:#e4c58a"></span><span style="--a:#e4c58a;--b:#3b2416"></span><em>▶ bande-annonce</em></div>
+      <p>Le romancier Harlan Thrombey est retrouvé mort au lendemain de ses 85 ans. Le détective Benoit Blanc interroge une famille qui a tout à perdre.</p>
+      <div class="billing">Un film de Rian Johnson<big>avec Daniel Craig · Ana de Armas · Chris Evans</big>Policier · Comédie · 2019 · note 7,8/10</div>
+      <div class="specs"><span class="cert">TP</span><span class="b1">130 min</span><span class="b1">Couleur</span><span class="b1">VHS Secam</span><span class="barcode"></span></div>
+      <button class="stampbtn" type="button">Je l'ai vu</button></div></div>
+      <ul class="rules"><li>La fiche d'un film est le dos de sa boîte VHS : titre imprimé, images, résumé, générique, pastille de classification, cases techniques, code-barres.</li><li>« Je l'ai vu » est un tampon.</li></ul></div>
+
+    <div class="comp"><h3>Repères de navigation</h3><div class="spot" style="gap:20px">
+      <button class="space-btn" type="button"><span><small>salon · changer</small><b>Ciné entre potes</b></span><i>▼</i></button>
+      <div class="tabs"><span class="on" style="--r:-2deg">Machine</span><span style="--r:1.5deg">Étagère</span><span style="--r:-1deg">Trouver</span><span style="--r:2deg">Moi</span></div>
+      <span class="toast">Rangé sur l'étagère !</span></div>
+      <ul class="rules"><li><b>Bouton de salon</b> : en papier, en relief, avec « changer » et une flèche dans un rond. Il doit se lire comme un bouton.</li><li><b>Onglets</b> : bouts de scotch sur le bord de l'étagère. L'onglet actif est plus clair et remonte.</li><li><b>Messages</b> : un bout de scotch qui apparaît en haut, 2 à 3 secondes.</li></ul></div>
+  </div>
+
+  <div class="grid2">
+    <div class="comp"><h3>Trouver un film</h3><div class="spot">
+      <input class="search-tape" type="search" placeholder="cherche un titre, un réalisateur…" aria-label="Exemple de recherche">
+      <div class="pair" style="width:auto"><div class="add-item"><span class="jaq"><span class="spine">Past Lives</span><span class="art" style="--c1:#2c3b5a;--c2:#e6a07a"><b>Past Lives</b></span></span><button class="add-btn" type="button">+ ajouter</button></div>
+        <div class="add-item"><span class="jaq"><span class="spine">Oppenheimer</span><span class="art" style="--c1:#3d1a0e;--c2:#f08a3a"><b>Oppenheimer</b></span></span><button class="add-btn" type="button" disabled>✓ ajouté</button></div></div></div>
+      <ul class="rules"><li>Les jaquettes sont les vraies affiches TMDB dans un boîtier.</li><li>Le bouton est <b>sous</b> la jaquette, avec un verbe : « + ajouter », puis « ✓ ajouté ».</li></ul></div>
+
+    <div class="comp"><h3>Réglages du compte</h3><div class="spot"><div class="cork"><div class="memo"><h4>Réglages</h4>
+      <label class="tog" for="ex-sound"><span>Effets sonores<small>activés</small></span><input type="checkbox" role="switch" id="ex-sound" checked></label>
+      <label class="tog" for="ex-notif"><span>Notifications<small>coupées</small></span><input type="checkbox" role="switch" id="ex-notif"></label></div></div></div>
+      <ul class="rules"><li>Le profil est un tableau en liège : carte de membre, invitations en enveloppe, salons en porte-clés.</li><li>Les réglages du compte sont sur une <b>feuille lignée</b>, avec des interrupteurs classiques et l'état écrit en toutes lettres.</li><li>Déconnexion et suppression sont de vraies touches, la suppression en rouge.</li></ul></div>
+  </div>
+</section>
+
+<section class="ch" id="ecrans">
+  <div class="ch-head"><span class="counter">0:39:26</span><h2>Écrans</h2></div>
+  <div class="prose"><p>Quatre onglets, quatre coins du salon. Référence : Galaxy A56, 384 × 832 px CSS. La Machine ne défile jamais.</p></div>
+  <div class="tablewrap"><table><thead><tr><th>Onglet</th><th>Le coin du salon</th><th>Ce qu'on y fait</th></tr></thead><tbody>
+    <tr><td><b>Machine</b></td><td>Polaroids au mur, une planche de cassettes, la télé sur le magnéto, la télécommande</td><td>Ouvrir une séance, régler, piocher, voter, voir le film dans le magnéto</td></tr>
+    <tr><td><b>Étagère</b></td><td>Planches de cassettes, puis cartons</td><td>Voir ses films à voir et déjà vus, ranger par genre, époque, durée, ouvrir ses boîtes</td></tr>
+    <tr><td><b>Trouver</b></td><td>Le bac à nouveautés et un bout de scotch pour chercher</td><td>Chercher un film et l'ajouter à l'étagère</td></tr>
+    <tr><td><b>Moi</b></td><td>Le tableau en liège</td><td>Carte de membre, invitations, salons, réglages du compte</td></tr>
+  </tbody></table></div>
+</section>
+
+<section class="ch" id="mouvement">
+  <div class="ch-head"><span class="counter">0:47:15</span><h2>Mouvement</h2></div>
+  <div class="prose"><p>Le tirage est le seul grand moment. Le reste bouge peu et vite. Tout imite la mécanique : ça glisse, ça ralentit, ça s'enclenche avec un petit rebond.</p></div>
+  <div class="grid2">
+    <div class="comp"><div class="spot" style="gap:12px">
+      <div class="plank" id="demo-plank"><div class="row" id="demo-row"></div></div>
+      <div class="tv-stack"><div class="tv"><div class="screen-crt" id="demo-screen"><div class="snow"></div></div><div class="chin"><span class="brand">SPINEMA</span><span class="pwr"></span></div></div>
+        <div class="vcr"><span class="slot"></span><span class="lcd" id="demo-lcd">12 K7</span></div></div>
+      <button class="key big" type="button" id="demo-go" style="max-width:300px">▶ Piocher une cassette</button></div></div>
+    <div class="comp">
+      <div class="flow">
+        <div><b>0 – 2,8 s</b>L'étagère défile vers la gauche puis ralentit. Un clac par cassette. LED : ◀◀ REW.</div>
+        <div><b>2,8 s</b>La cassette retenue se soulève (380 ms, rebond).</div>
+        <div><b>3,4 s</b>Elle part dans le magnéto : « ka-chunk », LED ▶ PLAY.</div>
+        <div><b>3,5 s</b>La télé passe de la neige à l'image, avec une bande de parasites.</div>
+        <div><b>Vote</b>Compte à rebours sur la LED, tampons sur les polaroids, verdict au feutre sur la vitre.</div>
+      </div>
+      <ul class="rules"><li><b>Défilement</b> : <code>cubic-bezier(.15, .85, .25, 1)</code>, 2 800 ms.</li><li><b>Soulèvement, touches</b> : <code>cubic-bezier(.2, .9, .3, 1.3)</code>, 80 à 380 ms.</li><li><b>Mouvement réduit</b> : pas de défilement ni de parasites, la cassette apparaît directement dans le magnéto.</li></ul>
+    </div>
+  </div>
+</section>
+
+<section class="ch" id="son">
+  <div class="ch-head"><span class="counter">0:52:40</span><h2>Son</h2></div>
+  <div class="prose"><p>Des bruits mécaniques courts, jamais de musique. Activés par défaut, coupés en mode silencieux, réglables uniquement dans le profil. Les exemples sont des approximations synthétiques.</p></div>
+  <div class="sounds">
+    <div class="sound"><b>Clac</b><p>Une cassette qui passe, ou une touche de télécommande.</p><button class="key dark" type="button" data-snd="clac">▶ écouter</button></div>
+    <div class="sound"><b>Défilement</b><p>La suite de clacs qui ralentit avec l'étagère.</p><button class="key dark" type="button" data-snd="roll">▶ écouter</button></div>
+    <div class="sound"><b>Ka-chunk</b><p>Le magnéto qui avale la cassette, ou l'éjection.</p><button class="key dark" type="button" data-snd="chunk">▶ écouter</button></div>
+    <div class="sound"><b>Rembobinage</b><p>Le sifflement de la bande quand on relance.</p><button class="key dark" type="button" data-snd="rewind">▶ écouter</button></div>
+    <div class="sound"><b>Bip</b><p>Fin du temps de vote.</p><button class="key dark" type="button" data-snd="bip">▶ écouter</button></div>
+  </div>
+</section>
+
+<section class="ch" id="ton">
+  <div class="ch-head"><span class="counter">0:58:02</span><h2>Ton</h2></div>
+  <div class="prose"><p>Peu de mots, écrits comme un petit mot laissé sur la table. La métaphore vit dans les objets et les touches, jamais au détriment du sens : dès qu'une action a des conséquences (supprimer, quitter), on emploie le mot exact.</p></div>
+  <div class="tablewrap"><table class="lexicon"><thead><tr><th>Ce que c'est</th><th>Dans l'app</th><th>Où</th></tr></thead><tbody>
+    <tr><td>Bibliothèque</td><td>L'étagère</td><td>onglet « Étagère »</td></tr>
+    <tr><td>Films (comptés)</td><td>K7, cassettes</td><td>afficheur « 12 K7 », « 12 cassettes à voir »</td></tr>
+    <tr><td>Collection</td><td>Une boîte</td><td>cartons « Mes boîtes »</td></tr>
+    <tr><td>Vetos</td><td>Jetons de veto</td><td>polaroids, télécommande, touche Veto</td></tr>
+    <tr><td>Lancer le tirage</td><td>Piocher une cassette</td><td>touche moutarde de la Machine</td></tr>
+    <tr><td>Relancer</td><td>Rembobiner</td><td>touche ◀◀ après un refus</td></tr>
+    <tr><td>À l'affiche</td><td>Dans le magnéto</td><td>la télé et l'afficheur ▶ PLAY</td></tr>
+    <tr><td>Découvrir</td><td>Trouver</td><td>onglet « Trouver »</td></tr>
+  </tbody></table></div>
+  <div class="quotes">
+    <div class="quote" style="--r:-1deg"><small>notification</small><span>Alex sort les cassettes dans Ciné entre potes. Viens voter !</span></div>
+    <div class="quote" style="--r:.8deg"><small>verdict sur la télé</small><span>Lou a dit non. · Adopté ! · La machine a parlé !</span></div>
+    <div class="quote" style="--r:-.4deg"><small>rappel 24 h</small><span>Coraline est toujours dans le magnéto. Vous l'avez vu ?</span></div>
+    <div class="quote" style="--r:1deg"><small>moins de 2 films</small><span>Il faut au moins 2 cassettes.</span></div>
+    <div class="quote" style="--r:-.8deg"><small>pas de connexion</small><span>La bande a sauté. Ton étagère reste là, réessaie dans un instant.</span></div>
+    <div class="quote" style="--r:.5deg"><small>quitter (propriétaire)</small><span>Quitter supprimera le salon Ciné entre potes pour ses 3 membres. C'est définitif.</span></div>
+  </div>
+</section>
+
+<section class="ch" id="tokens">
+  <div class="ch-head"><span class="counter">1:04:30</span><h2>Tokens</h2></div>
+  <div class="prose"><p>À copier dans <code>packages/shared/src/theme.ts</code>.</p></div>
+<pre><span class="k">export const</span> colors = {
+  mur: <span class="k">'#2B211A'</span>, murRayure: <span class="k">'#30251D'</span>,  <span class="c">// papier peint, fond des écrans</span>
+  etagere: <span class="k">'#1B1714'</span>, bois: <span class="k">'#3C2F27'</span>, boisClair: <span class="k">'#6A5140'</span>,
+  plastique: <span class="k">'#242120'</span>, plastiqueClair: <span class="k">'#34302D'</span>,  <span class="c">// cassettes, télé, magnéto, télécommande</span>
+  etiquette: <span class="k">'#EFE3C4'</span>, poussiere: <span class="k">'#A59B90'</span>, feutre: <span class="k">'#1D1B2E'</span>,
+  scotch: <span class="k">'#E6D9B0'</span>, carton: <span class="k">'#B98F5E'</span>, liege: <span class="k">'#A9794B'</span>, papier: <span class="k">'#F7F2E6'</span>, polaroid: <span class="k">'#F4EFE4'</span>,
+  moutarde: <span class="k">'#D9A441'</span>, moutardeOmbre: <span class="k">'#8C6A28'</span>,  <span class="c">// touche principale</span>
+  bleuVert: <span class="k">'#6FA3A0'</span>, rouge: <span class="k">'#A8453A'</span>, jeton: <span class="k">'#C4574A'</span>,  <span class="c">// OK, veto, jetons</span>
+  orange: <span class="k">'#F08A3C'</span>, led: <span class="k">'#8DFF9A'</span>, ledFond: <span class="k">'#071108'</span>,
+  etiquettes: [<span class="k">'#EFE3C4'</span>, <span class="k">'#E9D9A8'</span>, <span class="k">'#CFE0D6'</span>, <span class="k">'#F1C9B8'</span>, <span class="k">'#D6DCEF'</span>],
+} <span class="k">as const</span>;
+
+<span class="k">export const</span> fonts = {
+  feutre: <span class="k">'PermanentMarker_400Regular'</span>,  <span class="c">// titres de page, étiquettes</span>
+  main: <span class="k">'Caveat_700Bold'</span>,                 <span class="c">// petits mots, noms, sous-titres</span>
+  imprime: <span class="k">'Archivo_900Black_Italic'</span>,     <span class="c">// touches, dos de boîte, logo</span>
+  texte: <span class="k">'Archivo_400Regular'</span>, texteFort: <span class="k">'Archivo_600SemiBold'</span>,
+  led: <span class="k">'IBMPlexMono_600SemiBold'</span>,        <span class="c">// afficheurs uniquement</span>
+} <span class="k">as const</span>;
+
+<span class="k">export const</span> touche = { relief: 5, reliefSombre: 4, rayon: 8, zoneMin: 48 } <span class="k">as const</span>;
+<span class="k">export const</span> space = { xs: 4, s: 8, m: 12, l: 16, xl: 24 } <span class="k">as const</span>;
+<span class="k">export const</span> motion = {
+  defilement: { duree: 2800, easing: [0.15, 0.85, 0.25, 1] },
+  soulevement: { duree: 380, easing: [0.2, 0.9, 0.3, 1.3] },
+  touche: { duree: 80 },
+} <span class="k">as const</span>;</pre>
+</section>
+
+</div>
+
+<script>
+(function grain() {
+  const c = document.createElement('canvas'); c.width = c.height = 160; const x = c.getContext('2d'), d = x.createImageData(160, 160);
+  for (let i = 0; i < d.data.length; i += 4) { const v = Math.random() * 255; d.data[i] = d.data[i + 1] = d.data[i + 2] = v; d.data[i + 3] = 255; }
+  x.putImageData(d, 0, 0); document.documentElement.style.setProperty('--grain', `url(${c.toDataURL()})`);
+})();
+
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const SW = {
+  'sw-base': [['--etagere', 'Étagère', 'Fond sombre'], ['--bois', 'Bois', 'Planches, onglets'], ['--plastique', 'Plastique', 'Télé, magnéto, cassettes'], ['--etiquette', 'Étiquette', 'Texte principal'], ['--poussiere', 'Poussière', 'Texte secondaire']],
+  'sw-paper': [['--feutre', 'Feutre', 'Texte sur papier'], ['--scotch', 'Scotch', 'Onglets, messages'], ['--carton', 'Carton', 'Boîtes'], ['--liege', 'Liège', 'Profil'], ['--papier', 'Papier', 'Feuilles, notes'], ['--polaroid', 'Polaroid', 'Membres']],
+  'sw-action': [['--moutarde', 'Moutarde', 'Touche principale'], ['--bleu-vert', 'Bleu-vert', 'OK, activé'], ['--rouge', 'Rouge', 'Veto, supprimer'], ['--orange', 'Orange', 'Rayures du logo'], ['--led', 'LED', 'Afficheurs']],
+  'sw-labels': [['--etiquette', 'Crème', 'Étiquette 1'], ['--t-paille', 'Paille', 'Étiquette 2'], ['--t-menthe', 'Menthe', 'Étiquette 3'], ['--t-saumon', 'Saumon', 'Étiquette 4'], ['--t-lavande', 'Lavande', 'Étiquette 5']],
+};
+for (const id in SW) document.getElementById(id).innerHTML = SW[id].map(([v, n, r]) => `<div class="sw"><div class="chip" style="--c:var(${v})"></div><div class="info"><b>${n}</b><span>${r}</span><span class="hex">${css(v).toUpperCase()}</span></div></div>`).join('');
+const lum = hex => { const c = hex.replace('#', '').match(/../g).map(x => parseInt(x, 16) / 255).map(v => v <= .03928 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4)); return .2126 * c[0] + .7152 * c[1] + .0722 * c[2]; };
+const ratio = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p); return (x + .05) / (y + .05); };
+const PAIRS = [
+  ['Texte principal', '--etiquette', '--etagere', false], ['Texte secondaire', '--poussiere', '--etagere', false], ['Titre de film', '--feutre', '--etiquette', false],
+  ['Onglet, message', '--feutre', '--scotch', false], ['Nom de carton', '--feutre', '--carton', false], ['Feuille de réglages', '--feutre', '--papier', false],
+  ['Touche principale', '--feutre', '--moutarde', true], ['Touche OK', '--etagere', '--bleu-vert', true], ['Touche veto', '--etiquette', '--rouge', true],
+  ['Touche sombre', '--etiquette', '--plastique-clair', true], ['Afficheur', '--led', '--led-fond', false],
+];
+document.querySelector('#contrast tbody').innerHTML = PAIRS.map(([n, f, b, big]) => {
+  const fg = css(f), bg = css(b), r = ratio(fg, bg);
+  const res = r >= 4.5 ? '<span class="pass">AA</span>' : r >= 3 && big ? '<span class="warn">AA gros texte</span>' : '<span class="fail">Insuffisant</span>';
+  return `<tr><td><span class="sample" style="color:${fg};background:${bg}">${n}</span></td><td class="num">${fg.toUpperCase()}</td><td class="num">${bg.toUpperCase()}</td><td class="num">${r.toFixed(1).replace('.', ',')}:1</td><td>${res}</td></tr>`;
+}).join('');
+
+/* Sounds */
+let ctx;
+const ac = () => { try { ctx = ctx || new (window.AudioContext || window.webkitAudioContext)(); ctx.resume && ctx.resume(); return ctx; } catch (e) { return null; } };
+function noise(c, t, len, freq, vol) { const b = c.createBuffer(1, Math.ceil(c.sampleRate * len), c.sampleRate), d = b.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / d.length); const s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain(); s.buffer = b; f.type = 'bandpass'; f.frequency.value = freq; g.gain.value = vol; s.connect(f); f.connect(g); g.connect(c.destination); s.start(t); }
+function osc(c, t, type, f0, f1, len, vol) { const o = c.createOscillator(), g = c.createGain(); o.type = type; o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(f1, t + len); g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(.0001, t + len); o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + len + .02); }
+const SOUNDS = {
+  clac: (c, t) => noise(c, t, .03, 2400, .45),
+  roll: (c, t) => { for (let k = 1; k <= 24; k++) noise(c, t + 2.8 * (1 - Math.cbrt(1 - k / 24)), .03, 2200, .35); },
+  chunk: (c, t) => { osc(c, t, 'sine', 140, 50, .12, .6); noise(c, t, .05, 900, .5); osc(c, t + .14, 'sine', 110, 45, .14, .6); noise(c, t + .14, .06, 700, .5); },
+  rewind: (c, t) => { osc(c, t, 'sawtooth', 220, 1100, .8, .05); noise(c, t, .8, 3000, .08); },
+  bip: (c, t) => osc(c, t, 'sine', 1400, 1400, .14, .2),
+};
+document.addEventListener('click', e => { const b = e.target.closest('[data-snd]'); if (!b) return; const c = ac(); if (c) SOUNDS[b.dataset.snd](c, c.currentTime + .02); });
+
+/* Motion demo */
+const FILMS = [['Coraline', '#23305e', '#e8a83e'], ['Parasite', '#1f3b2e', '#d9c27a'], ['Alien', '#0f2a2a', '#9fd3c7'], ['Paddington 2', '#1d3f6e', '#e9853a'], ['La La Land', '#2d1e5c', '#f2c14e'], ['Perfect Days', '#1d3b45', '#c9d7c4'], ['Shining', '#5a1414', '#e6b84a'], ['Le Château ambulant', '#2e4a5c', '#eacb7a']];
+const TINTS = ['#efe3c4', '#e9d9a8', '#cfe0d6', '#f1c9b8', '#d6dcef'];
+const row = document.getElementById('demo-row'), plank = document.getElementById('demo-plank'), lcd = document.getElementById('demo-lcd'), screen = document.getElementById('demo-screen'), go = document.getElementById('demo-go');
+const STEP = 38, N = 34, W = 28;
+const vt = (f, i) => `<span class="vt${i % 4 === 1 ? ' scotch' : ''}" data-i="${i}" style="--h:${118 + (i * 7) % 5 * 5}px"><span class="lbl" style="--lb:${TINTS[(i * 3) % 5]};--r:${((i * 37) % 5 - 2) * .4}deg">${f[0]}</span></span>`;
+function build(win) { row.innerHTML = Array.from({ length: N }, (_, i) => vt(i === W ? win : FILMS[(i * 5) % FILMS.length], i)).join(''); row.style.transition = 'none'; row.style.transform = 'translateX(0)'; }
+build(FILMS[0]);
+let busy = false;
+go.addEventListener('click', () => {
+  if (busy) return; busy = true; go.disabled = true;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches, D = reduce ? 0 : 2800;
+  const win = FILMS[Math.floor(Math.random() * FILMS.length)];
+  build(win); void row.offsetWidth;
+  screen.className = 'screen-crt'; screen.innerHTML = '<div class="snow"></div>'; lcd.textContent = '◀◀ REW';
+  const c = ac(); if (c && !reduce) SOUNDS.roll(c, c.currentTime + .02);
+  row.style.transition = D ? `transform ${D}ms cubic-bezier(.15,.85,.25,1)` : 'none';
+  row.style.transform = `translateX(${plank.clientWidth / 2 - (8 + W * STEP + 17)}px)`;
+  setTimeout(() => {
+    row.querySelector(`[data-i="${W}"]`).classList.add('pull');
+    setTimeout(() => {
+      lcd.textContent = '▶ PLAY'; if (c) SOUNDS.chunk(c, c.currentTime + .01);
+      screen.className = 'screen-crt' + (reduce ? '' : ' tracking');
+      screen.innerHTML = `<div class="pic" style="--c1:${win[1]};--c2:${win[2]}"><b>${win[0]}</b></div>`;
+      busy = false; go.disabled = false;
+    }, reduce ? 0 : 600);
+  }, D + 60);
+});
+</script>
