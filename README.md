@@ -69,7 +69,14 @@ App mobile :
 pnpm --filter @spinema/mobile start
 ```
 
-Scanner le QR code avec Expo Go. Sur un vrai téléphone, mettre dans `.env` `EXPO_PUBLIC_API_URL=http://<IP du PC>:3000`. L'écran d'accueil affiche « ▶ PLAY » sur le magnéto quand l'API répond.
+Scanner le QR code avec Expo Go. L'écran d'accueil affiche « ▶ PLAY » sur le magnéto quand l'API répond.
+
+### Tester sur un vrai téléphone
+
+1. `cp apps/mobile/.env.example apps/mobile/.env` et y mettre `EXPO_PUBLIC_API_URL=http://<IP Wi-Fi du PC>:3000` (sous Windows : `ipconfig`, « Adresse IPv4 » de la carte Wi-Fi).
+2. Dans le `.env` racine, `API_BIND=0.0.0.0`, puis `docker compose up -d`.
+3. Sous WSL2, le téléphone ne voit pas les ports d'Ubuntu par défaut (mode réseau NAT). Passer WSL en réseau « mirrored » : dans `%UserProfile%\.wslconfig`, section `[wsl2]`, ajouter `networkingMode=mirrored`, puis `wsl --shutdown`. Autoriser ensuite les ports 3000 et 8081 dans le pare-feu Windows.
+4. Sans toucher à WSL, on peut aussi lancer l'app en tunnel : `pnpm --filter @spinema/mobile start --tunnel` (l'API doit rester joignable, voir l'étape 3).
 
 ## Lancer avec Docker (une commande)
 
@@ -99,14 +106,15 @@ Couverture minimale : 100 % pour `packages/shared`, 90 % pour l'API, 80 % pour l
 
 ## Variables d'environnement
 
-| Variable                                            | Rôle                                           | Défaut                             |
-| --------------------------------------------------- | ---------------------------------------------- | ---------------------------------- |
-| `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB` | Base PostgreSQL (Docker)                       | `spinema` / à définir / `spinema`  |
-| `DATABASE_URL`                                      | Connexion de l'API à la base                   | requis                             |
-| `API_PORT`                                          | Port de l'API                                  | `3000`                             |
-| `LOG_LEVEL`                                         | Niveau de logs (`info`, `debug`…)              | `info`                             |
-| `CORS_ORIGINS`                                      | Origines autorisées, séparées par des virgules | `http://localhost:8080`            |
-| `EXPO_PUBLIC_API_URL`                               | Adresse de l'API vue par l'app                 | `http://10.0.2.2:3000` (émulateur) |
+| Variable                                            | Rôle                                           | Défaut                                            |
+| --------------------------------------------------- | ---------------------------------------------- | ------------------------------------------------- |
+| `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB` | Base PostgreSQL (Docker)                       | `spinema` / à définir / `spinema`                 |
+| `DATABASE_URL`                                      | Connexion de l'API à la base                   | requis                                            |
+| `API_PORT`                                          | Port de l'API                                  | `3000`                                            |
+| `API_BIND`                                          | Adresse de publication de l'API par Docker     | `127.0.0.1` (`0.0.0.0` pour tester sur téléphone) |
+| `LOG_LEVEL`                                         | Niveau de logs (`info`, `debug`…)              | `info`                                            |
+| `CORS_ORIGINS`                                      | Origines autorisées, séparées par des virgules | `http://localhost:8080`                           |
+| `EXPO_PUBLIC_API_URL` (dans `apps/mobile/.env`)     | Adresse de l'API vue par l'app                 | `http://10.0.2.2:3000` (émulateur)                |
 
 Les variables TMDB, Better Auth et SMTP (Brevo) arriveront avec les étapes suivantes ; elles sont déjà listées en commentaire dans `.env.example`.
 
