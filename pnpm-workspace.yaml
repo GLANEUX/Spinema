@@ -6,6 +6,12 @@ allowBuilds:
   # Prebuilt binaries are used; their install scripts are not needed.
   '@parcel/watcher': false
   unrs-resolver: false
+  # Optional native helpers of testcontainers (SSH, CPU detection); not needed.
+  cpu-features: false
+  ssh2: false
+  protobufjs: false
+# Expo SDK 58 packages installed less than 24 h after their release (pnpm minimumReleaseAge).
+# Safe to delete once they are older than a day.
 minimumReleaseAgeExclude:
   - '@expo/cli@58.1.17'
   - '@expo/config-plugins@58.0.11'

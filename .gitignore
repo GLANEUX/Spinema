@@ -13,3 +13,4 @@ apps/mobile/android/
 apps/mobile/ios/
 *.keystore
 *.jks
+backups/

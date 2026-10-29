@@ -13,16 +13,15 @@ COPY packages/shared packages/shared
 COPY packages/db packages/db
 COPY apps/api apps/api
 RUN pnpm --filter @spinema/api build \
- && pnpm install --frozen-lockfile --prod --filter "@spinema/api..."
+ && pnpm --filter @spinema/api deploy --prod --legacy /out
 
 FROM node:24-alpine AS runtime
-ENV NODE_ENV=production MIGRATIONS_FOLDER=/repo/apps/api/drizzle
-# Same layout as the build stage: pnpm links apps/api/node_modules into /repo/node_modules/.pnpm.
-WORKDIR /repo/apps/api
-COPY --from=build /repo/node_modules /repo/node_modules
-COPY --from=build /repo/apps/api/node_modules ./node_modules
+ENV NODE_ENV=production MIGRATIONS_FOLDER=/app/drizzle
+WORKDIR /app
+# Only the API's production dependencies (pnpm deploy); workspace packages are bundled into dist.
+COPY --from=build /out/node_modules ./node_modules
+COPY --from=build /out/package.json ./package.json
 COPY --from=build /repo/apps/api/dist ./dist
-COPY --from=build /repo/apps/api/package.json ./package.json
 COPY packages/db/drizzle ./drizzle
 USER node
 EXPOSE 3000
