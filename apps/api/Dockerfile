@@ -1,5 +1,5 @@
 # Build from the repository root: docker build -f apps/api/Dockerfile .
-FROM node:24-alpine AS build
+FROM node:25-alpine AS build
 # pnpm 12 fetches its native binary on first run: do it once, in its own cached layer.
 RUN corepack enable && corepack prepare pnpm@12.16.1 --activate && pnpm -v
 WORKDIR /repo
@@ -15,7 +15,7 @@ COPY apps/api apps/api
 RUN pnpm --filter @spinema/api build \
  && pnpm --filter @spinema/api deploy --prod --legacy /out
 
-FROM node:24-alpine AS runtime
+FROM node:25-alpine AS runtime
 ENV NODE_ENV=production MIGRATIONS_FOLDER=/app/drizzle
 WORKDIR /app
 # Only the API's production dependencies (pnpm deploy); workspace packages are bundled into dist.
