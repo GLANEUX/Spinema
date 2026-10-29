@@ -71,7 +71,7 @@ button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
   repeating-linear-gradient(90deg, #2b211a 0 14px, #30251d 14px 16px, #2b211a 16px 30px, rgba(217,164,65,.07) 30px 31px); }
 .topbar { display: flex; align-items: center; gap: 10px; padding: 10px 14px 8px; position: relative; z-index: 5; }
 .tape-label { border: 0; background: var(--scotch); color: var(--feutre); font: 400 15px/1 var(--f-feutre); padding: 7px 12px 5px; transform: rotate(var(--r, -1.5deg)); clip-path: polygon(0 6%, 4% 0, 96% 3%, 100% 0, 98% 94%, 100% 100%, 3% 97%, 0 100%); }
-.space-btn { margin-left: auto; min-width: 0; max-width: 60%; display: flex; align-items: center; gap: 8px; border: 0; background: var(--etiquette); color: var(--feutre); padding: 5px 5px 5px 11px; border-radius: 7px; box-shadow: 0 3px 0 #9c8f72, 0 6px 10px rgba(0,0,0,.35); text-align: left; }
+.space-btn { margin-left: auto; min-width: 0; max-width: 66%; display: flex; align-items: center; gap: 8px; border: 0; background: var(--etiquette); color: var(--feutre); padding: 5px 5px 5px 11px; border-radius: 7px; box-shadow: 0 3px 0 #9c8f72, 0 6px 10px rgba(0,0,0,.35); text-align: left; }
 .space-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #9c8f72; }
 .space-btn span { display: grid; min-width: 0; line-height: 1.05; }
 .space-btn small { font: 700 13px/1 var(--f-main); color: #6b5e50; }
@@ -277,14 +277,18 @@ button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .keytag { border: 0; background: #f4efe4; color: var(--feutre); width: 92px; padding: 16px 6px 10px; font: 400 14px/1.1 var(--f-feutre); transform: rotate(var(--r)); box-shadow: 0 4px 8px rgba(0,0,0,.35); position: relative; clip-path: polygon(14% 0, 86% 0, 100% 14%, 100% 100%, 0 100%, 0 14%); }
 .keytag::before { content: ""; position: absolute; top: 5px; left: 50%; width: 8px; height: 8px; margin-left: -4px; border-radius: 50%; background: var(--liege); box-shadow: inset 0 0 0 1.5px rgba(0,0,0,.3); }
 .keytag small { display: block; font: 700 14px/1 var(--f-main); margin-top: 4px; }
-.switches { display: flex; gap: 18px; justify-content: center; }
-.wswitch { display: grid; justify-items: center; gap: 6px; font: 700 17px/1 var(--f-main); color: var(--feutre); }
-.wswitch input { appearance: none; width: 50px; height: 70px; border-radius: 6px; background: #f4efe4; box-shadow: 0 4px 8px rgba(0,0,0,.35), inset 0 0 0 1px rgba(0,0,0,.08); position: relative; cursor: pointer; margin: 0; }
-.wswitch input::after { content: ""; position: absolute; left: 15px; right: 15px; top: 12px; height: 26px; border-radius: 4px; background: linear-gradient(#fff, #d8d0c0); box-shadow: 0 3px 0 #b9b0a0; transition: top .15s; }
-.wswitch input:checked::after { top: 32px; box-shadow: 0 -3px 0 #b9b0a0; }
-.scrawl { display: flex; gap: 18px; justify-content: center; }
-.scrawl button { border: 0; background: none; font: 700 18px/1 var(--f-main); color: var(--feutre); text-decoration: underline; text-underline-offset: 3px; }
-.scrawl .danger { color: #8f2c22; }
+.memo { width: 280px; background: #f7f2e6; color: var(--feutre); padding: 16px 16px 14px; transform: rotate(.8deg); box-shadow: 0 6px 12px rgba(0,0,0,.35); display: grid; gap: 4px;
+  background-image: repeating-linear-gradient(transparent 0 29px, rgba(79,109,154,.22) 29px 30px); background-position: 0 40px; }
+.memo h3 { margin: 0 0 4px; font: 400 22px/1 var(--f-feutre); }
+.tog { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 44px; font: 600 16px/1.2 var(--f-ui); cursor: pointer; }
+.tog span { display: grid; }
+.tog small { font: 400 13px/1.2 var(--f-ui); color: #5f564c; }
+.tog input { appearance: none; flex: none; width: 52px; height: 30px; border-radius: 15px; background: #c9bfae; position: relative; cursor: pointer; margin: 0; transition: background .15s; box-shadow: inset 0 2px 3px rgba(0,0,0,.2); }
+.tog input::after { content: ""; position: absolute; top: 3px; left: 3px; width: 24px; height: 24px; border-radius: 50%; background: #fff; box-shadow: 0 2px 3px rgba(0,0,0,.3); transition: transform .15s; }
+.tog input:checked { background: var(--bleu-vert); }
+.tog input:checked::after { transform: translateX(22px); }
+.acct { display: grid; gap: 10px; width: 280px; }
+.acct .key { width: 100%; font-size: 15px; }
 
 /* ---------- Fiche: back cover of the VHS box ---------- */
 .sheet { position: absolute; inset: var(--sb) 0 var(--gb); z-index: 50; background: rgba(8,6,5,.7); overflow-y: auto; transform: translateY(100%); transition: transform .35s cubic-bezier(.2,.8,.2,1); padding: 18px 12px 24px; }
@@ -329,9 +333,7 @@ button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
     <div class="screens wall" id="screens">
       <header class="topbar">
         <span class="logo"><span class="stripes"></span><span class="word">Spinema</span></span>
-        <button class="space-btn" id="space-btn" aria-haspopup="true" aria-expanded="false"><span><small id="space-kind">salon</small><b id="space-name"></b></span><i>▼</i></button>
-        <button class="sound" id="sound-btn" aria-pressed="true" aria-label="Son"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path class="wave" d="M16.5 9a4 4 0 0 1 0 6M19 6.5a7.5 7.5 0 0 1 0 11"/><path class="x" d="M16 9l5 6M21 9l-5 6"/></svg><span class="led"></span><b id="sound-state">ON</b></button>
-      </header>
+        <button class="space-btn" id="space-btn" aria-haspopup="true" aria-expanded="false"><span><small id="space-kind">salon</small><b id="space-name"></b></span><i>▼</i></button>      </header>
       <main class="scene" id="view"></main>
     </div>
     <div class="space-menu" id="space-menu" hidden></div>
@@ -655,8 +657,10 @@ function renderProfile() {
     ${state.invites.map((iv, i) => `<div class="pin"><div class="envelope"><span class="stampbox"></span><p>${M[iv.from].name} t'invite<br>dans « ${iv.salon} »</p>
       <div class="pair"><button class="key dark" data-action="invite" data-i="${i}" data-ok="0">Non merci</button><button class="key green" data-action="invite" data-i="${i}" data-ok="1">J'y vais</button></div></div></div>`).join('')}
     <div class="keyring">${SPACES.filter(s => s.kind === 'shared').map((s, i) => `<button class="keytag" style="--r:${i % 2 ? 4 : -3}deg" data-action="go-space" data-s="${s.id}">${s.name}<small>${s.members.length} membres</small></button>`).join('')}</div>
-    <div class="switches"><label class="wswitch" for="pref-sound"><input type="checkbox" id="pref-sound" ${state.sound ? 'checked' : ''}>son</label><label class="wswitch" for="pref-notif"><input type="checkbox" id="pref-notif" ${state.notif ? 'checked' : ''}>notifs</label></div>
-    <div class="scrawl"><button data-action="toast" data-msg="Déconnecté (pour de faux).">se déconnecter</button><button class="danger" data-action="toast" data-msg="Il faudra confirmer deux fois.">supprimer mon compte</button></div>
+    <div class="pin"><div class="memo"><h3>Réglages</h3>
+      <label class="tog" for="pref-sound"><span>Effets sonores<small>${state.sound ? 'activés' : 'coupés'}</small></span><input type="checkbox" role="switch" id="pref-sound" ${state.sound ? 'checked' : ''}></label>
+      <label class="tog" for="pref-notif"><span>Notifications<small>${state.notif ? 'activées' : 'coupées'}</small></span><input type="checkbox" role="switch" id="pref-notif" ${state.notif ? 'checked' : ''}></label></div></div>
+    <div class="acct"><button class="key dark" data-action="toast" data-msg="Déconnecté (pour de faux).">Se déconnecter</button><button class="key red" data-action="toast" data-msg="Il faudra confirmer deux fois.">Supprimer mon compte</button></div>
   </div>`;
 }
 
@@ -683,14 +687,8 @@ const TABS = [['machine', 'Machine', '-2deg'], ['library', 'Étagère', '1.5deg'
 function renderAll() {
   $('#space-name').textContent = space().name;
   $('#space-kind').textContent = shared() ? 'salon · changer' : 'mon espace · changer';
-  setSound();
   $('#tabs').innerHTML = TABS.map(([k, l, r]) => `<button role="tab" data-tab="${k}" aria-selected="${state.tab === k}" style="--r:${r}">${l}</button>`).join('');
   ({ machine: renderMachine, library: renderLibrary, discover: renderDiscover, profile: renderProfile })[state.tab]();
-}
-function setSound() {
-  $('#sound-btn').setAttribute('aria-pressed', String(state.sound));
-  $('#sound-btn').setAttribute('aria-label', state.sound ? 'Son activé, toucher pour couper' : 'Son coupé, toucher pour activer');
-  $('#sound-state').textContent = state.sound ? 'ON' : 'OFF';
 }
 function toggleMenu(open) {
   const m = $('#space-menu'); m.hidden = !open; $('#space-btn').setAttribute('aria-expanded', String(open));
@@ -703,7 +701,6 @@ document.addEventListener('click', e => {
   const t = e.target.closest('[data-action], [data-tab], #space-btn, #sound-btn');
   if (!t) { if (!e.target.closest('#space-menu')) toggleMenu(false); return; }
   if (t.id === 'space-btn') return toggleMenu($('#space-menu').hidden);
-  if (t.id === 'sound-btn') { state.sound = !state.sound; SND.click(); setSound(); toast(state.sound ? 'Son activé' : 'Son coupé'); if (state.tab === 'profile') renderProfile(); return; }
   if (t.dataset.tab) { state.tab = t.dataset.tab; $('#screens').scrollTop = 0; return renderAll(); }
   const a = t.dataset.action, s = sess();
   if (t.classList.contains('rk')) SND.click();
@@ -736,8 +733,8 @@ document.addEventListener('click', e => {
   }
 });
 document.addEventListener('change', e => {
-  if (e.target.id === 'pref-sound') { state.sound = e.target.checked; setSound(); }
-  if (e.target.id === 'pref-notif') state.notif = e.target.checked;
+  if (e.target.id === 'pref-sound') { state.sound = e.target.checked; SND.click(); renderProfile(); }
+  if (e.target.id === 'pref-notif') { state.notif = e.target.checked; renderProfile(); }
 });
 document.addEventListener('input', e => {
   if (e.target.id === 'search') { state.query = e.target.value; const pos = e.target.selectionStart; renderDiscover(); const s = $('#search'); s.focus(); s.setSelectionRange(pos, pos); }
