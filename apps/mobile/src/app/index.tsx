@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { theme } from '@spinema/shared';
 import { Logo } from '../components/Logo';
 import { API_URL, fetchHealth } from '../lib/api';
+import { variantLabel } from '../lib/variant';
 
 type Status = 'loading' | 'up' | 'down';
 const LCD: Record<Status, string> = { loading: '◀◀ REW', up: '▶ PLAY', down: '⏏ EJECT' };
@@ -23,6 +24,7 @@ export default function Home() {
   return (
     <SafeAreaView style={styles.wall}>
       <Logo />
+      {variantLabel && <Text style={styles.tape}>{variantLabel}</Text>}
       <View style={styles.tv}>
         <View style={styles.screen}>
           <Text style={styles.scribble}>
@@ -80,6 +82,15 @@ const styles = StyleSheet.create({
     backgroundColor: c.ledFond,
     paddingHorizontal: 8,
     paddingVertical: 5,
+  },
+  tape: {
+    fontFamily: theme.fonts.feutre,
+    fontSize: 15,
+    color: c.feutre,
+    backgroundColor: c.scotch,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    transform: [{ rotate: '-2deg' }],
   },
   hand: { fontFamily: theme.fonts.main, fontSize: 18, color: c.poussiere },
 });

@@ -1,0 +1,109 @@
+name: Android
+
+# Builds the Android app with Gradle (no Expo account needed).
+# - pull request: preview APK, kept as a workflow artifact (checks that the app builds)
+# - push on main: preview APK "Spinema préprod", published on the "preprod" GitHub pre-release
+# - tag v*: production APK + AAB (Play Store), published on a GitHub release
+on:
+  pull_request:
+    paths:
+      ['apps/mobile/**', 'packages/shared/**', 'pnpm-lock.yaml', '.github/workflows/android.yml']
+  push:
+    branches: [main]
+    paths:
+      ['apps/mobile/**', 'packages/shared/**', 'pnpm-lock.yaml', '.github/workflows/android.yml']
+    tags: ['v*']
+  workflow_dispatch:
+
+concurrency:
+  group: android-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: write
+    env:
+      APP_VARIANT: ${{ startsWith(github.ref, 'refs/tags/v') && 'production' || 'preview' }}
+      BUILD_NUMBER: ${{ github.run_number }}
+      # API addresses are repository variables (Settings > Secrets and variables > Actions > Variables).
+      EXPO_PUBLIC_API_URL: ${{ startsWith(github.ref, 'refs/tags/v') && vars.API_URL_PRODUCTION || vars.API_URL_PREVIEW }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: gradle/actions/setup-gradle@v4
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Generate the native Android project
+        working-directory: apps/mobile
+        run: pnpm exec expo prebuild --platform android --no-install --clean
+
+      - name: Signing key
+        id: signing
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          if [ -z "$KEYSTORE_BASE64" ]; then
+            echo "::warning::No ANDROID_KEYSTORE_BASE64 secret: the APK is signed with the debug key (fine for testing, not for the Play Store)."
+            echo "args=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/upload.jks"
+          {
+            echo "args=-Pandroid.injected.signing.store.file=$RUNNER_TEMP/upload.jks -Pandroid.injected.signing.store.password=$KEYSTORE_PASSWORD -Pandroid.injected.signing.key.alias=$KEY_ALIAS -Pandroid.injected.signing.key.password=$KEY_PASSWORD"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Build
+        working-directory: apps/mobile/android
+        run: |
+          TASKS="assembleRelease"
+          if [ "$APP_VARIANT" = production ]; then TASKS="assembleRelease bundleRelease"; fi
+          ./gradlew $TASKS --no-daemon ${{ steps.signing.outputs.args }}
+
+      - name: Collect files
+        id: files
+        run: |
+          mkdir -p out
+          NAME="spinema-${APP_VARIANT}-${GITHUB_REF_NAME//\//-}-${BUILD_NUMBER}"
+          cp apps/mobile/android/app/build/outputs/apk/release/app-release.apk "out/$NAME.apk"
+          if [ -f apps/mobile/android/app/build/outputs/bundle/release/app-release.aab ]; then
+            cp apps/mobile/android/app/build/outputs/bundle/release/app-release.aab "out/$NAME.aab"
+          fi
+          ls -la out
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: spinema-${{ env.APP_VARIANT }}-${{ github.run_number }}
+          path: out/*
+          retention-days: 14
+
+      - name: Publish préprod
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view preprod >/dev/null 2>&1 || gh release create preprod --prerelease --title "Spinema préprod" \
+            --notes "Dernière version de test, reconstruite à chaque mise à jour de main. Installe le fichier .apk sur ton téléphone."
+          for asset in $(gh release view preprod --json assets --jq '.assets[].name'); do gh release delete-asset preprod "$asset" -y; done
+          gh release upload preprod out/*.apk
+          gh release edit preprod --target "$GITHUB_SHA" --notes "Version de test nº ${BUILD_NUMBER} (commit ${GITHUB_SHA::7}). Installe le fichier .apk sur ton téléphone."
+
+      - name: Publish release
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" out/* --title "Spinema $GITHUB_REF_NAME" --generate-notes
