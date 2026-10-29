@@ -28,7 +28,8 @@ fi
 
 echo "== Serveur $SERVER ($HOST)"
 scp -q infra/staging/deploy.sh "$SERVER:/tmp/spinema-deploy.sh"
-ssh "$SERVER" bash -s -- "$PUB" "$DOMAIN" <<'REMOTE'
+# ssh joins its arguments into one command line: quote them (the key contains spaces).
+ssh "$SERVER" "bash -s -- $(printf '%q ' "$PUB" "$DOMAIN")" <<'REMOTE'
 set -euo pipefail
 PUB="$1"; DOMAIN="$2"; DIR=/opt/spinema-staging
 
@@ -106,7 +107,7 @@ if [ -n "$PUB" ]; then
   gh secret set STAGING_SSH_KEY --repo "$REPO" < "$TMP/deploy"
 fi
 gh variable set STAGING_SSH_HOST --repo "$REPO" --body "$HOST"
-gh variable set STAGING_SSH_KNOWN_HOSTS --repo "$REPO" --body "$(ssh-keyscan -q -t ed25519 "$HOST")"
+gh variable set STAGING_SSH_KNOWN_HOSTS --repo "$REPO" --body "$(ssh-keyscan -t ed25519 "$HOST" 2>/dev/null)"
 if [ -n "$DOMAIN" ]; then
   gh variable set API_URL_PREVIEW --repo "$REPO" --body "https://api.staging.$DOMAIN"
 fi
