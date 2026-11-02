@@ -8,17 +8,17 @@
     "@expo-google-fonts/ibm-plex-mono": "^0.4.1",
     "@expo-google-fonts/permanent-marker": "^0.4.0",
     "@spinema/shared": "workspace:*",
-    "expo": "~58.0.21",
+    "expo": "~58.0.22",
     "expo-constants": "~58.0.14",
     "expo-font": "~58.0.11",
     "expo-linking": "~58.0.15",
-    "expo-router": "~58.0.28",
+    "expo-router": "~58.0.29",
     "expo-splash-screen": "~58.0.12",
     "expo-status-bar": "~58.0.4",
     "react": "19.3.0",
     "react-native": "0.88.1",
     "react-native-safe-area-context": "~5.10.1",
-    "react-native-screens": "~4.30.0"
+    "react-native-screens": "~4.30.1"
   },
   "devDependencies": {
     "@testing-library/react-native": "^14.1.0",
