@@ -106,17 +106,27 @@ Couverture minimale : 100 % pour `packages/shared`, 90 % pour l'API, 80 % pour l
 
 ## Branches et versions
 
-| Branche            | Rôle                                                  | Ce que lance GitHub                                                                      |
-| ------------------ | ----------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| `dev` (par défaut) | Travail de tous les jours, les PR arrivent ici        | Vérifications rapides (format, lint, types, tests, build)                                |
-| `preprod`          | Version à tester : on y fusionne `dev`                | + APK « Spinema préprod » (release `preprod`) et image Docker `:preprod` pour le staging |
-| `main`             | Production : on y fusionne `preprod` une fois validée | + APK et AAB de prod (release `v<version>`) et image Docker `:main`                      |
+| Branche            | Rôle                                                  | Ce que lance GitHub                                                                              |
+| ------------------ | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `dev` (par défaut) | Travail de tous les jours, les PR arrivent ici        | Vérifications rapides (format, lint, types, tests, build)                                        |
+| `preprod`          | Version à tester : on y fusionne `dev`                | + APK « Spinema préprod » (release `preprod`), image Docker `:preprod` et déploiement du staging |
+| `main`             | Production : on y fusionne `preprod` une fois validée | + APK et AAB de prod (release `v<version>`) et image Docker `:main`                              |
 
 - Les builds Android (~25 min) ne tournent que sur `preprod` et `main`, pour économiser les minutes GitHub Actions. Un build à la main reste possible : onglet Actions > Android > Run workflow.
 - **Avant de fusionner dans `main`**, augmenter `version` dans [apps/mobile/app.config.ts](apps/mobile/app.config.ts) : le build s'arrête si cette version est déjà publiée.
 - L'app préprod s'appelle « Spinema préprod », s'installe à côté de la vraie et affiche un bout de scotch « préprod ».
 - Les adresses de l'API pour chaque variante sont des variables GitHub : `API_URL_PREVIEW` et `API_URL_PRODUCTION`.
 - La clé de signature Android se crée une fois avec `./scripts/create-android-keystore.sh` (il enregistre lui-même les secrets GitHub).
+
+## Staging
+
+Le staging tourne sur le serveur partagé `vps2`, dans `/opt/spinema-staging`. Chaque push sur `preprod` y déploie l'image `:preprod`, via le job « Deploy staging » de la CI.
+
+- **Mise en place**, une seule fois et à lancer soi-même : `./scripts/setup-staging-server.sh <domaine>`. Le script crée l'utilisateur `spinema` et le dossier, ainsi qu'une clé de déploiement qui ne peut lancer que [infra/staging/deploy.sh](infra/staging/deploy.sh). Il ajoute aussi la sauvegarde quotidienne, le site Nginx `staging.<domaine>` et `api.staging.<domaine>` avec HTTPS, et les secrets et variables GitHub.
+- **Avant le script**, il faut deux entrées DNS, `staging.<domaine>` et `api.staging.<domaine>`, qui pointent vers l'IP du serveur.
+- **La stack**, décrite dans [infra/staging/docker-compose.yml](infra/staging/docker-compose.yml), n'écoute qu'en local (API sur `127.0.0.1:3100`, page web sur `127.0.0.1:8180`). Le Nginx du serveur fait le relais.
+- **D'autres services de prod tournent sur ce serveur** : on n'ajoute qu'un fichier de site Nginx, on lance `nginx -t` avant chaque rechargement, et on ne redémarre aucun autre service.
+- **Sur le serveur** : `cd /opt/spinema-staging && docker compose logs -f api`. Le fichier `.env` contient le mot de passe de la base et ne quitte jamais le serveur.
 
 ## Variables d'environnement
 
