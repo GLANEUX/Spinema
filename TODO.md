@@ -16,9 +16,9 @@
 - [ ] Lancer `./scripts/setup-staging-server.sh <domaine>` (à faire soi-même, après les DNS `staging.` et `api.staging.`), puis pousser `dev` sur `preprod` pour le premier déploiement
 - [x] Variantes de l'app : dev (Expo Go), préprod (« Spinema préprod », installable à côté), prod
 - [x] Branches `dev` / `preprod` / `main` ; build Android avec Gradle seulement sur `preprod` (APK préprod) et `main` (APK + AAB, release `v<version>`)
-- [ ] Créer la clé de signature : `./scripts/create-android-keystore.sh` (à lancer soi-même), puis mettre l'empreinte SHA-256 dans `assetlinks.json`
+- [x] Clé de signature créée (`~/spinema-upload.jks`), secrets GitHub en place, empreinte dans `assetlinks.json`
 - [ ] Variables GitHub `API_URL_PREVIEW` et `API_URL_PRODUCTION` (adresses de l'API staging et prod)
-- [ ] Play Console : créer l'app `com.glaneux.spinema`, envoyer le premier AAB à la main en test interne
+- [ ] Play Console : créer l'app `fr.spinema.app`, envoyer le premier AAB à la main en test interne
 - [ ] Plus tard : EAS Update (mises à jour sans passer par le Play Store) et envoi automatique de l'AAB sur le Play Store
 - [ ] Tests e2e Maestro sur émulateur
 - [x] Tests de la base sur un vrai Postgres (Testcontainers)
@@ -32,7 +32,7 @@
 - Node 26 (LTS depuis octobre 2026) : passer `.nvmrc`, la CI et `apps/api/Dockerfile` ensemble (Dependabot ignore les versions majeures de Node).
 - `pnpm-workspace.yaml` contient une liste `minimumReleaseAgeExclude` pour des paquets Expo installés le jour de leur sortie : la supprimer (elle ne sert plus après 24 h).
 - TypeScript 6.0 au lieu de 7 : `typescript-eslint` ne supporte pas encore TS 7.
-- `assetlinks.json` contient une empreinte provisoire : à remplacer par celle du keystore de release.
+- `assetlinks.json` contient l'empreinte de la clé d'envoi : y ajouter celle de la clé de signature Google Play (Play Console > Intégrité de l'app) pour `fr.spinema.app`.
 - Les icônes et l'écran de démarrage de l'app sont ceux du modèle Expo : à refaire d'après la charte (cassette).
 - `pnpm` 12 refuse les paquets publiés depuis moins de 24 h (`minimumReleaseAge`) : un `expo install` juste après une sortie peut bloquer l'installation jusqu'au lendemain.
 

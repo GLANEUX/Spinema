@@ -23,11 +23,10 @@ if command -v keytool >/dev/null; then
   keytool -genkeypair -v -keystore "$OUT" -alias "$ALIAS" -keyalg RSA -keysize 4096 -validity 10000 \
     -storepass "$PASS" -keypass "$PASS" -dname "$DNAME"
 else
-  # No JDK installed: use keytool from a Java container.
-  docker run --rm -v "$(dirname "$OUT"):/out" eclipse-temurin:21-jre keytool -genkeypair -v \
+  # No JDK installed: use keytool from a Java container, as the current user (no root-owned file).
+  docker run --rm --user "$(id -u):$(id -g)" -v "$(dirname "$OUT"):/out" eclipse-temurin:21-jre keytool -genkeypair -v \
     -keystore "/out/$(basename "$OUT")" -alias "$ALIAS" -keyalg RSA -keysize 4096 -validity 10000 \
     -storepass "$PASS" -keypass "$PASS" -dname "$DNAME"
-  sudo chown "$(id -u):$(id -g)" "$OUT" 2>/dev/null || true
 fi
 chmod 600 "$OUT"
 
@@ -43,7 +42,7 @@ echo "Empreinte SHA-256 (à mettre dans apps/web/public/.well-known/assetlinks.j
 if command -v keytool >/dev/null; then
   keytool -list -v -keystore "$OUT" -alias "$ALIAS" -storepass "$PASS" | grep 'SHA256:'
 else
-  docker run --rm -v "$(dirname "$OUT"):/out" eclipse-temurin:21-jre keytool -list -v \
+  docker run --rm --user "$(id -u):$(id -g)" -v "$(dirname "$OUT"):/out" eclipse-temurin:21-jre keytool -list -v \
     -keystore "/out/$(basename "$OUT")" -alias "$ALIAS" -storepass "$PASS" | grep 'SHA256:'
 fi
 echo "Sauvegarde ce fichier et son mot de passe hors de ce PC."
