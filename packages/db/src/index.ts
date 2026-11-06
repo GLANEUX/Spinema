@@ -11,7 +11,7 @@ export { schema };
 export const migrationsFolder = fileURLToPath(new URL('../drizzle', import.meta.url));
 
 export function createDb(url: string) {
-  const client = postgres(url, { max: 10, connect_timeout: 5 });
+  const client = postgres(url, { max: 10, connect_timeout: 5, onnotice: () => {} });
   const db = drizzle(client, { schema });
   return {
     db,
