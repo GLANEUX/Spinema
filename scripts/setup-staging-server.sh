@@ -55,7 +55,7 @@ if [ -n "$PUB" ]; then
   chmod 600 /home/spinema/.ssh/authorized_keys
 fi
 
-echo "15 3 * * * spinema cd $DIR && ./infra/backup/backup.sh >> backups/backup.log 2>&1" > /etc/cron.d/spinema-staging-backup
+echo "15 3 * * * spinema cd $DIR && mkdir -p backups && bash infra/backup/backup.sh >> backups/backup.log 2>&1" > /etc/cron.d/spinema-staging-backup
 chmod 644 /etc/cron.d/spinema-staging-backup
 
 if [ -n "$DOMAIN" ]; then
