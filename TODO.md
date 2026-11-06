@@ -18,7 +18,7 @@
 - [x] Branches `dev` / `preprod` / `main` ; build Android avec Gradle seulement sur `preprod` (APK préprod) et `main` (APK + AAB, release `v<version>`)
 - [ ] Créer la clé de signature : `./scripts/create-android-keystore.sh` (à lancer soi-même), puis mettre l'empreinte SHA-256 dans `assetlinks.json`
 - [ ] Variables GitHub `API_URL_PREVIEW` et `API_URL_PRODUCTION` (adresses de l'API staging et prod)
-- [ ] Play Console : créer l'app `com.glaneux.spinema`, envoyer le premier AAB à la main en test interne
+- [ ] Play Console : créer l'app `fr.spinema.app`, envoyer le premier AAB à la main en test interne
 - [ ] Plus tard : EAS Update (mises à jour sans passer par le Play Store) et envoi automatique de l'AAB sur le Play Store
 - [ ] Tests e2e Maestro sur émulateur
 - [x] Tests de la base sur un vrai Postgres (Testcontainers)

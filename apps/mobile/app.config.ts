@@ -10,9 +10,9 @@ type Variant = 'development' | 'preview' | 'production';
 const variant = (process.env.APP_VARIANT ?? 'development') as Variant;
 
 const VARIANTS: Record<Variant, { name: string; package: string }> = {
-  development: { name: 'Spinema dev', package: 'com.glaneux.spinema.dev' },
-  preview: { name: 'Spinema préprod', package: 'com.glaneux.spinema.preview' },
-  production: { name: 'Spinema', package: 'com.glaneux.spinema' },
+  development: { name: 'Spinema dev', package: 'fr.spinema.app.dev' },
+  preview: { name: 'Spinema préprod', package: 'fr.spinema.app.preview' },
+  production: { name: 'Spinema', package: 'fr.spinema.app' },
 };
 
 /** Version shown to users; bump it before tagging a release. */
