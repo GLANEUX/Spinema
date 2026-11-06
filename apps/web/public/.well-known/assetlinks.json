@@ -4,7 +4,19 @@
     "target": {
       "namespace": "android_app",
       "package_name": "fr.spinema.app",
-      "sha256_cert_fingerprints": ["TODO:EMPREINTE_SHA256_DU_KEYSTORE_DE_RELEASE"]
+      "sha256_cert_fingerprints": [
+        "B5:EA:E9:76:F2:E9:35:76:07:1A:3E:27:14:0D:11:19:71:CB:BA:A8:62:61:DE:F8:DF:5B:A4:FB:57:CE:68:36"
+      ]
+    }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "fr.spinema.app.preview",
+      "sha256_cert_fingerprints": [
+        "B5:EA:E9:76:F2:E9:35:76:07:1A:3E:27:14:0D:11:19:71:CB:BA:A8:62:61:DE:F8:DF:5B:A4:FB:57:CE:68:36"
+      ]
     }
   }
 ]
