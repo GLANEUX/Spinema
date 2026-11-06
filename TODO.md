@@ -29,6 +29,7 @@
 
 ## Améliorations connues
 
+- Node 26 (LTS depuis octobre 2026) : passer `.nvmrc`, la CI et `apps/api/Dockerfile` ensemble (Dependabot ignore les versions majeures de Node).
 - `pnpm-workspace.yaml` contient une liste `minimumReleaseAgeExclude` pour des paquets Expo installés le jour de leur sortie : la supprimer (elle ne sert plus après 24 h).
 - TypeScript 6.0 au lieu de 7 : `typescript-eslint` ne supporte pas encore TS 7.
 - `assetlinks.json` contient une empreinte provisoire : à remplacer par celle du keystore de release.
