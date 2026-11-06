@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Daily PostgreSQL dump, run by cron on the server from the stack folder:
-#   15 3 * * * cd /opt/spinema && ./infra/backup/backup.sh >> backups/backup.log 2>&1
+#   15 3 * * * cd /opt/spinema && mkdir -p backups && bash infra/backup/backup.sh >> backups/backup.log 2>&1
 # Keeps the last 14 dumps. Copy the backups/ folder off the server (rclone, rsync…) to be safe.
 set -euo pipefail
 cd "$(dirname "$0")/../.."
