@@ -29,6 +29,7 @@
 
 ## Améliorations connues
 
+- Node 26 (LTS depuis octobre 2026) : passer `.nvmrc`, la CI et `apps/api/Dockerfile` ensemble (Dependabot ignore les versions majeures de Node).
 - `pnpm-workspace.yaml` contient une liste `minimumReleaseAgeExclude` pour des paquets Expo installés le jour de leur sortie : la supprimer (elle ne sert plus après 24 h).
 - TypeScript 6.0 au lieu de 7 : `typescript-eslint` ne supporte pas encore TS 7.
 - `assetlinks.json` contient l'empreinte de la clé d'envoi : y ajouter celle de la clé de signature Google Play (Play Console > Intégrité de l'app) pour `fr.spinema.app`.
