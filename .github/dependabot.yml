@@ -33,3 +33,7 @@ updates:
     target-branch: dev
     schedule:
       interval: monthly
+    ignore:
+      # The API image follows .nvmrc (Node 24, as in CI): move both together to the next LTS.
+      - dependency-name: 'node'
+        update-types: ['version-update:semver-major']
