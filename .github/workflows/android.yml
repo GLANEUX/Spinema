@@ -112,6 +112,8 @@ jobs:
           gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --prerelease --target "$GITHUB_SHA" --title "Spinema préprod" \
             --notes "Dernière version de test, reconstruite à chaque mise à jour de la branche preprod. Installe le fichier .apk sur ton téléphone."
           for asset in $(gh release view "$TAG" --json assets --jq '.assets[].name'); do gh release delete-asset "$TAG" "$asset" -y; done
+          # Same file under a fixed name: staging.spinema.fr/spinema.apk links to it.
+          cp out/*.apk out/spinema-preprod.apk
           gh release upload "$TAG" out/*.apk
           gh release edit "$TAG" --target "$GITHUB_SHA" --notes "Version de test nº ${BUILD_NUMBER} (commit ${GITHUB_SHA::7}). Installe le fichier .apk sur ton téléphone."
 

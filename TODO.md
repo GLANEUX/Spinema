@@ -7,7 +7,7 @@
 - [x] `packages/db` : Drizzle, première migration (extension `citext`)
 - [x] API Fastify : `/health`, erreurs typées, Socket.IO, migrations au démarrage
 - [x] App Expo : Expo Router, polices de la charte, écran d'accueil qui interroge l'API
-- [x] Page web : accueil, `/i/<code>`, `assetlinks.json`
+- [x] Page web : accueil, `/i/<code>`, `assetlinks.json`, `/spinema.apk` (APK préprod sur le staging)
 - [x] Docker Compose (db, api, web) et compose de dev
 - [x] CI : format, lint, typecheck, tests avec couverture, build, expo-doctor, image Docker sur GHCR
 - [x] Pousser sur GitHub et vérifier que la CI passe (sauf GitGuardian : faux positif sur un ancien mot de passe d'exemple)
