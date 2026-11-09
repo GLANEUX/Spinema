@@ -106,11 +106,11 @@ Couverture minimale : 100 % pour `packages/shared`, 90 % pour l'API, 80 % pour l
 
 ## Branches et versions
 
-| Branche            | Rôle                                                  | Ce que lance GitHub                                                                              |
-| ------------------ | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| `dev` (par défaut) | Travail de tous les jours, les PR arrivent ici        | Vérifications rapides (format, lint, types, tests, build)                                        |
-| `preprod`          | Version à tester : on y fusionne `dev`                | + APK « Spinema préprod » (release `preprod`), image Docker `:preprod` et déploiement du staging |
-| `main`             | Production : on y fusionne `preprod` une fois validée | + APK et AAB de prod (release `v<version>`) et image Docker `:main`                              |
+| Branche            | Rôle                                                  | Ce que lance GitHub                                                                                     |
+| ------------------ | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `dev` (par défaut) | Travail de tous les jours, les PR arrivent ici        | Vérifications rapides (format, lint, types, tests, build)                                               |
+| `preprod`          | Version à tester : on y fusionne `dev`                | + APK « Spinema préprod » (release `preprod-latest`), image Docker `:preprod` et déploiement du staging |
+| `main`             | Production : on y fusionne `preprod` une fois validée | + APK et AAB de prod (release `v<version>`) et image Docker `:main`                                     |
 
 - Les builds Android (~25 min) ne tournent que sur `preprod` et `main`, pour économiser les minutes GitHub Actions. Un build à la main reste possible : onglet Actions > Android > Run workflow.
 - **Avant de fusionner dans `main`**, augmenter `version` dans [apps/mobile/app.config.ts](apps/mobile/app.config.ts) : le build s'arrête si cette version est déjà publiée.

@@ -13,7 +13,7 @@
 - [x] Pousser sur GitHub et vérifier que la CI passe (sauf GitGuardian : faux positif sur un ancien mot de passe d'exemple)
 - [x] Tester l'app sur le Galaxy A56 avec Expo Go (WSL en réseau « mirrored »)
 - [x] Staging : stack [infra/staging](infra/staging), job CI « Deploy staging » sur `preprod` (clé SSH limitée à `deploy.sh`)
-- [ ] Lancer `./scripts/setup-staging-server.sh <domaine>` (à faire soi-même, après les DNS `staging.` et `api.staging.`), puis pousser `dev` sur `preprod` pour le premier déploiement
+- [x] Staging en HTTPS : https://staging.spinema.fr et https://api.staging.spinema.fr (`setup-staging-server.sh spinema.fr`)
 - [x] Variantes de l'app : dev (Expo Go), préprod (« Spinema préprod », installable à côté), prod
 - [x] Branches `dev` / `preprod` / `main` ; build Android avec Gradle seulement sur `preprod` (APK préprod) et `main` (APK + AAB, release `v<version>`)
 - [x] Clé de signature créée (`~/spinema-upload.jks`), secrets GitHub en place, empreinte dans `assetlinks.json`
