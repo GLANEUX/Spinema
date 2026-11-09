@@ -2,9 +2,10 @@ name: Android
 
 # Builds the Android app with Gradle (no Expo account needed). Android builds are slow
 # (~25 min), so they only run on the release branches:
-# - push on preprod: "Spinema préprod" APK, published on the "preprod" GitHub pre-release
+# - push on preprod: "Spinema préprod" APK, published on the "preprod-latest" GitHub pre-release
 # - push on main: production APK + AAB (Play Store), published on the release v<version>
-# - manual run (Actions > Android > Run workflow) on any branch: préprod APK as an artifact
+# - manual run (Actions > Android > Run workflow): on preprod, same as a push (rebuild after a
+#   variable change); on another branch, préprod APK as an artifact only
 on:
   push:
     branches: [preprod, main]
@@ -102,15 +103,17 @@ jobs:
           retention-days: 14
 
       - name: Publish préprod
-        if: github.event_name == 'push' && github.ref == 'refs/heads/preprod'
+        if: github.ref == 'refs/heads/preprod'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release view preprod >/dev/null 2>&1 || gh release create preprod --prerelease --title "Spinema préprod" \
+          # Not named "preprod": a tag with the branch name makes `git push origin preprod` ambiguous.
+          TAG=preprod-latest
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --prerelease --target "$GITHUB_SHA" --title "Spinema préprod" \
             --notes "Dernière version de test, reconstruite à chaque mise à jour de la branche preprod. Installe le fichier .apk sur ton téléphone."
-          for asset in $(gh release view preprod --json assets --jq '.assets[].name'); do gh release delete-asset preprod "$asset" -y; done
-          gh release upload preprod out/*.apk
-          gh release edit preprod --target "$GITHUB_SHA" --notes "Version de test nº ${BUILD_NUMBER} (commit ${GITHUB_SHA::7}). Installe le fichier .apk sur ton téléphone."
+          for asset in $(gh release view "$TAG" --json assets --jq '.assets[].name'); do gh release delete-asset "$TAG" "$asset" -y; done
+          gh release upload "$TAG" out/*.apk
+          gh release edit "$TAG" --target "$GITHUB_SHA" --notes "Version de test nº ${BUILD_NUMBER} (commit ${GITHUB_SHA::7}). Installe le fichier .apk sur ton téléphone."
 
       - name: Publish release
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
