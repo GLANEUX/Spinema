@@ -1,10 +1,15 @@
 # Served by the "web" container. /i/<code> falls back to the invitation page.
+# Template: the nginx image replaces ${APK_URL} at startup (other $variables are left alone).
 server {
   listen 80;
   root /usr/share/nginx/html;
 
   location = /.well-known/assetlinks.json {
     default_type application/json;
+  }
+  # "Télécharger l'app" button: latest préprod APK on staging, the app's releases elsewhere.
+  location = /spinema.apk {
+    return 302 ${APK_URL};
   }
   location /i/ {
     try_files $uri /i/index.html;

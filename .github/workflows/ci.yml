@@ -91,5 +91,5 @@ jobs:
           {
             echo "$GH_TOKEN"
             tar -cz --transform 's|^infra/staging/docker-compose.yml$|docker-compose.yml|' \
-              infra/staging/docker-compose.yml apps/web/public infra/nginx/web.conf infra/backup
+              infra/staging/docker-compose.yml apps/web/public infra/nginx/web.conf.template infra/backup
           } | ssh -i ~/.ssh/deploy "spinema@$SSH_HOST" deploy
