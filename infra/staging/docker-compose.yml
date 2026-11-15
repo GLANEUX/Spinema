@@ -37,7 +37,7 @@ services:
       - '127.0.0.1:3100:3000'
 
   web:
-    image: nginx:1.29-alpine
+    image: nginx:1.30-alpine
     restart: unless-stopped
     mem_limit: 32m
     volumes:
