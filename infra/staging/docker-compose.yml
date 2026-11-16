@@ -6,7 +6,7 @@ name: spinema-staging
 
 services:
   db:
-    image: postgres:17-alpine
+    image: postgres:17-alpine@sha256:a77aa70e641402a21411b92b721c58d10f23b50ae5fdd2333efd22d166e1e5f7
     restart: unless-stopped
     mem_limit: 256m
     environment:
@@ -37,7 +37,7 @@ services:
       - '127.0.0.1:3100:3000'
 
   web:
-    image: nginx:1.30-alpine
+    image: nginx:1.30-alpine@sha256:901e593c95dc85f5a729f5765516321366ef4ac401821431d408897e95287d0a
     restart: unless-stopped
     mem_limit: 32m
     volumes:

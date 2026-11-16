@@ -8,9 +8,10 @@ LATEST="$(ls -1t backups/spinema-*.sql.gz | head -n 1)"
 NAME="spinema-restore-test-$$"
 trap 'docker rm -f "$NAME" >/dev/null 2>&1 || true' EXIT
 
-docker run -d --name "$NAME" -e POSTGRES_PASSWORD=restore -e POSTGRES_DB=spinema postgres:17-alpine >/dev/null
+docker run -d --name "$NAME" -e POSTGRES_PASSWORD=restore -e POSTGRES_DB=spinema postgres:17-alpine@sha256:a77aa70e641402a21411b92b721c58d10f23b50ae5fdd2333efd22d166e1e5f7 >/dev/null
 # Over TCP: during its first start, Postgres runs a temporary socket-only server.
 until docker exec "$NAME" pg_isready -h 127.0.0.1 -U postgres -d spinema >/dev/null 2>&1; do sleep 1; done
 gunzip -c "$LATEST" | docker exec -i "$NAME" psql -q -v ON_ERROR_STOP=1 -U postgres -d spinema >/dev/null
-TABLES="$(docker exec "$NAME" psql -tA -U postgres -d spinema -c "select count(*) from information_schema.tables where table_schema in ('public','drizzle')")"
+QUERY="SELECT count(*) FROM information_schema.tables WHERE table_schema IN ('public', 'drizzle')"
+TABLES="$(docker exec "$NAME" psql -tA -U postgres -d spinema -c "$QUERY")"
 echo "$(date -Is) restauration OK : $LATEST ($TABLES tables)"

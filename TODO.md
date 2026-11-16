@@ -29,7 +29,7 @@
 
 ## Améliorations connues
 
-- `pnpm audit` : 4 alertes restantes, toutes dans des outils de dev (pas dans l'API ni l'app) : `esbuild` 0.18 via `drizzle-kit`, `glob` et `minimatch` via Expo et ESLint (correctifs en version majeure), `deepmerge` (pas de correctif). À revoir quand ces outils se mettent à jour. `node-forge` est forcé en 1.4.3 (`overrides` dans `pnpm-workspace.yaml`).
+- `pnpm audit` : il reste `deepmerge` (alerte faible, aucun correctif publié), via Testing Library. Les autres sont corrigées par des `overrides` dans `pnpm-workspace.yaml` (node-forge, esbuild de drizzle-kit, glob, minimatch) : les retirer quand les paquets qui les tirent se mettent à jour.
 - PostgreSQL 17 : la 18 est sortie, mais le passage demande de migrer les données (`pg_dump` puis restauration). À faire avant la prod, pas pressé.
 - `gradle/actions` reste en v5 : la v6 met son cache sous une licence commerciale (Dependabot l'ignore).
 
