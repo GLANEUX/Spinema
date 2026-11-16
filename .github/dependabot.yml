@@ -30,7 +30,7 @@ updates:
       interval: monthly
     ignore:
       # v6 moves its cache into a proprietary component with its own terms of use: stay on v5.
-      - dependency-name: 'gradle/actions'
+      - dependency-name: 'gradle/actions*'
         versions: ['>=6']
   - package-ecosystem: docker
     directory: /apps/api
