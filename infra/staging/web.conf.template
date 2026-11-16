@@ -1,0 +1,56 @@
+# Staging "web" container: same pages as infra/nginx/web.conf.template, behind an access code.
+# Nginx asks the "gate" service (infra/staging/gate) whether the cookie is valid; without it,
+# the visitor gets the code form, then comes back to the page they asked for.
+server {
+  listen 80;
+  root /usr/share/nginx/html;
+  # Relative redirects: the server Nginx in front does HTTPS.
+  absolute_redirect off;
+
+  auth_request /_gate/check;
+  error_page 401 = @login;
+  add_header X-Robots-Tag "noindex, nofollow" always;
+
+  # Public: Android checks this file to open invitation links in the app.
+  location = /.well-known/assetlinks.json {
+    auth_request off;
+    default_type application/json;
+  }
+  location = /style.css {
+    auth_request off;
+  }
+  location = /robots.txt {
+    auth_request off;
+    default_type text/plain;
+    return 200 "User-agent: *\nDisallow: /\n";
+  }
+
+  location = /_gate/check {
+    internal;
+    proxy_pass http://gate:8080/_gate/check;
+    proxy_pass_request_body off;
+    proxy_set_header Content-Length "";
+  }
+  location /_gate/ {
+    auth_request off;
+    proxy_pass http://gate:8080;
+    proxy_set_header X-Forwarded-For $http_x_forwarded_for;
+  }
+  location @login {
+    return 302 /_gate/login?next=$request_uri;
+  }
+
+  # try_files runs after the access check ("return" alone would run before it).
+  location = /spinema.apk {
+    try_files /nonexistent @apk;
+  }
+  location @apk {
+    return 302 ${APK_URL};
+  }
+  location /i/ {
+    try_files $uri /i/index.html;
+  }
+  location / {
+    try_files $uri $uri/ =404;
+  }
+}

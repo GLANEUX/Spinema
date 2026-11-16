@@ -30,6 +30,8 @@ jobs:
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm test
+      - name: Staging access code tests
+        run: node --test infra/staging/gate/gate.test.mjs
       - run: pnpm build
       - name: Expo doctor
         working-directory: apps/mobile
@@ -95,5 +97,6 @@ jobs:
           {
             echo "$GH_TOKEN"
             tar -cz --transform 's|^infra/staging/docker-compose.yml$|docker-compose.yml|' \
-              infra/staging/docker-compose.yml apps/web/public infra/nginx/web.conf.template infra/backup
+              infra/staging/docker-compose.yml infra/staging/web.conf.template infra/staging/gate \
+              apps/web/public infra/backup
           } | ssh -i ~/.ssh/deploy "spinema@$SSH_HOST" deploy

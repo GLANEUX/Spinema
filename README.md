@@ -127,6 +127,7 @@ Le staging tourne sur le serveur partagé `vps2`, dans `/opt/spinema-staging`. C
 - **Avant le script**, il faut deux entrées DNS, `staging.<domaine>` et `api.staging.<domaine>`, qui pointent vers l'IP du serveur.
 - **La stack**, décrite dans [infra/staging/docker-compose.yml](infra/staging/docker-compose.yml), n'écoute qu'en local (API sur `127.0.0.1:3100`, page web sur `127.0.0.1:8180`). Le Nginx du serveur fait le relais.
 - **D'autres services de prod tournent sur ce serveur** : on n'ajoute qu'un fichier de site Nginx, on lance `nginx -t` avant chaque rechargement, et on ne redémarre aucun autre service.
+- **Code d'accès** : les pages de https://staging.spinema.fr demandent un code, que le navigateur retient 30 jours (cookie signé). Pour le choisir ou le changer : `./scripts/set-staging-code.sh` (changer le code déconnecte tout le monde). Le service [infra/staging/gate](infra/staging/gate) le vérifie, et bloque une adresse IP 15 minutes après 5 essais ratés. Restent publics : `assetlinks.json` et l'API.
 - **Sur le serveur** : `cd /opt/spinema-staging && docker compose logs -f api`. Le fichier `.env` contient le mot de passe de la base et ne quitte jamais le serveur.
 
 ## Variables d'environnement
