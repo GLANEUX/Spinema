@@ -117,6 +117,7 @@ Couverture minimale : 100 % pour `packages/shared`, 90 % pour l'API, 80 % pour l
 - L'app préprod s'appelle « Spinema préprod », s'installe à côté de la vraie et affiche un bout de scotch « préprod ».
 - Les adresses de l'API pour chaque variante sont des variables GitHub : `API_URL_PREVIEW` et `API_URL_PRODUCTION`.
 - La clé de signature Android se crée une fois avec `./scripts/create-android-keystore.sh` (il enregistre lui-même les secrets GitHub).
+- Les secrets sont rangés dans des environnements GitHub protégés : `release` (clé de signature, lisible seulement depuis `preprod` et `main`) et `staging` (clé de déploiement, seulement depuis `preprod`). Pour y déplacer d'anciens secrets : `./scripts/move-secrets-to-environments.sh`.
 
 ## Staging
 
