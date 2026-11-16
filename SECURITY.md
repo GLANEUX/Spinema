@@ -22,3 +22,6 @@ Seule la dernière version publiée (release `v<version>` et version de test `pr
 - Alertes et correctifs de sécurité Dependabot, et mises à jour hebdomadaires sur `dev`.
 - Analyse de code CodeQL.
 - Branches `dev`, `preprod` et `main` protégées (pas de suppression ni de réécriture, CI verte obligatoire), et tags `v*` non modifiables.
+- Actions GitHub épinglées sur un commit précis, liste fermée d'actions autorisées, jeton des workflows en lecture seule par défaut.
+- Secrets de signature et de déploiement dans des environnements protégés, lisibles seulement depuis les branches de release.
+- OpenSSF Scorecard chaque semaine.

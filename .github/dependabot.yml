@@ -41,3 +41,13 @@ updates:
       # The API image follows .nvmrc (Node 24, as in CI): move both together to the next LTS.
       - dependency-name: 'node'
         update-types: ['version-update:semver-major']
+  # Images of the staging and local stacks (postgres, nginx).
+  - package-ecosystem: docker-compose
+    directories: ['/', '/infra/staging']
+    target-branch: dev
+    schedule:
+      interval: monthly
+    ignore:
+      # PostgreSQL major upgrades need a data migration (pg_dump then restore).
+      - dependency-name: 'postgres'
+        update-types: ['version-update:semver-major']

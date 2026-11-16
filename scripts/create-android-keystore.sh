@@ -31,10 +31,10 @@ fi
 chmod 600 "$OUT"
 
 echo "Envoi des secrets vers GitHub (GLANEUX/Spinema)…"
-base64 -w0 "$OUT" | gh secret set ANDROID_KEYSTORE_BASE64 --repo GLANEUX/Spinema
-printf '%s' "$PASS" | gh secret set ANDROID_KEYSTORE_PASSWORD --repo GLANEUX/Spinema
-printf '%s' "$ALIAS" | gh secret set ANDROID_KEY_ALIAS --repo GLANEUX/Spinema
-printf '%s' "$PASS" | gh secret set ANDROID_KEY_PASSWORD --repo GLANEUX/Spinema
+base64 -w0 "$OUT" | gh secret set ANDROID_KEYSTORE_BASE64 --env release --repo GLANEUX/Spinema
+printf '%s' "$PASS" | gh secret set ANDROID_KEYSTORE_PASSWORD --env release --repo GLANEUX/Spinema
+printf '%s' "$ALIAS" | gh secret set ANDROID_KEY_ALIAS --env release --repo GLANEUX/Spinema
+printf '%s' "$PASS" | gh secret set ANDROID_KEY_PASSWORD --env release --repo GLANEUX/Spinema
 
 echo
 echo "Clé créée : $OUT"

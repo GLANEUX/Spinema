@@ -18,7 +18,7 @@ trap 'rm -rf "$TMP"' EXIT
 HOST="$(ssh -G "$SERVER" | awk '$1 == "hostname" { print $2 }')"
 
 echo "== Clé de déploiement pour GitHub Actions"
-if gh secret list --repo "$REPO" | grep -q '^STAGING_SSH_KEY\b'; then
+if gh secret list --env staging --repo "$REPO" | grep -q '^STAGING_SSH_KEY\b'; then
   echo "Secret STAGING_SSH_KEY déjà présent : clé conservée (supprime le secret pour en refaire une)."
   PUB=""
 else
@@ -104,7 +104,7 @@ REMOTE
 
 echo "== Secrets et variables GitHub"
 if [ -n "$PUB" ]; then
-  gh secret set STAGING_SSH_KEY --repo "$REPO" < "$TMP/deploy"
+  gh secret set STAGING_SSH_KEY --env staging --repo "$REPO" < "$TMP/deploy"
 fi
 gh variable set STAGING_SSH_HOST --repo "$REPO" --body "$HOST"
 gh variable set STAGING_SSH_KNOWN_HOSTS --repo "$REPO" --body "$(ssh-keyscan -t ed25519 "$HOST" 2>/dev/null)"
