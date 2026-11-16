@@ -14,3 +14,9 @@ allowBuilds:
 overrides:
   # Used by the Expo CLI (dev tooling only): several advisories fixed in 1.4.3.
   node-forge: '>=1.4.3'
+  # Old esbuild used by drizzle-kit's TS loader (@esbuild-kit): dev-server advisory fixed in 0.25.
+  '@esbuild-kit/core-utils>esbuild': '^0.25.12'
+  # glob and minimatch pulled in by Expo, Jest and ESLint: advisories fixed in glob 14 / minimatch 11
+  # (same API for these major lines).
+  'glob@>=10 <14.0.2': '^14.0.2'
+  'minimatch@>=9 <11.0.1': '^11.0.1'
