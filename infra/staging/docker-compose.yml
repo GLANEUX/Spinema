@@ -36,13 +36,29 @@ services:
     ports:
       - '127.0.0.1:3100:3000'
 
+  # Access code in front of the staging pages (code and secret in .env, see scripts/set-staging-code.sh).
+  gate:
+    image: node:24-alpine@sha256:116b800c3754b440ee0aa3ed2f20f5bf3d99a554bfd9adeea09ea8017f6e85f5
+    restart: unless-stopped
+    mem_limit: 48m
+    user: node
+    read_only: true
+    command: ['node', '/gate/server.mjs']
+    volumes:
+      - ./infra/staging/gate:/gate:ro
+    environment:
+      ACCESS_CODE: ${STAGING_ACCESS_CODE:?définir le code avec scripts/set-staging-code.sh}
+      GATE_SECRET: ${GATE_SECRET:?définir le code avec scripts/set-staging-code.sh}
+
   web:
     image: nginx:1.30-alpine@sha256:901e593c95dc85f5a729f5765516321366ef4ac401821431d408897e95287d0a
     restart: unless-stopped
     mem_limit: 32m
+    depends_on:
+      - gate
     volumes:
       - ./apps/web/public:/usr/share/nginx/html:ro
-      - ./infra/nginx/web.conf.template:/etc/nginx/templates/default.conf.template:ro
+      - ./infra/staging/web.conf.template:/etc/nginx/templates/default.conf.template:ro
     environment:
       APK_URL: 'https://github.com/GLANEUX/Spinema/releases/download/preprod-latest/spinema-preprod.apk'
     ports:
