@@ -35,7 +35,6 @@
 
 - Node 26 (LTS depuis octobre 2026) : passer `.nvmrc`, la CI et `apps/api/Dockerfile` ensemble (Dependabot ignore les versions majeures de Node).
 - TypeScript 6.0 au lieu de 7 : `typescript-eslint` ne supporte pas encore TS 7.
-- `assetlinks.json` contient l'empreinte de la clé d'envoi : y ajouter celle de la clé de signature Google Play (Play Console > Intégrité de l'app) pour `fr.spinema.app`.
 - Les icônes et l'écran de démarrage de l'app sont ceux du modèle Expo : à refaire d'après la charte (cassette).
 - `pnpm` 12 refuse les paquets publiés depuis moins de 24 h (`minimumReleaseAge`) : un `expo install` juste après une sortie peut bloquer l'installation jusqu'au lendemain.
 
