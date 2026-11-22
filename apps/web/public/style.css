@@ -117,3 +117,67 @@ button.key {
 small {
   color: #a59b90;
 }
+/* Legal pages (privacy policy, account deletion): the insert sheet of a VHS box. */
+main.notice {
+  width: min(720px, 100%);
+  justify-items: stretch;
+  text-align: left;
+}
+.notice .sheet {
+  background: #f7f2e6;
+  color: #1d1b2e;
+  padding: 24px 20px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.45);
+}
+.notice h1 {
+  margin: 0 0 4px;
+  font:
+    400 30px/1.1 'Permanent Marker',
+    cursive;
+}
+.notice h2 {
+  margin: 28px 0 8px;
+  font-size: 19px;
+  font-weight: 900;
+  font-stretch: 125%;
+}
+.notice p,
+.notice li {
+  margin: 0 0 10px;
+}
+.notice ul {
+  padding-left: 20px;
+}
+.notice table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 8px 0 14px;
+  font-size: 15px;
+}
+.notice th,
+.notice td {
+  border-bottom: 1px solid #c9bfa8;
+  padding: 6px 8px 6px 0;
+  text-align: left;
+  vertical-align: top;
+}
+.notice a {
+  color: #7a4a00;
+}
+.notice .date {
+  color: #5c5546;
+  font-size: 14px;
+}
+.legal-links {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.legal-links a {
+  color: #a59b90;
+}
+a.logo {
+  color: inherit;
+  text-decoration: none;
+}

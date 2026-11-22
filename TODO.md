@@ -27,6 +27,19 @@
 - [ ] Copier les sauvegardes du staging hors du serveur (rclone, rsync…)
 - [x] Dependabot (npm, GitHub Actions, Docker) ; secrets scannés par GitGuardian
 
+## Étape 2 : sécurité (en cours)
+
+- [x] API : en-têtes de sécurité, 120 requêtes par minute et par adresse, corps limités à 64 Ko, vraie adresse IP derrière le proxy (`TRUST_PROXY`)
+- [x] Socket.IO : messages de 64 Ko maximum, connexion coupée au-delà de 30 messages en 10 s
+- [x] Page web : CSP sans script intégré, `nosniff`, `no-referrer`, `Permissions-Policy`, version de Nginx masquée
+- [x] Nginx du serveur : HSTS, limites de requêtes et de connexions vers l'API, version masquée
+- [x] Serveur : fail2ban sur SSH, mises à jour installées, redémarrage fait
+- [x] Politique de confidentialité (`/confidentialite/`) et page de suppression de compte (`/suppression-compte/`), publiques même sur le staging
+- [x] Réponses aux formulaires Google Play : [docs/google-play.md](docs/google-play.md)
+- [ ] Créer la boîte `contact@spinema.fr` (citée dans les pages légales)
+- [ ] Remplir dans la Play Console : politique de confidentialité, sécurité des données, public cible, lien de suppression
+- [ ] Journaux techniques : rotation par date pour tenir la promesse « au plus 6 mois » (aujourd'hui, rotation par taille)
+
 ## Améliorations connues
 
 - `pnpm audit` : il reste `deepmerge` (alerte faible, aucun correctif publié), via Testing Library. Les autres sont corrigées par des `overrides` dans `pnpm-workspace.yaml` (node-forge, esbuild de drizzle-kit, glob, minimatch) : les retirer quand les paquets qui les tirent se mettent à jour.

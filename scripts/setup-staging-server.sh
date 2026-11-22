@@ -63,8 +63,16 @@ if [ -n "$DOMAIN" ]; then
   if [ ! -f "$SITE" ]; then
     cat > "$SITE" <<NGINX
 # Spinema staging (branch preprod). Ports from /opt/spinema-staging/docker-compose.yml.
+# certbot adds the HTTPS lines and the redirection from HTTP.
+
+# Per-address limits for the API (names prefixed: this Nginx serves other sites).
+limit_req_zone \$binary_remote_addr zone=spinema_staging_api:10m rate=10r/s;
+limit_conn_zone \$binary_remote_addr zone=spinema_staging_conn:10m;
+
 server {
   server_name staging.$DOMAIN;
+  server_tokens off;
+  add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
   location / {
     proxy_pass http://127.0.0.1:8180;
     proxy_set_header Host \$host;
@@ -75,7 +83,14 @@ server {
 
 server {
   server_name api.staging.$DOMAIN;
+  server_tokens off;
+  add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
   location / {
+    # 10 requests/s per address with bursts of 40, at most 20 open connections (WebSocket included).
+    limit_req zone=spinema_staging_api burst=40 nodelay;
+    limit_conn spinema_staging_conn 20;
+    limit_req_status 429;
+    limit_conn_status 429;
     proxy_pass http://127.0.0.1:3100;
     proxy_http_version 1.1;
     proxy_set_header Upgrade \$http_upgrade;
