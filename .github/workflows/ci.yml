@@ -34,8 +34,19 @@ jobs:
         run: node --test infra/staging/gate/gate.test.mjs
       - run: pnpm build
       - name: Expo doctor
+        # Blocking for every check except the exact SDK patch versions: Expo publishes patches
+        # almost every week, and that alone must not turn the CI red (see the next step).
         working-directory: apps/mobile
-        run: pnpm dlx expo-doctor
+        env:
+          EXPO_DOCTOR_SKIP_DEPENDENCY_VERSION_CHECK: '1'
+        run: pnpm dlx expo-doctor@1.21.5
+      - name: Expo patch versions
+        # Warning only. To update: cd apps/mobile && pnpm exec expo install --fix
+        working-directory: apps/mobile
+        run: |
+          if ! pnpm exec expo install --check; then
+            echo "::warning title=Correctifs Expo disponibles::Mettre à jour avec : cd apps/mobile && pnpm exec expo install --fix"
+          fi
 
   api-image:
     name: API Docker image

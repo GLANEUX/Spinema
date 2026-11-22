@@ -9,6 +9,7 @@ Spinema : app Android (Expo) + API TypeScript, en monorepo pnpm. Le plan produit
 - Base de dev : `docker compose -f docker-compose.dev.yml up -d`
 - API : `pnpm --filter @spinema/api dev` · tests : `pnpm --filter @spinema/api test`
 - App : `pnpm --filter @spinema/mobile start` · ajouter un paquet natif : `cd apps/mobile && pnpm exec expo install <paquet>`
+- Correctifs Expo (avertissement « Correctifs Expo disponibles » dans la CI) : `cd apps/mobile && pnpm exec expo install --fix`
 - Stack complète : `docker compose up -d --build` puis `curl 127.0.0.1:3000/health`
 - Nouvelle migration : modifier `packages/db/src/schema.ts` puis `pnpm db:generate`
 
