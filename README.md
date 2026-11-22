@@ -22,14 +22,15 @@ L'interface est faite d'objets plutôt que d'écrans : une télé, un magnétosc
 Le projet avance par étapes ([PLAN.md §9](PLAN.md)).
 
 - [x] **1. Socle** : monorepo, API, base de données, app Android, Docker, CI, staging en ligne, version de test sur Google Play.
-- [ ] **2. Comptes** : inscription par e-mail, pseudo, date de naissance, espace perso.
-- [ ] **3. Films** : recherche (TMDB), fiche, liste « À voir ».
-- [ ] **4. Collections** : vu / pas vu, catégories automatiques.
-- [ ] **5. La machine, en solo**.
-- [ ] **6. Salons** entre amis.
-- [ ] **7. La machine en salon** : séances, vetos, temps réel.
-- [ ] **8. Découverte**.
-- [ ] **9. Finitions et v1.0**.
+- [ ] **2. Sécurité** : en-têtes web, limites de requêtes, durcissement du temps réel et du serveur, politique de confidentialité.
+- [ ] **3. Comptes** : inscription par e-mail (15 ans minimum), pseudo, date de naissance, espace perso.
+- [ ] **4. Films** : recherche (TMDB), fiche, liste « À voir ».
+- [ ] **5. Collections** : vu / pas vu, catégories automatiques.
+- [ ] **6. La machine, en solo**.
+- [ ] **7. Salons** entre amis.
+- [ ] **8. La machine en salon** : séances, vetos, temps réel.
+- [ ] **9. Découverte**.
+- [ ] **10. Finitions et v1.0**.
 
 L'app est en **test interne** sur Google Play. Une version de test est installable depuis la release [`preprod-latest`](https://github.com/GLANEUX/Spinema/releases/tag/preprod-latest).
 

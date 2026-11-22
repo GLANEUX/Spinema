@@ -81,7 +81,7 @@ Sans droit particulier, un membre peut : ajouter des films, partager les siens, 
 - **Dans un salon**, la limite est celle du **plus jeune des membres présents** (connectés à la session de tirage) : si Lou a 15 ans et participe, -16 et -18 sont grisés pour tout le monde.
 - **Films « non classés »** : recommandation → **exclus dès qu'un mineur est présent**, inclus sinon. C'est le choix prudent, et il concerne surtout de vieux films ou des films étrangers peu distribués. Un badge « non classé » sur la fiche l'indique.
 - La même limite s'applique **partout** pour un compte mineur : machine, **découverte** et **recherche** masquent les films au-dessus de son âge (et les non classés).
-- **Pas d'âge minimum** pour créer un compte en v1 (app privée entre proches) — à revoir avant Google Play.
+- **Âge minimum : 15 ans.** L'inscription est refusée avant 15 ans (en France, sous 15 ans, le traitement des données fondé sur le consentement demande l'accord d'un parent). Les comptes de 15 à 17 ans restent des comptes mineurs : filtrage par classification comme ci-dessous.
 
 ### Machine à sous
 **Deux modes**
@@ -208,7 +208,7 @@ Supabase auto-hébergé est possible mais lourd (une dizaine de conteneurs) pour
 |---|---|
 | API | **Node + Fastify** (TypeScript), validation zod partagée avec l'app |
 | Base | **PostgreSQL** + **Drizzle ORM** (migrations SQL versionnées dans le repo) |
-| Auth | Bibliothèque éprouvée (**Better Auth**) plutôt que maison : email + mot de passe (argon2), sessions / refresh tokens, vérification email, reset |
+| Auth | Bibliothèque éprouvée (**Better Auth**, version de sécurité de novembre 2026 ou plus récente, faille Expo corrigée) plutôt que maison : email + mot de passe (argon2id ou scrypt), sessions révocables, vérification email, reset. Règles détaillées en §8 *Sécurité*. |
 | Temps réel | **WebSocket** (Socket.IO) — une room par salon pour la machine à sous et les votes |
 | Jobs | pg-boss (file de tâches dans Postgres) : rafraîchissement du cache TMDB, expiration des invitations, fin des délais de vote, rappels 24 h, plus tard synchro Letterboxd |
 | Données films | **TMDB API** via l'API (clé cachée côté serveur, cache en base) |
@@ -372,6 +372,23 @@ Seuils de couverture bloquants en CI (proposition : 100 % `shared`, ≥ 90 % `ap
 - Plus tard : publication sur Google Play (piste de test interne puis production) quand l'app te satisfait.
 - Renovate / Dependabot, scan de secrets, sauvegarde quotidienne Postgres (`pg_dump` → stockage externe) avec test de restauration.
 
+### Sécurité
+
+Règles permanentes, vérifiées à chaque étape (références : OWASP API Top 10, OWASP MASVS, CNIL, règles Google Play).
+
+| Domaine | Règle |
+|---|---|
+| **Droits** | Chaque route et chaque événement temps réel vérifie que l'utilisateur a le droit d'accéder à **cet** objet (salon, film, collection, séance). Un test de refus par droit et par route. |
+| **Entrées** | Tout ce qui arrive (corps, paramètres, messages Socket.IO, liens `/i/<code>`) est validé par un schéma zod. Taille maximale des requêtes et des messages. |
+| **Limites** | Limites de requêtes par adresse IP (API et Nginx), plus strictes sur la connexion, l'inscription et le mot de passe oublié ; limite de messages par connexion temps réel. |
+| **Mots de passe** | argon2id ou scrypt (Better Auth). 12 caractères minimum, 128 maximum, **aucune règle de composition**. Refus des mots de passe fuités via Have I Been Pwned (seuls les 5 premiers caractères du hash sortent du serveur). |
+| **Connexion** | Messages qui ne révèlent pas si un email ou un pseudo existe. Liens de vérification et de réinitialisation à usage unique, courte durée. Sessions révocables (déconnexion de tous les appareils après changement de mot de passe). |
+| **Téléphone** | Session dans `expo-secure-store` (coffre chiffré Android), jamais dans AsyncStorage. Sauvegarde Android automatique désactivée pour les données sensibles. HTTPS uniquement (HTTP seulement en développement). Aucun secret dans l'app : tout ce qui commence par `EXPO_PUBLIC_` est public. |
+| **Temps réel** | Authentification à la connexion Socket.IO, appartenance au salon vérifiée avant d'entrer dans sa salle, messages validés et de 64 Ko maximum. |
+| **Web** | En-têtes de sécurité (HSTS, CSP, `nosniff`, `Referrer-Policy`, `frame-ancestors`, `Permissions-Policy`), version de Nginx masquée. |
+| **Données** | Minimum nécessaire : la date de naissance reste privée, pas de géolocalisation, pas de pistage publicitaire. Journaux sans mot de passe, jeton ni email en clair. |
+| **Dépendances** | Dependabot, CodeQL, `pnpm audit`, actions et images épinglées (déjà en place à l'étape 1). |
+
 ### Gestion des erreurs
 - API : erreurs typées (`code`, `message`), jamais de stacktrace côté client, logs corrélés par requête.
 - App : error boundaries par écran, messages clairs, retry automatique (TanStack Query) et manuel, bandeau « hors ligne » (la bibliothèque reste consultable depuis le cache), reconnexion automatique du WebSocket avec reprise de l'état du tirage.
@@ -384,14 +401,15 @@ Seuils de couverture bloquants en CI (proposition : 100 % `shared`, ≥ 90 % `ap
 |---|---|---|
 | **0. Maquette** | Maquette cliquable (Artifact HTML) des écrans principaux, dont la machine à sous animée et le vote. | Direction visuelle validée. |
 | **1. Socle** | Monorepo, Docker Compose, Postgres, Fastify, Expo, lint / tests / CI, déploiement staging. | Pipeline verte, app « hello » sur vos téléphones. |
-| **2. Comptes** | Inscription / connexion / pseudo / email, SMTP (vérification, reset), espace perso auto, blocage, suppression de compte. | Comptes fonctionnels. |
-| **3. Films + À voir** | Proxy TMDB + cache, recherche, fiche film complète (bande-annonce), mon « À voir ». | Bibliothèque perso. |
-| **4. Collections + vu** | Collections, vu / pas vu, Déjà vus, catégories auto, filtres. | Bibliothèque organisée. |
-| **5. Machine (perso)** | Logique de tirage partagée, échantillon, animation, classification limitée par l'âge, « À l'affiche ». | Tirage solo. 🎰 |
-| **6. Salons** | Création, invitations (lien avec validation + pseudo exact), App Links, rôles / droits, « À voir » commun, partage auto / manuel, badges, limites, suppression. | Salons complets. |
-| **7. Machine (salon)** | Séances, présence, tirage synchronisé, vetos (budget, remboursement, « la machine a parlé »), délai de vote, limite d'âge des présents, notifications push, rappel 24 h. | Tirage à plusieurs. 🎉 |
-| **8. Découverte** | Tendances, genres, années, pagination infinie. | Explorer les films. |
-| **9. Finitions + prod** | Design final, états vides, accessibilité, perf, release APK v1.0. | v1 en prod. |
+| **2. Sécurité** | **Web** : en-têtes de sécurité (HSTS, CSP…), version de Nginx masquée. **API** : limites de requêtes (API + Nginx), en-têtes de sécurité, taille max des requêtes, adresse IP réelle derrière le proxy ; Socket.IO limité (messages de 64 Ko, débit par connexion). **Serveur** : blocage des tentatives de connexion répétées, mises à jour et redémarrages planifiés. **RGPD / Google Play** : politique de confidentialité, page web de demande de suppression de compte, formulaire « sécurité des données ». | Socle durci, prêt à recevoir des comptes. 🔒 |
+| **3. Comptes** | Inscription / connexion / pseudo / email, SMTP (vérification, reset), espace perso auto, blocage, suppression de compte (dans l'app). **Âge minimum 15 ans.** Better Auth à jour (faille Expo de novembre 2026 corrigée), règles de mots de passe et de connexion du §8 *Sécurité*, session dans `expo-secure-store`, sauvegarde Android désactivée, authentification des connexions Socket.IO. | Comptes fonctionnels et sûrs. |
+| **4. Films + À voir** | Proxy TMDB + cache (clé côté serveur), recherche, fiche film complète (bande-annonce), mon « À voir ». Droits vérifiés sur chaque objet. | Bibliothèque perso. |
+| **5. Collections + vu** | Collections, vu / pas vu, Déjà vus, catégories auto, filtres. Droits vérifiés sur chaque objet. | Bibliothèque organisée. |
+| **6. Machine (perso)** | Logique de tirage partagée, échantillon, animation, classification limitée par l'âge, « À l'affiche ». | Tirage solo. 🎰 |
+| **7. Salons** | Création, invitations (lien avec validation + pseudo exact), App Links, rôles / droits, « À voir » commun, partage auto / manuel, badges, limites, suppression. Liens `/i/<code>` traités comme non fiables, tests de refus pour chaque droit. | Salons complets. |
+| **8. Machine (salon)** | Séances, présence, tirage synchronisé, vetos (budget, remboursement, « la machine a parlé »), délai de vote, limite d'âge des présents, notifications push, rappel 24 h. Appartenance au salon vérifiée avant d'entrer dans sa salle temps réel, messages validés. | Tirage à plusieurs. 🎉 |
+| **9. Découverte** | Tendances, genres, années, pagination infinie. | Explorer les films. |
+| **10. Finitions + prod** | Design final, états vides, accessibilité, perf. **Sauvegardes chiffrées hors du serveur** (emplacement à choisir au déploiement de la prod). Relecture de sécurité complète avant la release v1.0. | v1 en prod. |
 
 ---
 
@@ -408,7 +426,7 @@ Seuils de couverture bloquants en CI (proposition : 100 % `shared`, ≥ 90 % `ap
 | Salons | N membres (max 20, 10 salons par personne), propriétaire = créateur, droits délégables. |
 | Cycle de vie | Le propriétaire qui quitte supprime le salon ; pas de transfert en v1. Suppression de compte = tout supprimer. |
 | Invitations | Lien valable 7 jours avec validation des demandes ; pseudo exact uniquement ; blocage possible. |
-| Âge | Date de naissance à l'inscription, pas d'âge minimum ; classification max = âge du plus jeune présent ; non classés exclus si un mineur est présent ; filtrage partout (machine, découverte, recherche) pour un mineur. |
+| Âge | Date de naissance à l'inscription, **âge minimum 15 ans** ; classification max = âge du plus jeune présent ; non classés exclus si un mineur est présent ; filtrage partout (machine, découverte, recherche) pour un mineur. |
 | Vu | Booléen par personne, chacun confirme pour soi. Pas de note perso en v1. |
 | Modes de tirage | Normal (v1) ; pondéré = mode séparé, plus tard. |
 | Machine à sous | Ordre mélangé, échantillon aléatoire invisible, min. 2 films, relances illimitées. |
@@ -424,7 +442,8 @@ Seuils de couverture bloquants en CI (proposition : 100 % `shared`, ≥ 90 % `ap
 | Perso | Tirage local, sans veto. |
 | Backend | API TypeScript sur serveur perso sous Docker. |
 | Offline | Cache simple + gestion d'erreurs soignée. |
-| Auth | Email + pseudo unique + mot de passe + date de naissance. Pas de Google pour l'instant. |
+| Auth | Email + pseudo unique + mot de passe + date de naissance. Pas de Google pour l'instant. Mot de passe de 12 caractères minimum, sans règles de composition, refusé s'il a déjà fuité. |
+| Sécurité | Étape dédiée (§9, étape 2) avant les comptes, puis règles permanentes appliquées à chaque étape (§8 *Sécurité*). |
 | Invitations | Lien (domaine dispo) ou recherche par pseudo. |
 | Build | APK buildé dans GitHub Actions ; mises à jour OTA via EAS Update. |
 | Qualité | Couverture maximale, CI/CD complète, envs dev / staging / prod. |
@@ -435,4 +454,7 @@ Seuils de couverture bloquants en CI (proposition : 100 % `shared`, ≥ 90 % `ap
 
 ## 11. Questions ouvertes
 
-Aucune pour l'instant : toutes les questions sont tranchées et reportées dans le plan et au §10. Les nouvelles questions qui apparaîtront pendant la réalisation seront ajoutées ici.
+| Question | Contexte |
+|---|---|
+| **Accès SSH au serveur** | À décider : connexion par un compte personnel avec `sudo` plutôt que par un compte d'administration, et désactivation des redirections SSH inutiles. |
+| **Stockage des sauvegardes hors serveur** | À choisir au déploiement de la prod (étape 10) : stockage S3 compatible, autre machine, etc. |
