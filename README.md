@@ -1,157 +1,158 @@
 # Spinema
 
-Application Android pour choisir quoi regarder, seul ou à plusieurs. On range ses films sur une étagère de vieilles VHS, on ouvre une séance avec ses amis, la machine pioche une cassette et chacun vote OK ou veto, en direct sur tous les téléphones.
+[![CI](https://github.com/GLANEUX/Spinema/actions/workflows/ci.yml/badge.svg?branch=dev)](https://github.com/GLANEUX/Spinema/actions/workflows/ci.yml)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/GLANEUX/Spinema/badge)](https://scorecard.dev/viewer/?uri=github.com/GLANEUX/Spinema)
+[![Licence MIT](https://img.shields.io/badge/licence-MIT-d9a441)](LICENSE)
 
-- Plan complet : [PLAN.md](PLAN.md)
-- Charte graphique : [design/charte-graphique.html](design/charte-graphique.html)
-- Maquette cliquable (Galaxy A56) : [mockup/spinema-maquette.html](mockup/spinema-maquette.html)
-- Reste à faire : [TODO.md](TODO.md)
+**Choisir quoi regarder, seul ou à plusieurs.**
 
-## Statut
+Spinema est une app Android pour en finir avec le « on regarde quoi ? ». On range ses films sur une étagère de vieilles cassettes VHS. Le soir venu, on ouvre une séance avec ses amis : la machine pioche une cassette au hasard, et chacun vote « OK » ou utilise un veto, en direct sur tous les téléphones.
 
-**Étape 1 : socle technique.** Monorepo, API avec healthcheck et WebSocket, base PostgreSQL avec migrations, app Expo qui charge la charte et interroge l'API, page d'invitation, Docker et CI. Aucune fonctionnalité métier pour l'instant (comptes à l'étape 2).
+L'interface est faite d'objets plutôt que d'écrans : une télé, un magnétoscope, une télécommande, des cassettes et des cartons.
+
+| Pour découvrir le projet                                    |                                                              |
+| ----------------------------------------------------------- | ------------------------------------------------------------ |
+| Le plan complet (fonctionnalités, règles, choix techniques) | [PLAN.md](PLAN.md)                                           |
+| La charte graphique « Vieilles VHS »                        | [design/charte-graphique.html](design/charte-graphique.html) |
+| La maquette cliquable (format Galaxy A56)                   | [mockup/spinema-maquette.html](mockup/spinema-maquette.html) |
+| Ce qui reste à faire                                        | [TODO.md](TODO.md)                                           |
+
+## Avancement
+
+Le projet avance par étapes ([PLAN.md §9](PLAN.md)).
+
+- [x] **1. Socle** : monorepo, API, base de données, app Android, Docker, CI, staging en ligne, version de test sur Google Play.
+- [ ] **2. Comptes** : inscription par e-mail, pseudo, date de naissance, espace perso.
+- [ ] **3. Films** : recherche (TMDB), fiche, liste « À voir ».
+- [ ] **4. Collections** : vu / pas vu, catégories automatiques.
+- [ ] **5. La machine, en solo**.
+- [ ] **6. Salons** entre amis.
+- [ ] **7. La machine en salon** : séances, vetos, temps réel.
+- [ ] **8. Découverte**.
+- [ ] **9. Finitions et v1.0**.
+
+L'app est en **test interne** sur Google Play. Une version de test est installable depuis la release [`preprod-latest`](https://github.com/GLANEUX/Spinema/releases/tag/preprod-latest).
 
 ## Stack
 
-| Partie       | Techno                                                                               |
-| ------------ | ------------------------------------------------------------------------------------ |
-| App mobile   | Expo SDK 58 (React Native 0.88), Expo Router, TypeScript                             |
-| API          | Node 24, Fastify 5, Socket.IO, zod                                                   |
-| Base         | PostgreSQL 17, Drizzle ORM (migrations SQL dans `packages/db/drizzle`)               |
-| Code partagé | `packages/shared` : logique du tirage et des votes, schémas zod, tokens de la charte |
-| Page web     | HTML statique servi par Nginx (`/i/<code>`, `assetlinks.json`)                       |
-| Outillage    | pnpm 12 (workspaces), Turborepo, TypeScript 6, ESLint, Prettier, Vitest, Jest        |
+| Partie          | Technologies                                                                  |
+| --------------- | ----------------------------------------------------------------------------- |
+| App Android     | Expo SDK 58 (React Native 0.88), Expo Router, TypeScript                      |
+| API             | Node 24, Fastify 5, Socket.IO (temps réel), zod                               |
+| Base de données | PostgreSQL 17, Drizzle ORM                                                    |
+| Page web        | HTML statique servi par Nginx (invitations `/i/<code>`, téléchargement)       |
+| Outillage       | pnpm 12 (workspaces), Turborepo, TypeScript 6, ESLint, Prettier, Vitest, Jest |
+| Déploiement     | Docker Compose, GitHub Actions, Nginx et Let's Encrypt                        |
 
 ```
 apps/
-  api/       API Fastify + Socket.IO
-  mobile/    App Expo (Android)
-  web/       Page d'invitation et de téléchargement
+  api/        API Fastify + Socket.IO
+  mobile/     App Expo (Android)
+  web/        Page web : accueil, invitations, téléchargement
 packages/
-  shared/    Logique pure, schémas, thème
-  db/        Client Drizzle et migrations
-infra/nginx/ Config du conteneur web et exemple pour le Nginx du serveur
+  shared/     Logique du tirage et des votes, schémas, couleurs de la charte
+  db/         Client Drizzle et migrations SQL
+infra/        Nginx, staging (Compose, déploiement, code d'accès), sauvegardes
+scripts/      Mise en place du serveur et des secrets
 ```
 
-## Prérequis
+## Démarrer
 
-- Node 24 (`nvm install` lit `.nvmrc`)
-- pnpm 12 : `corepack enable pnpm`
-- Docker et Docker Compose
-- Pour l'app : l'application **Expo Go** sur le téléphone, ou un émulateur Android
+### Prérequis
 
-## Installation
+- **Node 24** : `nvm install` lit le fichier `.nvmrc`.
+- **pnpm 12** : `corepack enable pnpm`.
+- **Docker** avec Docker Compose.
+- Pour l'app : **Expo Go** sur un téléphone Android, ou un émulateur.
+
+### Installation
 
 ```bash
 pnpm install
 cp .env.example .env
 ```
 
-Puis remplir `.env` (au minimum `POSTGRES_PASSWORD`, et le même mot de passe dans `DATABASE_URL`).
+Dans `.env`, choisir un mot de passe pour `POSTGRES_PASSWORD` et le reporter dans `DATABASE_URL`.
 
-## Lancer en local
-
-Base de données seule, dans Docker :
-
-```bash
-docker compose -f docker-compose.dev.yml up -d
-```
-
-API en mode développement (rechargement automatique, migrations appliquées au démarrage) :
-
-```bash
-pnpm --filter @spinema/api dev
-```
-
-App mobile :
-
-```bash
-pnpm --filter @spinema/mobile start
-```
-
-Scanner le QR code avec Expo Go. L'écran d'accueil affiche « ▶ PLAY » sur le magnéto quand l'API répond.
-
-### Tester sur un vrai téléphone
-
-1. `cp apps/mobile/.env.example apps/mobile/.env` et y mettre `EXPO_PUBLIC_API_URL=http://<IP Wi-Fi du PC>:3000` (sous Windows : `ipconfig`, « Adresse IPv4 » de la carte Wi-Fi).
-2. Dans le `.env` racine, `API_BIND=0.0.0.0`, puis `docker compose up -d`.
-3. Sous WSL2, le téléphone ne voit pas les ports d'Ubuntu par défaut (mode réseau NAT). Passer WSL en réseau « mirrored » : dans `%UserProfile%\.wslconfig`, section `[wsl2]`, ajouter `networkingMode=mirrored`, puis `wsl --shutdown`. Autoriser ensuite les ports 3000 et 8081 dans le pare-feu Windows.
-4. Sans toucher à WSL, on peut aussi lancer l'app en tunnel : `pnpm --filter @spinema/mobile start --tunnel` (l'API doit rester joignable, voir l'étape 3).
-
-## Lancer avec Docker (une commande)
+### Tout lancer avec Docker
 
 ```bash
 docker compose up -d --build
 ```
 
-| Service    | Adresse                                          |
-| ---------- | ------------------------------------------------ |
-| API        | http://127.0.0.1:3000/health                     |
-| Page web   | http://127.0.0.1:8080 (invitation : `/i/<code>`) |
-| PostgreSQL | interne au réseau Docker                         |
+| Service    | Adresse                      |
+| ---------- | ---------------------------- |
+| API        | http://127.0.0.1:3000/health |
+| Page web   | http://127.0.0.1:8080        |
+| PostgreSQL | interne au réseau Docker     |
 
-Les ports ne sont publiés que sur `127.0.0.1` : sur le serveur, le Nginx existant fait le HTTPS et renvoie vers eux (exemple : [infra/nginx/spinema.example.conf](infra/nginx/spinema.example.conf)).
-
-## Vérifications
+### Développer
 
 ```bash
-pnpm lint
-pnpm typecheck
-pnpm test
-pnpm build
-pnpm format:check
+docker compose -f docker-compose.dev.yml up -d   # la base seule
+pnpm --filter @spinema/api dev                   # l'API, rechargée à chaque modification
+pnpm --filter @spinema/mobile start              # l'app : scanner le QR code avec Expo Go
 ```
 
-Couverture minimale : 100 % pour `packages/shared`, 90 % pour l'API, 80 % pour l'app. La CI GitHub Actions ([.github/workflows/ci.yml](.github/workflows/ci.yml)) lance tout ça sur chaque pull request et sur `dev`, `preprod` et `main` (voir « Branches et versions »).
+Les migrations s'appliquent au démarrage de l'API. L'écran d'accueil de l'app affiche « ▶ PLAY » sur le magnétoscope quand l'API répond.
 
-## Branches et versions
+<details>
+<summary><strong>Tester sur un vrai téléphone (Wi-Fi, WSL)</strong></summary>
 
-| Branche            | Rôle                                                  | Ce que lance GitHub                                                                                     |
-| ------------------ | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| `dev` (par défaut) | Travail de tous les jours, les PR arrivent ici        | Vérifications rapides (format, lint, types, tests, build)                                               |
-| `preprod`          | Version à tester : on y fusionne `dev`                | + APK « Spinema préprod » (release `preprod-latest`), image Docker `:preprod` et déploiement du staging |
-| `main`             | Production : on y fusionne `preprod` une fois validée | + APK et AAB de prod (release `v<version>`) et image Docker `:main`                                     |
+1. `cp apps/mobile/.env.example apps/mobile/.env`, puis y mettre `EXPO_PUBLIC_API_URL=http://<IP Wi-Fi du PC>:3000`. Sous Windows, l'IP se trouve avec `ipconfig`, ligne « Adresse IPv4 » de la carte Wi-Fi.
+2. Dans le `.env` racine, mettre `API_BIND=0.0.0.0`, puis lancer `docker compose up -d`.
+3. Sous WSL2, le téléphone ne voit pas les ports d'Ubuntu par défaut. Dans `%UserProfile%\.wslconfig`, section `[wsl2]`, ajouter `networkingMode=mirrored`, puis lancer `wsl --shutdown`. Autoriser ensuite les ports 3000 et 8081 dans le pare-feu Windows.
+4. Autre solution, sans toucher à WSL : `pnpm --filter @spinema/mobile start --tunnel`. L'API doit quand même rester joignable (étape 3).
 
-- Les builds Android (~25 min) ne tournent que sur `preprod` et `main`, pour économiser les minutes GitHub Actions. Un build à la main reste possible : onglet Actions > Android > Run workflow.
-- **Avant de fusionner dans `main`**, augmenter `version` dans [apps/mobile/app.config.ts](apps/mobile/app.config.ts) : le build s'arrête si cette version est déjà publiée.
-- L'app préprod s'appelle « Spinema préprod », s'installe à côté de la vraie et affiche un bout de scotch « préprod ».
-- Les adresses de l'API pour chaque variante sont des variables GitHub : `API_URL_PREVIEW` et `API_URL_PRODUCTION`.
-- La clé de signature Android se crée une fois avec `./scripts/create-android-keystore.sh` (il enregistre lui-même les secrets GitHub).
-- Les secrets sont rangés dans des environnements GitHub protégés : `release` (clé de signature, lisible seulement depuis `preprod` et `main`) et `staging` (clé de déploiement, seulement depuis `preprod`). Pour y déplacer d'anciens secrets : `./scripts/move-secrets-to-environments.sh`.
+</details>
 
-## Staging
+### Base de données
 
-Le staging tourne sur le serveur partagé `vps2`, dans `/opt/spinema-staging`. Chaque push sur `preprod` y déploie l'image `:preprod`, via le job « Deploy staging » de la CI.
-
-- **Mise en place**, une seule fois et à lancer soi-même : `./scripts/setup-staging-server.sh <domaine>`. Le script crée l'utilisateur `spinema` et le dossier, ainsi qu'une clé de déploiement qui ne peut lancer que [infra/staging/deploy.sh](infra/staging/deploy.sh). Il ajoute aussi la sauvegarde quotidienne, le site Nginx `staging.<domaine>` et `api.staging.<domaine>` avec HTTPS, et les secrets et variables GitHub.
-- **Avant le script**, il faut deux entrées DNS, `staging.<domaine>` et `api.staging.<domaine>`, qui pointent vers l'IP du serveur.
-- **La stack**, décrite dans [infra/staging/docker-compose.yml](infra/staging/docker-compose.yml), n'écoute qu'en local (API sur `127.0.0.1:3100`, page web sur `127.0.0.1:8180`). Le Nginx du serveur fait le relais.
-- **D'autres services de prod tournent sur ce serveur** : on n'ajoute qu'un fichier de site Nginx, on lance `nginx -t` avant chaque rechargement, et on ne redémarre aucun autre service.
-- **Code d'accès** : les pages de https://staging.spinema.fr demandent un code, que le navigateur retient 30 jours (cookie signé). Pour le choisir ou le changer : `./scripts/set-staging-code.sh` (changer le code déconnecte tout le monde). Le service [infra/staging/gate](infra/staging/gate) le vérifie, et bloque une adresse IP 15 minutes après 5 essais ratés. Restent publics : `assetlinks.json` et l'API.
-- **Sur le serveur** : `cd /opt/spinema-staging && docker compose logs -f api`. Le fichier `.env` contient le mot de passe de la base et ne quitte jamais le serveur.
-
-## Variables d'environnement
-
-| Variable                                            | Rôle                                           | Défaut                                            |
-| --------------------------------------------------- | ---------------------------------------------- | ------------------------------------------------- |
-| `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB` | Base PostgreSQL (Docker)                       | `spinema` / à définir / `spinema`                 |
-| `DATABASE_URL`                                      | Connexion de l'API à la base                   | requis                                            |
-| `API_PORT`                                          | Port de l'API                                  | `3000`                                            |
-| `API_BIND`                                          | Adresse de publication de l'API par Docker     | `127.0.0.1` (`0.0.0.0` pour tester sur téléphone) |
-| `LOG_LEVEL`                                         | Niveau de logs (`info`, `debug`…)              | `info`                                            |
-| `CORS_ORIGINS`                                      | Origines autorisées, séparées par des virgules | `http://localhost:8080`                           |
-| `EXPO_PUBLIC_API_URL` (dans `apps/mobile/.env`)     | Adresse de l'API vue par l'app                 | `http://10.0.2.2:3000` (émulateur)                |
-
-Les variables TMDB, Better Auth et SMTP (Brevo) arriveront avec les étapes suivantes ; elles sont déjà listées en commentaire dans `.env.example`.
-
-## Base de données
-
-Les migrations SQL sont dans `packages/db/drizzle` et s'appliquent au démarrage de l'API. Après avoir modifié `packages/db/src/schema.ts` :
+Après avoir modifié `packages/db/src/schema.ts`, générer la migration :
 
 ```bash
 pnpm db:generate
 ```
 
+## Vérifier son travail
+
+```bash
+pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build
+```
+
+Couverture minimale des tests : 100 % pour la logique partagée, 90 % pour l'API, 80 % pour l'app. La CI relance tout sur chaque pull request, avec en plus `expo-doctor`, CodeQL et GitGuardian.
+
+## Branches et versions
+
+| Branche            | Rôle                                                       | Ce que lance GitHub                                 |
+| ------------------ | ---------------------------------------------------------- | --------------------------------------------------- |
+| `dev` (par défaut) | Le travail courant : toutes les pull requests arrivent ici | Vérifications                                       |
+| `preprod`          | Une version à tester : on y pousse `dev`                   | + déploiement du staging et APK « Spinema préprod » |
+| `main`             | La production : on y pousse `preprod` une fois validée     | + APK et AAB signés, release `v<version>`           |
+
+Avant de pousser sur `main`, augmenter `version` dans [apps/mobile/app.config.ts](apps/mobile/app.config.ts) : le build refuse une version déjà publiée.
+
+Les détails (staging, secrets, clé de signature, sauvegardes) sont dans [docs/deploiement.md](docs/deploiement.md).
+
+## Variables d'environnement
+
+| Variable                                            | Rôle                                               | Défaut                                    |
+| --------------------------------------------------- | -------------------------------------------------- | ----------------------------------------- |
+| `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB` | Base PostgreSQL (Docker)                           | `spinema` / à choisir / `spinema`         |
+| `DATABASE_URL`                                      | Connexion de l'API à la base                       | requise                                   |
+| `API_PORT`                                          | Port de l'API                                      | `3000`                                    |
+| `API_BIND`                                          | Adresse sur laquelle Docker publie l'API           | `127.0.0.1` (`0.0.0.0` pour un téléphone) |
+| `LOG_LEVEL`                                         | Niveau de logs (`info`, `debug`…)                  | `info`                                    |
+| `CORS_ORIGINS`                                      | Origines web autorisées, séparées par des virgules | `http://localhost:8080`                   |
+| `APK_URL`                                           | Destination du bouton « Télécharger l'app »        | la page des releases                      |
+| `EXPO_PUBLIC_API_URL` (dans `apps/mobile/.env`)     | Adresse de l'API vue par l'app                     | `http://10.0.2.2:3000` (émulateur)        |
+
+Les variables des étapes suivantes (TMDB, Better Auth, e-mails Brevo) sont déjà listées en commentaire dans [.env.example](.env.example).
+
+## Sécurité
+
+Une faille ? Merci de la signaler en privé, comme expliqué dans [SECURITY.md](SECURITY.md), et pas dans une issue publique.
+
 ## Licence
 
-MIT, voir [LICENSE](LICENSE).
+[MIT](LICENSE) © Océane Glaneux
