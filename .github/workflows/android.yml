@@ -114,7 +114,7 @@ jobs:
           TAG=preprod-latest
           gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --prerelease --target "$GITHUB_SHA" --title "Spinema préprod" \
             --notes "Dernière version de test, reconstruite à chaque mise à jour de la branche preprod. Installe le fichier .apk sur ton téléphone."
-          # Same file under a fixed name: staging.spinema.fr/spinema.apk links to it.
+          # Same file under a fixed name: the staging site's /spinema.apk links to it.
           cp out/*.apk out/spinema-preprod.apk
           # Upload first (replacing same-name files), then remove the older builds: if GitHub
           # fails midway, the download link keeps working.
