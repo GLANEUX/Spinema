@@ -40,11 +40,12 @@
 
 ## Étapes suivantes (voir PLAN.md §9)
 
-2. Comptes (Better Auth, SMTP Brevo, pseudo, date de naissance, espace perso)
-3. Films + À voir (proxy TMDB, recherche, fiche)
-4. Collections, vu / pas vu, catégories auto
-5. Machine en perso
-6. Salons
-7. Machine en salon (séances, vetos, temps réel)
-8. Découverte
-9. Finitions et v1.0
+2. Sécurité (en-têtes web, durcissement de l'API et de Socket.IO, serveur, RGPD et Google Play)
+3. Comptes (Better Auth à jour, âge minimum 15 ans, règles de mots de passe, SMTP Brevo, espace perso)
+4. Films + À voir (proxy TMDB, recherche, fiche)
+5. Collections, vu / pas vu, catégories auto
+6. Machine en perso
+7. Salons
+8. Machine en salon (séances, vetos, temps réel)
+9. Découverte
+10. Finitions, sauvegardes hors serveur et v1.0
