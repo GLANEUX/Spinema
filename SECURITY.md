@@ -45,8 +45,8 @@ Spinema est un projet personnel, maintenu sur le temps libre : ces délais sont 
 Sont concernés :
 
 - l'app Android (`fr.spinema.app` et `fr.spinema.app.preview`) ;
-- l'API (`api.spinema.fr`, `api.staging.spinema.fr`) ;
-- les pages web (`spinema.fr`, `staging.spinema.fr`) ;
+- l'API de Spinema (production et test) ;
+- les pages web de Spinema (production et test) ;
 - le code et la configuration de ce dépôt (workflows, scripts, Docker).
 
 Ne sont pas concernés : les services tiers (Google Play, GitHub, TMDB, Brevo), à signaler directement à leurs éditeurs, et les attaques qui demandent un accès physique au téléphone déverrouillé.

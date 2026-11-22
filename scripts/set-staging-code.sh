@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Sets (or changes) the access code of https://staging.spinema.fr. Run it yourself:
+# Sets (or changes) the access code of the staging site. Run it yourself:
 #   ./scripts/set-staging-code.sh
 # The code stays on the server (/opt/spinema-staging/.env). Changing it logs everyone out.
 # Needs: the "vps2" SSH alias (root).

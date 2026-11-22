@@ -13,7 +13,7 @@
 - [x] Pousser sur GitHub et vérifier que la CI passe (sauf GitGuardian : faux positif sur un ancien mot de passe d'exemple)
 - [x] Tester l'app sur le Galaxy A56 avec Expo Go (WSL en réseau « mirrored »)
 - [x] Staging : stack [infra/staging](infra/staging), job CI « Deploy staging » sur `preprod` (clé SSH limitée à `deploy.sh`)
-- [x] Staging en HTTPS : https://staging.spinema.fr et https://api.staging.spinema.fr (`setup-staging-server.sh spinema.fr`)
+- [x] Staging en HTTPS, page web et API (`setup-staging-server.sh <domaine>`)
 - [x] Variantes de l'app : dev (Expo Go), préprod (« Spinema préprod », installable à côté), prod
 - [x] Branches `dev` / `preprod` / `main` ; build Android avec Gradle seulement sur `preprod` (APK préprod) et `main` (APK + AAB, release `v<version>`)
 - [x] Clé de signature créée (`~/spinema-upload.jks`), secrets GitHub en place, empreinte dans `assetlinks.json`
@@ -24,7 +24,7 @@
 - [x] Tests de la base sur un vrai Postgres (Testcontainers)
 - [x] Scripts de sauvegarde quotidienne et de test de restauration (`infra/backup/`)
 - [x] Cron de sauvegarde sur le serveur (posé par `setup-staging-server.sh`)
-- [ ] Copier `/opt/spinema-staging/backups/` hors du serveur (rclone, rsync…)
+- [ ] Copier les sauvegardes du staging hors du serveur (rclone, rsync…)
 - [x] Dependabot (npm, GitHub Actions, Docker) ; secrets scannés par GitGuardian
 
 ## Améliorations connues
