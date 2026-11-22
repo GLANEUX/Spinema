@@ -2,12 +2,14 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { io as connect } from 'socket.io-client';
 import { healthSchema } from '@spinema/shared';
 import { buildServer, loggerOptions, type ServerDeps } from './server';
+import { LIMITS, createMessageLimiter } from './limits';
 import { loadEnv } from './env';
 
 const env: ServerDeps['env'] = {
   CORS_ORIGINS: ['http://localhost:8080'],
   LOG_LEVEL: 'info',
   NODE_ENV: 'test',
+  TRUST_PROXY: 0,
 };
 let close: (() => Promise<unknown>) | undefined;
 afterEach(async () => {
@@ -15,8 +17,8 @@ afterEach(async () => {
   close = undefined;
 });
 
-async function start(up: boolean) {
-  const { app } = await buildServer({ env, pingDb: async () => up });
+async function start(up: boolean, overrides: Partial<ServerDeps['env']> = {}) {
+  const { app } = await buildServer({ env: { ...env, ...overrides }, pingDb: async () => up });
   close = () => app.close();
   return app;
 }
@@ -90,5 +92,107 @@ describe('env', () => {
   });
   it('explains what is missing', () => {
     expect(() => loadEnv({})).toThrow(/DATABASE_URL/);
+  });
+});
+
+async function listen(app: Awaited<ReturnType<typeof start>>) {
+  await app.listen({ port: 0, host: '127.0.0.1' });
+  const address = app.server.address();
+  return `http://127.0.0.1:${typeof address === 'object' && address ? address.port : 0}`;
+}
+
+describe('security headers', () => {
+  it('forbids loading or framing API responses and sniffing their type', async () => {
+    const app = await start(true);
+    const res = await app.inject({ method: 'GET', url: '/health' });
+    expect(res.headers['content-security-policy']).toContain("default-src 'none'");
+    expect(res.headers['content-security-policy']).toContain("frame-ancestors 'none'");
+    expect(res.headers['x-content-type-options']).toBe('nosniff');
+    expect(res.headers['strict-transport-security']).toContain('max-age=');
+    expect(res.headers['x-powered-by']).toBeUndefined();
+  });
+});
+
+describe('limits', () => {
+  it('refuses request bodies over 64 KiB', async () => {
+    const app = await start(true);
+    app.post('/echo', async () => ({ ok: true }));
+    const small = await app.inject({ method: 'POST', url: '/echo', payload: { a: 'x' } });
+    expect(small.statusCode).toBe(200);
+    const big = await app.inject({
+      method: 'POST',
+      url: '/echo',
+      payload: { a: 'x'.repeat(LIMITS.bodyBytes) },
+    });
+    expect(big.statusCode).toBe(413);
+  });
+
+  it('limits requests per address, in French, but never /health', async () => {
+    const app = await start(true);
+    app.get('/ping', async () => ({ ok: true }));
+    for (let i = 0; i < LIMITS.requestsPerMinute; i += 1) {
+      expect((await app.inject({ method: 'GET', url: '/ping' })).statusCode).toBe(200);
+    }
+    const refused = await app.inject({ method: 'GET', url: '/ping' });
+    expect(refused.statusCode).toBe(429);
+    expect(refused.json()).toMatchObject({ code: 'TOO_MANY_REQUESTS' });
+    expect(refused.json().message).toMatch(/Trop de requêtes/);
+    expect((await app.inject({ method: 'GET', url: '/health' })).statusCode).toBe(200);
+  });
+
+  it('counts each visitor separately behind the trusted proxy', async () => {
+    const app = await start(true, { TRUST_PROXY: 1 });
+    app.get('/ip', async (request) => ({ ip: request.ip }));
+    const res = await app.inject({
+      method: 'GET',
+      url: '/ip',
+      headers: { 'x-forwarded-for': '6.6.6.6, 203.0.113.7' },
+    });
+    expect(res.json()).toEqual({ ip: '203.0.113.7' });
+  });
+
+  it('ignores X-Forwarded-For when no proxy is trusted', async () => {
+    const app = await start(true);
+    app.get('/ip', async (request) => ({ ip: request.ip }));
+    const res = await app.inject({
+      method: 'GET',
+      url: '/ip',
+      headers: { 'x-forwarded-for': '203.0.113.7' },
+    });
+    expect(res.json().ip).not.toBe('203.0.113.7');
+  });
+});
+
+describe('message limiter', () => {
+  it('allows max messages per window, then refuses until the window slides', () => {
+    const allow = createMessageLimiter({ max: 3, windowMs: 1000 });
+    expect([allow(0), allow(10), allow(20), allow(30)]).toEqual([true, true, true, false]);
+    expect(allow(1000)).toBe(true);
+    expect(allow(1001)).toBe(false);
+    expect(allow(1011)).toBe(true);
+  });
+});
+
+describe('socket limits', () => {
+  it('cuts a connection that floods messages', async () => {
+    const app = await start(true);
+    const client = connect(await listen(app), { transports: ['websocket'] });
+    await new Promise((resolve) => client.once('hello', resolve));
+    const refused = new Promise<unknown>((resolve) => client.once('error', resolve));
+    const cut = new Promise((resolve) => client.once('disconnect', resolve));
+    for (let i = 0; i <= LIMITS.socketMessages.max; i += 1) client.emit('ping', i);
+    expect(await refused).toMatchObject({ code: 'TOO_MANY_MESSAGES' });
+    await cut;
+    client.close();
+  });
+
+  it('cuts a connection that sends a message over 64 KiB', async () => {
+    const app = await start(true);
+    const client = connect(await listen(app), { transports: ['websocket'], reconnection: false });
+    await new Promise((resolve) => client.once('hello', resolve));
+    const cut = new Promise((resolve) => client.once('disconnect', resolve));
+    client.emit('big', 'x'.repeat(LIMITS.socketMessageBytes + 1));
+    await cut;
+    client.close();
   });
 });

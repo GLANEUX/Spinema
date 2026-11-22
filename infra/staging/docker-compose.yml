@@ -33,6 +33,8 @@ services:
       API_PORT: 3000
       LOG_LEVEL: ${LOG_LEVEL:-info}
       CORS_ORIGINS: ${CORS_ORIGINS:?définir CORS_ORIGINS dans .env}
+      # The server's Nginx is the only proxy in front of the API.
+      TRUST_PROXY: 1
     ports:
       - '127.0.0.1:3100:3000'
 

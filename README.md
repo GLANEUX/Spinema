@@ -137,16 +137,17 @@ Les détails (staging, secrets, clé de signature, sauvegardes) sont dans [docs/
 
 ## Variables d'environnement
 
-| Variable                                            | Rôle                                               | Défaut                                    |
-| --------------------------------------------------- | -------------------------------------------------- | ----------------------------------------- |
-| `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB` | Base PostgreSQL (Docker)                           | `spinema` / à choisir / `spinema`         |
-| `DATABASE_URL`                                      | Connexion de l'API à la base                       | requise                                   |
-| `API_PORT`                                          | Port de l'API                                      | `3000`                                    |
-| `API_BIND`                                          | Adresse sur laquelle Docker publie l'API           | `127.0.0.1` (`0.0.0.0` pour un téléphone) |
-| `LOG_LEVEL`                                         | Niveau de logs (`info`, `debug`…)                  | `info`                                    |
-| `CORS_ORIGINS`                                      | Origines web autorisées, séparées par des virgules | `http://localhost:8080`                   |
-| `APK_URL`                                           | Destination du bouton « Télécharger l'app »        | la page des releases                      |
-| `EXPO_PUBLIC_API_URL` (dans `apps/mobile/.env`)     | Adresse de l'API vue par l'app                     | `http://10.0.2.2:3000` (émulateur)        |
+| Variable                                            | Rôle                                                                     | Défaut                                    |
+| --------------------------------------------------- | ------------------------------------------------------------------------ | ----------------------------------------- |
+| `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB` | Base PostgreSQL (Docker)                                                 | `spinema` / à choisir / `spinema`         |
+| `DATABASE_URL`                                      | Connexion de l'API à la base                                             | requise                                   |
+| `API_PORT`                                          | Port de l'API                                                            | `3000`                                    |
+| `API_BIND`                                          | Adresse sur laquelle Docker publie l'API                                 | `127.0.0.1` (`0.0.0.0` pour un téléphone) |
+| `LOG_LEVEL`                                         | Niveau de logs (`info`, `debug`…)                                        | `info`                                    |
+| `CORS_ORIGINS`                                      | Origines web autorisées, séparées par des virgules                       | `http://localhost:8080`                   |
+| `TRUST_PROXY`                                       | Nombre de proxys devant l'API (pour voir la vraie adresse des visiteurs) | `0` (`1` derrière le Nginx du serveur)    |
+| `APK_URL`                                           | Destination du bouton « Télécharger l'app »                              | la page des releases                      |
+| `EXPO_PUBLIC_API_URL` (dans `apps/mobile/.env`)     | Adresse de l'API vue par l'app                                           | `http://10.0.2.2:3000` (émulateur)        |
 
 Les variables des étapes suivantes (TMDB, Better Auth, e-mails Brevo) sont déjà listées en commentaire dans [.env.example](.env.example).
 
