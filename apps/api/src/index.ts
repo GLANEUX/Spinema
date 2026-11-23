@@ -1,18 +1,20 @@
 import { createDb } from '@spinema/db';
 import { createAuth } from './auth';
 import { loadEnv } from './env';
-import { logMailer, plainTemplates } from './mail-placeholder';
+import { createMailer, templates } from './mail';
 import { buildServer } from './server';
 
 const env = loadEnv();
 const database = createDb(env.DATABASE_URL);
 await database.migrate(process.env.MIGRATIONS_FOLDER);
 
+// Emails are only sent once the server runs, so its logger is ready by then.
+const mailLog = { info: (obj: object, msg: string) => app.log.info(obj, msg) };
 const auth = createAuth({
   db: database.db,
   env,
-  mailer: logMailer((message) => console.info(message)),
-  templates: plainTemplates,
+  mailer: createMailer(env, mailLog),
+  templates,
 });
 const { app } = await buildServer({
   env,

@@ -1,6 +1,6 @@
 import { ageOn, checkPassword, checkSignUp, isOldEnough, toIsoDate } from '../accountRules';
 
-const today = new Date(2026, 10, 23); // 23 November 2026
+const today = new Date(Date.UTC(2026, 10, 23)); // 23 November 2026, UTC like the API
 const valid = {
   email: 'lou@example.fr',
   username: 'Lou_42',
@@ -24,7 +24,7 @@ describe('birth date', () => {
     expect(ageOn('2011-12-01', today)).toBe(14);
     expect(isOldEnough('2011-11-23', today)).toBe(true);
     expect(isOldEnough('2011-11-24', today)).toBe(false);
-    expect(isOldEnough('1990-01-01')).toBe(true);
+    expect(isOldEnough('1990-01-01', today)).toBe(true);
   });
 });
 

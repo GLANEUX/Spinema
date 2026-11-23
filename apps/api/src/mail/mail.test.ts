@@ -65,11 +65,11 @@ describe('log transport (no SMTP)', () => {
     expect(JSON.stringify(log.info.mock.calls[0])).toContain('token=abc');
   });
 
-  it('never writes the body (one-time links) in production', async () => {
+  it('never writes the body (one-time links) nor the address in production', async () => {
     const log = { info: vi.fn() };
     await createMailer({ ...baseEnv, NODE_ENV: 'production' }, log).send(mail);
     const logged = JSON.stringify(log.info.mock.calls[0]);
-    expect(logged).toContain('lou@example.test');
+    expect(logged).not.toContain('lou@example.test');
     expect(logged).toContain('Confirme ton adresse e-mail');
     expect(logged).not.toContain('token=abc');
   });

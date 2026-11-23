@@ -16,14 +16,15 @@ export interface MailLog {
 
 /**
  * SMTP when SMTP_HOST is set (Brevo on the servers, Mailpit in development), otherwise emails go
- * to the logs. In production the log never holds the body: it contains one-time links.
+ * to the logs. In production the log holds neither the body (one-time links) nor the address.
  */
 export function createMailer(env: MailEnv, log: MailLog): Mailer {
   if (!env.SMTP_HOST) {
     return {
       async send({ to, subject, text }) {
         if (env.NODE_ENV === 'production') {
-          log.info({ to, subject }, 'e-mail non envoyé : aucun SMTP configuré');
+          // No address either: logs are kept 6 months (privacy policy).
+          log.info({ subject }, 'e-mail non envoyé : aucun SMTP configuré');
         } else {
           log.info({ to, subject, text }, 'e-mail écrit dans le journal (pas de SMTP)');
         }
