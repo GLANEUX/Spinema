@@ -5,7 +5,7 @@
 # Needs: the "vps2" SSH alias (root), gh logged in. Safe to run again.
 #
 # On the server it only adds things: a "spinema" user (docker group), /opt/spinema-staging,
-# a backup cron, and the Nginx site "spinema-staging". Existing sites and services are untouched.
+# a backup cron, a log-pruning cron, and the Nginx site "spinema-staging". Existing sites and services are untouched.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
@@ -28,6 +28,7 @@ fi
 
 echo "== Serveur $SERVER ($HOST)"
 scp -q infra/staging/deploy.sh "$SERVER:/tmp/spinema-deploy.sh"
+scp -q infra/staging/prune-logs.sh "$SERVER:/tmp/spinema-prune-logs.sh"
 # ssh joins its arguments into one command line: quote them (the key contains spaces).
 ssh "$SERVER" "bash -s -- $(printf '%q ' "$PUB" "$DOMAIN")" <<'REMOTE'
 set -euo pipefail
@@ -36,6 +37,11 @@ PUB="$1"; DOMAIN="$2"; DIR=/opt/spinema-staging
 id spinema >/dev/null 2>&1 || useradd --system --create-home --shell /bin/bash --groups docker spinema
 install -d -o spinema -g spinema -m 750 "$DIR"
 install -o root -g root -m 755 /tmp/spinema-deploy.sh "$DIR/deploy.sh" && rm /tmp/spinema-deploy.sh
+# Erases container logs older than 6 months (privacy policy). Root-owned copy: the deploy
+# user can't change what root runs.
+install -o root -g root -m 755 /tmp/spinema-prune-logs.sh /usr/local/sbin/spinema-staging-prune-logs && rm /tmp/spinema-prune-logs.sh
+echo "30 4 * * * root /usr/local/sbin/spinema-staging-prune-logs >> /var/log/spinema-staging-prune-logs.log 2>&1" > /etc/cron.d/spinema-staging-prune-logs
+chmod 644 /etc/cron.d/spinema-staging-prune-logs
 
 if [ ! -f "$DIR/.env" ]; then
   (umask 077; printf 'POSTGRES_USER=spinema\nPOSTGRES_PASSWORD=%s\nPOSTGRES_DB=spinema\nLOG_LEVEL=info\nCORS_ORIGINS=http://localhost\n' \
@@ -63,8 +69,16 @@ if [ -n "$DOMAIN" ]; then
   if [ ! -f "$SITE" ]; then
     cat > "$SITE" <<NGINX
 # Spinema staging (branch preprod). Ports from /opt/spinema-staging/docker-compose.yml.
+# certbot adds the HTTPS lines and the redirection from HTTP.
+
+# Per-address limits for the API (names prefixed: this Nginx serves other sites).
+limit_req_zone \$binary_remote_addr zone=spinema_staging_api:10m rate=10r/s;
+limit_conn_zone \$binary_remote_addr zone=spinema_staging_conn:10m;
+
 server {
   server_name staging.$DOMAIN;
+  server_tokens off;
+  add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
   location / {
     proxy_pass http://127.0.0.1:8180;
     proxy_set_header Host \$host;
@@ -75,7 +89,14 @@ server {
 
 server {
   server_name api.staging.$DOMAIN;
+  server_tokens off;
+  add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
   location / {
+    # 10 requests/s per address with bursts of 40, at most 20 open connections (WebSocket included).
+    limit_req zone=spinema_staging_api burst=40 nodelay;
+    limit_conn spinema_staging_conn 20;
+    limit_req_status 429;
+    limit_conn_status 429;
     proxy_pass http://127.0.0.1:3100;
     proxy_http_version 1.1;
     proxy_set_header Upgrade \$http_upgrade;

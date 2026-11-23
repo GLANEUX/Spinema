@@ -4,10 +4,19 @@
 # The server also hosts other production services: keep the memory limits.
 name: spinema-staging
 
+# Container logs (IP addresses included): at most 3 × 10 MB per service, and anything older than
+# 6 months is erased by infra/staging/prune-logs.sh (privacy policy promise).
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: 10m
+    max-file: '3'
+
 services:
   db:
     image: postgres:17-alpine@sha256:a77aa70e641402a21411b92b721c58d10f23b50ae5fdd2333efd22d166e1e5f7
     restart: unless-stopped
+    logging: *logging
     mem_limit: 256m
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-spinema}
@@ -24,6 +33,7 @@ services:
   api:
     image: ghcr.io/glaneux/spinema-api:${API_TAG:-preprod}
     restart: unless-stopped
+    logging: *logging
     mem_limit: 256m
     depends_on:
       db:
@@ -33,6 +43,8 @@ services:
       API_PORT: 3000
       LOG_LEVEL: ${LOG_LEVEL:-info}
       CORS_ORIGINS: ${CORS_ORIGINS:?définir CORS_ORIGINS dans .env}
+      # The server's Nginx is the only proxy in front of the API.
+      TRUST_PROXY: 1
     ports:
       - '127.0.0.1:3100:3000'
 
@@ -40,6 +52,7 @@ services:
   gate:
     image: node:24-alpine@sha256:116b800c3754b440ee0aa3ed2f20f5bf3d99a554bfd9adeea09ea8017f6e85f5
     restart: unless-stopped
+    logging: *logging
     mem_limit: 48m
     user: node
     read_only: true
@@ -53,6 +66,7 @@ services:
   web:
     image: nginx:1.30-alpine@sha256:901e593c95dc85f5a729f5765516321366ef4ac401821431d408897e95287d0a
     restart: unless-stopped
+    logging: *logging
     mem_limit: 32m
     depends_on:
       - gate

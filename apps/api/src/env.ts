@@ -16,6 +16,11 @@ const envSchema = z.object({
         .filter(Boolean),
     ),
   LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']).default('info'),
+  /**
+   * Number of reverse proxies in front of the API (the server's Nginx = 1), so that rate limits
+   * and logs see the visitor's address and not the proxy's. 0 when the API is reached directly.
+   */
+  TRUST_PROXY: z.coerce.number().int().min(0).default(0),
 });
 
 export type Env = z.infer<typeof envSchema>;

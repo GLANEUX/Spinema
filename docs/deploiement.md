@@ -61,6 +61,10 @@ Les secrets sont rangés dans des **environnements GitHub protégés** :
 
 Les scripts y écrivent directement. Pour déplacer d'anciens secrets du dépôt vers ces environnements : `./scripts/move-secrets-to-environments.sh`.
 
+## Journaux
+
+Les journaux des conteneurs contiennent des adresses IP. Ils sont plafonnés à 3 fichiers de 10 Mo par service (`docker-compose.yml`) et, chaque nuit, [infra/staging/prune-logs.sh](../infra/staging/prune-logs.sh) efface ce qui a plus de 6 mois, comme promis dans la politique de confidentialité. Le script tourne en `root` depuis une copie installée par `setup-staging-server.sh` ; `--dry-run` montre ce qu'il effacerait.
+
 ## Sauvegardes
 
 - Chaque nuit, [infra/backup/backup.sh](../infra/backup/backup.sh) sauvegarde la base et garde les 14 dernières copies.
