@@ -47,8 +47,15 @@ services:
       TRUST_PROXY: 1
       BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?définir BETTER_AUTH_SECRET dans .env}
       BETTER_AUTH_URL: ${BETTER_AUTH_URL:?définir BETTER_AUTH_URL dans .env}
-      # false until the staging sends real emails (Brevo).
+      # false until the staging sends real emails (scripts/set-staging-smtp.sh turns it on).
       REQUIRE_EMAIL_VERIFICATION: ${REQUIRE_EMAIL_VERIFICATION:-false}
+      # Brevo, set by scripts/set-staging-smtp.sh. Without SMTP_HOST, emails are not sent.
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      MAIL_FROM: ${MAIL_FROM:-Spinema <noreply@spinema.fr>}
+      MAIL_REPLY_TO: ${MAIL_REPLY_TO:-contact@spinema.fr}
       PWNED_PASSWORD_CHECK: ${PWNED_PASSWORD_CHECK:-true}
     ports:
       - '127.0.0.1:3100:3000'

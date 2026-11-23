@@ -43,6 +43,7 @@ services:
       SMTP_USER: ${SMTP_USER:-}
       SMTP_PASSWORD: ${SMTP_PASSWORD:-}
       MAIL_FROM: ${MAIL_FROM:-Spinema <noreply@spinema.fr>}
+      MAIL_REPLY_TO: ${MAIL_REPLY_TO:-}
     ports:
       - '${API_BIND:-127.0.0.1}:${API_PUBLISHED_PORT:-3000}:3000'
 

@@ -11,6 +11,7 @@ const baseEnv = {
   SMTP_USER: undefined,
   SMTP_PASSWORD: undefined,
   MAIL_FROM: 'Spinema <noreply@spinema.fr>',
+  MAIL_REPLY_TO: undefined,
 };
 
 describe('templates', () => {
@@ -103,6 +104,7 @@ describe('SMTP transport (Mailpit)', () => {
         SMTP_PORT: mailpit.getMappedPort(1025),
         SMTP_USER: 'spinema',
         SMTP_PASSWORD: 'secret',
+        MAIL_REPLY_TO: 'contact@spinema.fr',
       },
       { info: vi.fn() },
     );
@@ -120,7 +122,9 @@ describe('SMTP transport (Mailpit)', () => {
     const full = (await (await fetch(`${api}/message/${message?.ID}`)).json()) as {
       Text: string;
       HTML: string;
+      ReplyTo: { Address: string }[];
     };
+    expect(full.ReplyTo).toMatchObject([{ Address: 'contact@spinema.fr' }]);
     expect(full.Text).toContain(url);
     expect(full.HTML).toContain('Nouveau mot de passe');
   }, 30_000);

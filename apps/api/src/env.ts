@@ -39,6 +39,8 @@ const envSchema = z
     SMTP_USER: z.string().optional(),
     SMTP_PASSWORD: z.string().optional(),
     MAIL_FROM: z.string().default('Spinema <noreply@spinema.fr>'),
+    /** Where replies go: the sender address has no mailbox. */
+    MAIL_REPLY_TO: z.string().optional(),
   })
   .superRefine((env, ctx) => {
     if (env.NODE_ENV === 'production' && !env.BETTER_AUTH_SECRET) {

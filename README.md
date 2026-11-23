@@ -140,23 +140,24 @@ Les détails (staging, secrets, clé de signature, sauvegardes) sont dans [docs/
 
 ## Variables d'environnement
 
-| Variable                                               | Rôle                                                                     | Défaut                                    |
-| ------------------------------------------------------ | ------------------------------------------------------------------------ | ----------------------------------------- |
-| `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`    | Base PostgreSQL (Docker)                                                 | `spinema` / à choisir / `spinema`         |
-| `DATABASE_URL`                                         | Connexion de l'API à la base                                             | requise                                   |
-| `API_PORT`                                             | Port de l'API                                                            | `3000`                                    |
-| `API_BIND`                                             | Adresse sur laquelle Docker publie l'API                                 | `127.0.0.1` (`0.0.0.0` pour un téléphone) |
-| `LOG_LEVEL`                                            | Niveau de logs (`info`, `debug`…)                                        | `info`                                    |
-| `CORS_ORIGINS`                                         | Origines web autorisées, séparées par des virgules                       | `http://localhost:8080`                   |
-| `TRUST_PROXY`                                          | Nombre de proxys devant l'API (pour voir la vraie adresse des visiteurs) | `0` (`1` derrière le Nginx du serveur)    |
-| `BETTER_AUTH_SECRET`                                   | Signature des sessions, 32 caractères minimum (`openssl rand -hex 32`)   | requise par Docker et en prod             |
-| `BETTER_AUTH_URL`                                      | Adresse publique de l'API (liens des e-mails)                            | `http://localhost:3000`                   |
-| `REQUIRE_EMAIL_VERIFICATION`                           | E-mail vérifié avant la première connexion                               | `true`                                    |
-| `PWNED_PASSWORD_CHECK`                                 | Refuser les mots de passe qui ont fuité (Have I Been Pwned)              | `true`                                    |
-| `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD` | Envoi des e-mails ; sans `SMTP_HOST`, ils vont dans les logs             | Mailpit avec Docker en local              |
-| `MAIL_FROM`                                            | Expéditeur des e-mails                                                   | `Spinema <noreply@spinema.fr>`            |
-| `APK_URL`                                              | Destination du bouton « Télécharger l'app »                              | la page des releases                      |
-| `EXPO_PUBLIC_API_URL` (dans `apps/mobile/.env`)        | Adresse de l'API vue par l'app                                           | `http://10.0.2.2:3000` (émulateur)        |
+| Variable                                               | Rôle                                                                     | Défaut                                       |
+| ------------------------------------------------------ | ------------------------------------------------------------------------ | -------------------------------------------- |
+| `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`    | Base PostgreSQL (Docker)                                                 | `spinema` / à choisir / `spinema`            |
+| `DATABASE_URL`                                         | Connexion de l'API à la base                                             | requise                                      |
+| `API_PORT`                                             | Port de l'API                                                            | `3000`                                       |
+| `API_BIND`                                             | Adresse sur laquelle Docker publie l'API                                 | `127.0.0.1` (`0.0.0.0` pour un téléphone)    |
+| `LOG_LEVEL`                                            | Niveau de logs (`info`, `debug`…)                                        | `info`                                       |
+| `CORS_ORIGINS`                                         | Origines web autorisées, séparées par des virgules                       | `http://localhost:8080`                      |
+| `TRUST_PROXY`                                          | Nombre de proxys devant l'API (pour voir la vraie adresse des visiteurs) | `0` (`1` derrière le Nginx du serveur)       |
+| `BETTER_AUTH_SECRET`                                   | Signature des sessions, 32 caractères minimum (`openssl rand -hex 32`)   | requise par Docker et en prod                |
+| `BETTER_AUTH_URL`                                      | Adresse publique de l'API (liens des e-mails)                            | `http://localhost:3000`                      |
+| `REQUIRE_EMAIL_VERIFICATION`                           | E-mail vérifié avant la première connexion                               | `true`                                       |
+| `PWNED_PASSWORD_CHECK`                                 | Refuser les mots de passe qui ont fuité (Have I Been Pwned)              | `true`                                       |
+| `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD` | Envoi des e-mails ; sans `SMTP_HOST`, ils vont dans les logs             | Mailpit avec Docker en local                 |
+| `MAIL_FROM`                                            | Expéditeur des e-mails                                                   | `Spinema <noreply@spinema.fr>`               |
+| `MAIL_REPLY_TO`                                        | Adresse qui reçoit les réponses (l'expéditeur n'a pas de boîte)          | aucune (`contact@spinema.fr` sur le staging) |
+| `APK_URL`                                              | Destination du bouton « Télécharger l'app »                              | la page des releases                         |
+| `EXPO_PUBLIC_API_URL` (dans `apps/mobile/.env`)        | Adresse de l'API vue par l'app                                           | `http://10.0.2.2:3000` (émulateur)           |
 
 Les règles des comptes (routes, champs, e-mails) sont décrites dans [docs/comptes.md](docs/comptes.md).
 

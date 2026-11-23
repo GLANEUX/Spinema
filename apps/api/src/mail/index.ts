@@ -6,7 +6,13 @@ export { templates } from './templates';
 
 type MailEnv = Pick<
   Env,
-  'NODE_ENV' | 'SMTP_HOST' | 'SMTP_PORT' | 'SMTP_USER' | 'SMTP_PASSWORD' | 'MAIL_FROM'
+  | 'NODE_ENV'
+  | 'SMTP_HOST'
+  | 'SMTP_PORT'
+  | 'SMTP_USER'
+  | 'SMTP_PASSWORD'
+  | 'MAIL_FROM'
+  | 'MAIL_REPLY_TO'
 >;
 
 /** The part of a logger the mailer needs (Fastify's logger fits). */
@@ -43,7 +49,14 @@ export function createMailer(env: MailEnv, log: MailLog): Mailer {
   });
   return {
     async send({ to, subject, text, html }) {
-      await transport.sendMail({ from: env.MAIL_FROM, to, subject, text, html });
+      await transport.sendMail({
+        from: env.MAIL_FROM,
+        replyTo: env.MAIL_REPLY_TO || undefined,
+        to,
+        subject,
+        text,
+        html,
+      });
     },
   };
 }
