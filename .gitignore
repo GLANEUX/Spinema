@@ -14,3 +14,6 @@ apps/mobile/ios/
 *.keystore
 *.jks
 backups/
+
+# Worktrees of parallel Claude Code tasks
+.claude/worktrees/

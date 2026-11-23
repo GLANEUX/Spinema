@@ -32,8 +32,18 @@ export async function buildServer({ env, pingDb }: ServerDeps) {
   });
 
   await app.register(helmet, {
-    // JSON only: nothing may be loaded or framed from an API response.
-    contentSecurityPolicy: { directives: { defaultSrc: ["'none'"], frameAncestors: ["'none'"] } },
+    // JSON only: an API response may load nothing, run nothing, be framed nowhere.
+    contentSecurityPolicy: {
+      useDefaults: false,
+      directives: {
+        defaultSrc: ["'none'"],
+        baseUri: ["'none'"],
+        formAction: ["'none'"],
+        frameAncestors: ["'none'"],
+      },
+    },
+    // HSTS comes from the server's Nginx, which does HTTPS: sending it twice is pointless.
+    strictTransportSecurity: false,
   });
   await app.register(cors, { origin: env.CORS_ORIGINS });
   await app.register(rateLimit, {
