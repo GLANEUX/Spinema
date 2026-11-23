@@ -49,8 +49,14 @@ if [ ! -f "$DIR/.env" ]; then
   chown spinema:spinema "$DIR/.env"
   echo ".env créé (mot de passe Postgres généré, il reste sur le serveur)"
 fi
+# Accounts (docs/comptes.md): the session secret is generated here and never leaves the server.
+if ! grep -q '^BETTER_AUTH_SECRET=.' "$DIR/.env"; then
+  echo "BETTER_AUTH_SECRET=$(openssl rand -hex 32)" >> "$DIR/.env"
+  echo "BETTER_AUTH_SECRET généré (il reste sur le serveur)"
+fi
 if [ -n "$DOMAIN" ]; then
   sed -i "s|^CORS_ORIGINS=.*|CORS_ORIGINS=https://staging.$DOMAIN|" "$DIR/.env"
+  grep -q '^BETTER_AUTH_URL=' "$DIR/.env" || echo "BETTER_AUTH_URL=https://api.staging.$DOMAIN" >> "$DIR/.env"
 fi
 
 # The CI key can only run deploy.sh (no shell, no forwarding).

@@ -3,7 +3,7 @@ import { io as connect } from 'socket.io-client';
 import { healthSchema } from '@spinema/shared';
 import { buildServer, loggerOptions, type ServerDeps } from './server';
 import { LIMITS, createMessageLimiter } from './limits';
-import { loadEnv } from './env';
+import { DEV_AUTH_SECRET, loadEnv } from './env';
 
 const env: ServerDeps['env'] = {
   CORS_ORIGINS: ['http://localhost:8080'],
@@ -93,6 +93,24 @@ describe('env', () => {
   it('explains what is missing', () => {
     expect(() => loadEnv({})).toThrow(/DATABASE_URL/);
   });
+  it('uses a development secret outside production, requires a real one in production', () => {
+    const base = { DATABASE_URL: 'postgres://u:p@db:5432/x' };
+    expect(loadEnv(base)).toMatchObject({
+      BETTER_AUTH_SECRET: DEV_AUTH_SECRET,
+      REQUIRE_EMAIL_VERIFICATION: true,
+      PWNED_PASSWORD_CHECK: true,
+    });
+    expect(() => loadEnv({ ...base, NODE_ENV: 'production' })).toThrow(/BETTER_AUTH_SECRET/);
+    const secret = 's'.repeat(32);
+    expect(
+      loadEnv({
+        ...base,
+        NODE_ENV: 'production',
+        BETTER_AUTH_SECRET: secret,
+        REQUIRE_EMAIL_VERIFICATION: 'false',
+      }),
+    ).toMatchObject({ BETTER_AUTH_SECRET: secret, REQUIRE_EMAIL_VERIFICATION: false });
+  });
 });
 
 async function listen(app: Awaited<ReturnType<typeof start>>) {
@@ -105,10 +123,12 @@ describe('security headers', () => {
   it('forbids loading or framing API responses and sniffing their type', async () => {
     const app = await start(true);
     const res = await app.inject({ method: 'GET', url: '/health' });
-    expect(res.headers['content-security-policy']).toContain("default-src 'none'");
-    expect(res.headers['content-security-policy']).toContain("frame-ancestors 'none'");
+    expect(res.headers['content-security-policy']).toBe(
+      "default-src 'none';base-uri 'none';form-action 'none';frame-ancestors 'none'",
+    );
     expect(res.headers['x-content-type-options']).toBe('nosniff');
-    expect(res.headers['strict-transport-security']).toContain('max-age=');
+    // Added once, by the server's Nginx.
+    expect(res.headers['strict-transport-security']).toBeUndefined();
     expect(res.headers['x-powered-by']).toBeUndefined();
   });
 });

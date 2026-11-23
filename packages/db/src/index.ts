@@ -6,6 +6,8 @@ import postgres from 'postgres';
 import * as schema from './schema';
 
 export { schema };
+/** Query helpers, from the same drizzle-orm instance as the schema. */
+export { and, eq, sql } from 'drizzle-orm';
 
 /** Folder holding the SQL migrations, resolved next to this package. */
 export const migrationsFolder = fileURLToPath(new URL('../drizzle', import.meta.url));

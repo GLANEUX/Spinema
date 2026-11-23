@@ -32,6 +32,7 @@ L'adresse de l'API de chaque variante vient des variables GitHub `API_URL_PREVIE
 
 - **Adresses** : `staging.<domaine>` (page web) et `api.staging.<domaine>` (API). Elles ne sont pas écrites ici : demande-les à la mainteneuse.
 - **Code d'accès** : la page web demande un code, que le navigateur retient 30 jours. Le service [infra/staging/gate](../infra/staging/gate) le vérifie, et 5 essais ratés bloquent l'adresse IP pendant 15 minutes. `assetlinks.json` et l'API restent publics. Pour choisir ou changer le code : `./scripts/set-staging-code.sh` (changer le code déconnecte tout le monde).
+- **E-mails** : envoyés par Brevo. `./scripts/set-staging-smtp.sh` range la clé SMTP sur le serveur et active la vérification de l'adresse à l'inscription. Les réponses arrivent sur `contact@`.
 - **La stack**, décrite dans [infra/staging/docker-compose.yml](../infra/staging/docker-compose.yml), n'écoute qu'en local sur le serveur. Le Nginx du serveur fait le HTTPS (Let's Encrypt) et le relais.
 - **Déploiement** : le job « Deploy staging » de la CI envoie les fichiers et lance [infra/staging/deploy.sh](../infra/staging/deploy.sh), avec une clé SSH qui ne peut lancer que ce script.
 - **Le serveur héberge d'autres services en production** : on n'ajoute qu'un fichier de site Nginx, on lance `nginx -t` avant chaque rechargement, et on ne redémarre aucun autre service.
@@ -41,6 +42,7 @@ L'adresse de l'API de chaque variante vient des variables GitHub `API_URL_PREVIE
 1. Créer deux entrées DNS de type A, `staging.<domaine>` et `api.staging.<domaine>`, vers l'IP du serveur.
 2. Lancer `./scripts/setup-staging-server.sh <domaine>`. Le script crée l'utilisateur `spinema`, le dossier de la stack et son `.env` (mot de passe de la base généré sur place), la clé de déploiement, la sauvegarde quotidienne, le site Nginx avec HTTPS, ainsi que les secrets et variables GitHub.
 3. Choisir le code d'accès : `./scripts/set-staging-code.sh`.
+4. Brancher les e-mails : `./scripts/set-staging-smtp.sh`.
 
 Pour suivre les logs sur le serveur, depuis le dossier de la stack : `docker compose logs -f api`.
 

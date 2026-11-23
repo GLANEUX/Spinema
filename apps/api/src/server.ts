@@ -5,6 +5,7 @@ import rateLimit from '@fastify/rate-limit';
 import { Server as SocketServer } from 'socket.io';
 import type { Health } from '@spinema/shared';
 import type { Env } from './env';
+import { registerAccounts, type AccountsDeps } from './accounts';
 import { LIMITS, createMessageLimiter } from './limits';
 
 export const VERSION = '0.1.0';
@@ -13,6 +14,8 @@ export interface ServerDeps {
   env: Pick<Env, 'CORS_ORIGINS' | 'LOG_LEVEL' | 'NODE_ENV' | 'TRUST_PROXY'>;
   /** Resolves to true when the database answers. */
   pingDb: () => Promise<boolean>;
+  /** Accounts (Better Auth + /me routes). Without it, the API and its socket stay anonymous. */
+  accounts?: AccountsDeps;
 }
 
 /** Silent in tests, pretty in development, JSON lines in production. */
@@ -23,7 +26,7 @@ export function loggerOptions(env: ServerDeps['env']): FastifyServerOptions['log
   return { level: env.LOG_LEVEL };
 }
 
-export async function buildServer({ env, pingDb }: ServerDeps) {
+export async function buildServer({ env, pingDb, accounts }: ServerDeps) {
   const app = Fastify({
     logger: loggerOptions(env),
     bodyLimit: LIMITS.bodyBytes,
@@ -32,8 +35,18 @@ export async function buildServer({ env, pingDb }: ServerDeps) {
   });
 
   await app.register(helmet, {
-    // JSON only: nothing may be loaded or framed from an API response.
-    contentSecurityPolicy: { directives: { defaultSrc: ["'none'"], frameAncestors: ["'none'"] } },
+    // JSON only: an API response may load nothing, run nothing, be framed nowhere.
+    contentSecurityPolicy: {
+      useDefaults: false,
+      directives: {
+        defaultSrc: ["'none'"],
+        baseUri: ["'none'"],
+        formAction: ["'none'"],
+        frameAncestors: ["'none'"],
+      },
+    },
+    // HSTS comes from the server's Nginx, which does HTTPS: sending it twice is pointless.
+    strictTransportSecurity: false,
   });
   await app.register(cors, { origin: env.CORS_ORIGINS });
   await app.register(rateLimit, {
@@ -70,11 +83,26 @@ export async function buildServer({ env, pingDb }: ServerDeps) {
     },
   );
 
-  // Real-time channel for live draws (PLAN.md §6). Rooms and events arrive in step 7.
+  if (accounts) await registerAccounts(app, accounts);
+
+  // Real-time channel for live draws (PLAN.md §6). Rooms and events arrive in step 8.
   const io = new SocketServer(app.server, {
     cors: { origin: env.CORS_ORIGINS },
     maxHttpBufferSize: LIMITS.socketMessageBytes,
   });
+  if (accounts) {
+    // Only signed-in users connect: the app sends its session cookie in the handshake.
+    io.use(async (socket, next) => {
+      const headers = new Headers();
+      const cookie = socket.request.headers.cookie;
+      if (cookie) headers.set('cookie', cookie);
+      const session = await accounts.auth.api.getSession({ headers }).catch(() => null);
+      if (!session)
+        return next(Object.assign(new Error('UNAUTHORIZED'), { data: { code: 'UNAUTHORIZED' } }));
+      socket.data.userId = session.user.id;
+      next();
+    });
+  }
   io.on('connection', (socket) => {
     // A connection that floods messages is warned, then cut.
     const allow = createMessageLimiter(LIMITS.socketMessages);
