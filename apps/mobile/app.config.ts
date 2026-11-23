@@ -39,6 +39,8 @@ const config: ExpoConfig = {
       monochromeImage: './assets/android-icon-monochrome.png',
     },
     predictiveBackGestureEnabled: false,
+    // No Android cloud backup: the session lives on the phone only (PLAN.md §8).
+    allowBackup: false,
   },
   plugins: [
     'expo-router',
