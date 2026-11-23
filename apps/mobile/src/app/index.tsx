@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { router } from 'expo-router';
 import { theme } from '@spinema/shared';
 import { Logo } from '../components/Logo';
+import { TextLink } from '../components/TextLink';
 import { API_URL, fetchHealth } from '../lib/api';
 import { variantLabel } from '../lib/variant';
 
@@ -38,6 +40,7 @@ export default function Home() {
         </Text>
       </View>
       <Text style={styles.hand}>{API_URL}</Text>
+      <TextLink label="Moi" light onPress={() => router.push('/moi')} />
     </SafeAreaView>
   );
 }
