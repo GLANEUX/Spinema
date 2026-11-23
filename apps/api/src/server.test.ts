@@ -123,10 +123,12 @@ describe('security headers', () => {
   it('forbids loading or framing API responses and sniffing their type', async () => {
     const app = await start(true);
     const res = await app.inject({ method: 'GET', url: '/health' });
-    expect(res.headers['content-security-policy']).toContain("default-src 'none'");
-    expect(res.headers['content-security-policy']).toContain("frame-ancestors 'none'");
+    expect(res.headers['content-security-policy']).toBe(
+      "default-src 'none';base-uri 'none';form-action 'none';frame-ancestors 'none'",
+    );
     expect(res.headers['x-content-type-options']).toBe('nosniff');
-    expect(res.headers['strict-transport-security']).toContain('max-age=');
+    // Added once, by the server's Nginx.
+    expect(res.headers['strict-transport-security']).toBeUndefined();
     expect(res.headers['x-powered-by']).toBeUndefined();
   });
 });
