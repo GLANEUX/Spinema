@@ -33,6 +33,12 @@ const envSchema = z
     REQUIRE_EMAIL_VERIFICATION: z.stringbool().default(true),
     /** Refuse passwords found in data breaches (Have I Been Pwned). False in tests: no network. */
     PWNED_PASSWORD_CHECK: z.stringbool().default(true),
+    /** Emails (docs/comptes.md): SMTP when SMTP_HOST is set, otherwise written to the logs. */
+    SMTP_HOST: z.string().optional(),
+    SMTP_PORT: z.coerce.number().int().default(587),
+    SMTP_USER: z.string().optional(),
+    SMTP_PASSWORD: z.string().optional(),
+    MAIL_FROM: z.string().default('Spinema <noreply@spinema.fr>'),
   })
   .superRefine((env, ctx) => {
     if (env.NODE_ENV === 'production' && !env.BETTER_AUTH_SECRET) {

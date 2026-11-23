@@ -81,21 +81,24 @@ Dans `.env`, choisir un mot de passe pour `POSTGRES_PASSWORD` et le reporter dan
 docker compose up -d --build
 ```
 
-| Service    | Adresse                      |
-| ---------- | ---------------------------- |
-| API        | http://127.0.0.1:3000/health |
-| Page web   | http://127.0.0.1:8080        |
-| PostgreSQL | interne au réseau Docker     |
+| Service           | Adresse                      |
+| ----------------- | ---------------------------- |
+| API               | http://127.0.0.1:3000/health |
+| Page web          | http://127.0.0.1:8080        |
+| PostgreSQL        | interne au réseau Docker     |
+| E-mails (Mailpit) | http://127.0.0.1:8025        |
 
 ### Développer
 
 ```bash
-docker compose -f docker-compose.dev.yml up -d   # la base seule
+docker compose -f docker-compose.dev.yml up -d   # la base et Mailpit
 pnpm --filter @spinema/api dev                   # l'API, rechargée à chaque modification
 pnpm --filter @spinema/mobile start              # l'app : scanner le QR code avec Expo Go
 ```
 
 Les migrations s'appliquent au démarrage de l'API. L'écran d'accueil de l'app affiche « ▶ PLAY » sur le magnétoscope quand l'API répond.
+
+**Les e-mails** (vérification, mot de passe oublié) n'arrivent jamais dans une vraie boîte en local : **Mailpit** les attrape tous, et on les lit sur http://127.0.0.1:8025. Avec l'API lancée hors Docker, mettre `SMTP_HOST=localhost` et `SMTP_PORT=1025` dans `.env`. Sans `SMTP_HOST`, l'API écrit les e-mails dans ses logs.
 
 <details>
 <summary><strong>Tester sur un vrai téléphone (Wi-Fi, WSL)</strong></summary>
