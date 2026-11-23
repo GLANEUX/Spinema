@@ -36,9 +36,9 @@
 - [x] Serveur : fail2ban sur SSH, mises à jour installées, redémarrage fait
 - [x] Politique de confidentialité (`/confidentialite/`) et page de suppression de compte (`/suppression-compte/`), publiques même sur le staging
 - [x] Réponses aux formulaires Google Play : [docs/google-play.md](docs/google-play.md)
-- [ ] Créer la boîte `contact@spinema.fr` (citée dans les pages légales)
-- [ ] Remplir dans la Play Console : politique de confidentialité, sécurité des données, public cible, lien de suppression
-- [ ] Journaux techniques : rotation par date pour tenir la promesse « au plus 6 mois » (aujourd'hui, rotation par taille)
+- [ ] Plus tard : créer la boîte `contact@spinema.fr` chez LWS (citée dans les pages légales)
+- [ ] Plus tard : remplir dans la Play Console la politique de confidentialité, la sécurité des données, le public cible et le lien de suppression (réponses dans [docs/google-play.md](docs/google-play.md))
+- [x] Journaux des conteneurs : effacés après 6 mois (`infra/staging/prune-logs.sh`, chaque nuit) et plafonnés à 3 × 10 Mo par service
 
 ## Améliorations connues
 
