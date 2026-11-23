@@ -22,7 +22,7 @@ L'interface est faite d'objets plutôt que d'écrans : une télé, un magnétosc
 Le projet avance par étapes ([PLAN.md §9](PLAN.md)).
 
 - [x] **1. Socle** : monorepo, API, base de données, app Android, Docker, CI, staging en ligne, version de test sur Google Play.
-- [ ] **2. Sécurité** : en-têtes web, limites de requêtes, durcissement du temps réel et du serveur, politique de confidentialité.
+- [x] **2. Sécurité** : en-têtes web, limites de requêtes, durcissement du temps réel et du serveur, politique de confidentialité.
 - [ ] **3. Comptes** : inscription par e-mail (15 ans minimum), pseudo, date de naissance, espace perso.
 - [ ] **4. Films** : recherche (TMDB), fiche, liste « À voir ».
 - [ ] **5. Collections** : vu / pas vu, catégories automatiques.
@@ -140,19 +140,25 @@ Les détails (staging, secrets, clé de signature, sauvegardes) sont dans [docs/
 
 ## Variables d'environnement
 
-| Variable                                            | Rôle                                                                     | Défaut                                    |
-| --------------------------------------------------- | ------------------------------------------------------------------------ | ----------------------------------------- |
-| `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB` | Base PostgreSQL (Docker)                                                 | `spinema` / à choisir / `spinema`         |
-| `DATABASE_URL`                                      | Connexion de l'API à la base                                             | requise                                   |
-| `API_PORT`                                          | Port de l'API                                                            | `3000`                                    |
-| `API_BIND`                                          | Adresse sur laquelle Docker publie l'API                                 | `127.0.0.1` (`0.0.0.0` pour un téléphone) |
-| `LOG_LEVEL`                                         | Niveau de logs (`info`, `debug`…)                                        | `info`                                    |
-| `CORS_ORIGINS`                                      | Origines web autorisées, séparées par des virgules                       | `http://localhost:8080`                   |
-| `TRUST_PROXY`                                       | Nombre de proxys devant l'API (pour voir la vraie adresse des visiteurs) | `0` (`1` derrière le Nginx du serveur)    |
-| `APK_URL`                                           | Destination du bouton « Télécharger l'app »                              | la page des releases                      |
-| `EXPO_PUBLIC_API_URL` (dans `apps/mobile/.env`)     | Adresse de l'API vue par l'app                                           | `http://10.0.2.2:3000` (émulateur)        |
+| Variable                                               | Rôle                                                                     | Défaut                                    |
+| ------------------------------------------------------ | ------------------------------------------------------------------------ | ----------------------------------------- |
+| `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`    | Base PostgreSQL (Docker)                                                 | `spinema` / à choisir / `spinema`         |
+| `DATABASE_URL`                                         | Connexion de l'API à la base                                             | requise                                   |
+| `API_PORT`                                             | Port de l'API                                                            | `3000`                                    |
+| `API_BIND`                                             | Adresse sur laquelle Docker publie l'API                                 | `127.0.0.1` (`0.0.0.0` pour un téléphone) |
+| `LOG_LEVEL`                                            | Niveau de logs (`info`, `debug`…)                                        | `info`                                    |
+| `CORS_ORIGINS`                                         | Origines web autorisées, séparées par des virgules                       | `http://localhost:8080`                   |
+| `TRUST_PROXY`                                          | Nombre de proxys devant l'API (pour voir la vraie adresse des visiteurs) | `0` (`1` derrière le Nginx du serveur)    |
+| `BETTER_AUTH_SECRET`                                   | Signature des sessions, 32 caractères minimum (`openssl rand -hex 32`)   | requise par Docker et en prod             |
+| `BETTER_AUTH_URL`                                      | Adresse publique de l'API (liens des e-mails)                            | `http://localhost:3000`                   |
+| `REQUIRE_EMAIL_VERIFICATION`                           | E-mail vérifié avant la première connexion                               | `true`                                    |
+| `PWNED_PASSWORD_CHECK`                                 | Refuser les mots de passe qui ont fuité (Have I Been Pwned)              | `true`                                    |
+| `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD` | Envoi des e-mails ; sans `SMTP_HOST`, ils vont dans les logs             | Mailpit avec Docker en local              |
+| `MAIL_FROM`                                            | Expéditeur des e-mails                                                   | `Spinema <noreply@spinema.fr>`            |
+| `APK_URL`                                              | Destination du bouton « Télécharger l'app »                              | la page des releases                      |
+| `EXPO_PUBLIC_API_URL` (dans `apps/mobile/.env`)        | Adresse de l'API vue par l'app                                           | `http://10.0.2.2:3000` (émulateur)        |
 
-Les variables des étapes suivantes (TMDB, Better Auth, e-mails Brevo) sont déjà listées en commentaire dans [.env.example](.env.example).
+Les règles des comptes (routes, champs, e-mails) sont décrites dans [docs/comptes.md](docs/comptes.md).
 
 ## Sécurité
 
