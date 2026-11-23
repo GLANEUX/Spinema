@@ -123,7 +123,9 @@ export const space = pgTable(
   },
   (table) => [
     index('space_owner_idx').on(table.ownerId),
-    uniqueIndex('space_one_personal_per_owner').on(table.ownerId).where(sql`kind = 'personal'`),
+    uniqueIndex('space_one_personal_per_owner')
+      .on(table.ownerId)
+      .where(sql`kind = 'personal'`),
   ],
 );
 

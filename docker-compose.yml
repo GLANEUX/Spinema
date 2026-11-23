@@ -33,6 +33,10 @@ services:
       LOG_LEVEL: ${LOG_LEVEL:-info}
       CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:8080}
       TRUST_PROXY: ${TRUST_PROXY:-0}
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?définir BETTER_AUTH_SECRET dans .env (openssl rand -hex 32)}
+      BETTER_AUTH_URL: ${BETTER_AUTH_URL:-http://localhost:3000}
+      REQUIRE_EMAIL_VERIFICATION: ${REQUIRE_EMAIL_VERIFICATION:-true}
+      PWNED_PASSWORD_CHECK: ${PWNED_PASSWORD_CHECK:-true}
     ports:
       - '${API_BIND:-127.0.0.1}:${API_PUBLISHED_PORT:-3000}:3000'
 

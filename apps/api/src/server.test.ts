@@ -3,7 +3,7 @@ import { io as connect } from 'socket.io-client';
 import { healthSchema } from '@spinema/shared';
 import { buildServer, loggerOptions, type ServerDeps } from './server';
 import { LIMITS, createMessageLimiter } from './limits';
-import { loadEnv } from './env';
+import { DEV_AUTH_SECRET, loadEnv } from './env';
 
 const env: ServerDeps['env'] = {
   CORS_ORIGINS: ['http://localhost:8080'],
@@ -92,6 +92,24 @@ describe('env', () => {
   });
   it('explains what is missing', () => {
     expect(() => loadEnv({})).toThrow(/DATABASE_URL/);
+  });
+  it('uses a development secret outside production, requires a real one in production', () => {
+    const base = { DATABASE_URL: 'postgres://u:p@db:5432/x' };
+    expect(loadEnv(base)).toMatchObject({
+      BETTER_AUTH_SECRET: DEV_AUTH_SECRET,
+      REQUIRE_EMAIL_VERIFICATION: true,
+      PWNED_PASSWORD_CHECK: true,
+    });
+    expect(() => loadEnv({ ...base, NODE_ENV: 'production' })).toThrow(/BETTER_AUTH_SECRET/);
+    const secret = 's'.repeat(32);
+    expect(
+      loadEnv({
+        ...base,
+        NODE_ENV: 'production',
+        BETTER_AUTH_SECRET: secret,
+        REQUIRE_EMAIL_VERIFICATION: 'false',
+      }),
+    ).toMatchObject({ BETTER_AUTH_SECRET: secret, REQUIRE_EMAIL_VERIFICATION: false });
   });
 });
 

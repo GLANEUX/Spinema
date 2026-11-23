@@ -40,7 +40,10 @@ export function isOldEnough(birthDate: string, now: Date, minAge = MINIMUM_AGE):
 /** Pseudo: 3 to 20 letters, digits, `_`, `.` or `-`. */
 export const usernameSchema = z
   .string()
-  .regex(/^[A-Za-z0-9_.-]{3,20}$/, 'Le pseudo fait 3 à 20 caractères : lettres, chiffres, _ . ou -.');
+  .regex(
+    /^[A-Za-z0-9_.-]{3,20}$/,
+    'Le pseudo fait 3 à 20 caractères : lettres, chiffres, _ . ou -.',
+  );
 
 /** Birth date `YYYY-MM-DD`: a real date, not in the future. */
 export const birthDateSchema = z
